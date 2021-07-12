@@ -16,12 +16,12 @@ function Content() {
                 </div>
 
                 <div className="timeGrid">
-                    <div class="grid-item_text">Hours</div>
-                    <div class="grid-item_text">Minutes</div>
-                    <div class="grid-item_text">Seconds</div>
-                    <div class="grid-item_patch">59</div>
-                    <div class="grid-item_patch">59</div>
-                    <div class="grid-item-seconds">
+                    <div className="grid-item_text">Hours</div>
+                    <div className="grid-item_text">Minutes</div>
+                    <div className="grid-item_text">Seconds</div>
+                    <div className="grid-item_patch">59</div>
+                    <div className="grid-item_patch">59</div>
+                    <div className="grid-item-seconds">
                         <img src="assets/images/loading2.gif" alt="seconds animation"></img>
                         <div className="second_text">59</div>
                     </div>

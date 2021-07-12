@@ -7,7 +7,7 @@ import { Button } from './Components/Button.styles';
 function App() {
   return (
       <AppWrap>
-        <Header />
+         <Header />
         <Content />
       </AppWrap>
   );

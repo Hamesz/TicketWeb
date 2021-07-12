@@ -2,12 +2,11 @@ import styled from "styled-components";
 
 export const ContentWrap = styled.div`
     width: 100%;
-    border: 1px solid green;
+    // border: 1px solid green;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
-
 
     h3 {
         width: 100%;
@@ -16,11 +15,10 @@ export const ContentWrap = styled.div`
 
     .boxWrap {
         width: 90%;
-
+        margin-top: 8%;
         .icon_code {
             width: 100%;
-            background-color: gray;
-            margin-top: 5px;
+            // background-color: gray;
             display: flex;
             flex-flow: row nowrap;
             justify-content: flex-start;
@@ -52,7 +50,7 @@ export const ContentWrap = styled.div`
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 90px;
+            // font-size: 90px;
             font-size: 22vw;
             color: #FFFFFFFF ;
             }
@@ -63,43 +61,58 @@ export const ContentWrap = styled.div`
             width: 80%;
             margin-left: 10%;
             margin-right: 10%;
-            display: grid;
+            display: inline-grid;
             // background-color: green;
             grid-template-columns: 1fr 1fr 1fr;
             margin-top: 40px;
             text-align: center;
+            
         }
 
         .grid-item_text {
-            font-size: 5hh;
+            font-size: 4vw;;
             color: white;
             font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            // border: 2px solid black;
           }
 
         .grid-item_patch {
-            margin: 10px;
-            margin-left: 20px;
-            margin-right: 20px;
-            padding: 10px;
-            border-radius: 10px;
+            // margin will determine the shape of the
+            // patch
+            margin: 24%;
+            margin-left: 15%;
+            margin-right: 15%;
+
+            border-radius: 25%;
             background-color: gray;
             color: white;
-            font-size: 20px;
+            font-size: 5vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            // border: 2px solid black;
         }
 
         .grid-item-seconds{
-            margin: 10px;
-            margin-left: 20px;
-            margin-right: 20px;
+            margin: 20%;
+            // margin-left: 10%;
+            // margin-right: 50%;
             text-align: center;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            // border: 2px solid black;
 
             .second_text {
                 position: absolute;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                font-size: 20px;
+                font-size: 5vw;
                 color: white;
             }
 
@@ -111,47 +124,43 @@ export const ContentWrap = styled.div`
 
         .date {
             width: 100%;
-            margin-top: 5px;
+            margin-top: 2%;
             text-align: center;
             // background-color: green;
-            font-size: 2.5vh;
+            font-size: 5vw;;
             color: white;
         }
 
         .ticket{
             width: 100%;
-            // height: 100px;
             background-color: #2F5E8A;
-            margin-top: 30px;
+            margin-top: 10%;
+            padding: 4%;
             text-align: center;
-            font-size: 5vh;
+            font-size: 9vw;
             color: white;
         }
 
         .infoGrid {
             width: 100%;
-            // margin-left: 10%;
-            // margin-right: 10%;
             display: grid;
             background-color: #2F5E8A;
             grid-template-columns: 1fr 1fr;
-            margin-top: 20px;
+            margin-top: 5%;
             color: white;
-            // text-align: center;
+            margin-bottom: 5%;
+            font-size: 4vw;
         }
 
         .grid-info-item-left {
-            font-size: 5hh;
             color: white;
-            font-weight: bold;
             text-align: right;
-            margin-right: 10px;
+            margin-right: 10%;
         }
 
         .grid-info-item-right {
-            font-size: 5hh;
             color: white;
-            
+            margin-bottom: 5%;
         }
 
     }
