@@ -82,14 +82,14 @@ export const ContentWrap = styled.div`
         .grid-item_patch {
             // margin will determine the shape of the
             // patch
-            margin: 24%;
-            margin-left: 15%;
-            margin-right: 15%;
+            margin: 22%;
+            // margin-left: 15%;
+            // margin-right: 15%;
 
             border-radius: 25%;
             background-color: gray;
             color: white;
-            font-size: 5vw;
+            font-size: 6vw;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -112,7 +112,7 @@ export const ContentWrap = styled.div`
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                font-size: 5vw;
+                font-size: 6vw;
                 color: white;
             }
 
