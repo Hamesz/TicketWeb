@@ -2,16 +2,20 @@ import React, { useEffect, useState } from "react";
 import { ContentWrap } from "./Content.styles";
 
 
-function getTimeandTimeLeft(ticket){
+function getTimeandTimeLeft(ticket, expiredFunction){
     const date = new Date();
     const hours_minutes_seconds = ticket.getTimes();
     const current_time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-    return [hours_minutes_seconds, current_time];
+    if (ticket.isExpired()){
+        expiredFunction();
+    }
+    return [hours_minutes_seconds, current_time, ticket.isExpired()];
 }
 
 function Content(props) {
     const ticket = props.ticket_current;
-    const [[timeLeft, current_time], setTimeLeft] = useState(getTimeandTimeLeft(ticket));
+    const expiredFunction = props.expiredFunction
+    const [[timeLeft, current_time, expired], setTimeLeft] = useState(getTimeandTimeLeft(ticket, expiredFunction));
     useEffect(() => {
         const timer = setTimeout(() => {
           setTimeLeft(getTimeandTimeLeft(ticket));
@@ -19,6 +23,8 @@ function Content(props) {
         // Clear timeout if the component is unmounted
         return () => clearTimeout(timer);
       });
+    
+    
 
     return (
         <ContentWrap>

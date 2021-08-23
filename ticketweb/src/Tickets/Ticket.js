@@ -4,7 +4,7 @@ export class Ticket {
         this.availability_start = availability_start;
         this.availability_end = availability_end;
 
-        [this.start_date, this.end_date] = getStartEndDate(availability_start, availability_end);
+        [this.start_date, this.end_date] = this.getStartEndDate(availability_start, availability_end);
         this.expiry_date_string = this.getExpiryString(this.end_date);
     }
 
@@ -18,6 +18,10 @@ export class Ticket {
         return `Expires on ${weekday} ${day} ${month} ${year} at ${time}`
     }
 
+    getStartEndDate(availability_start, availability_end){
+        return getStartEndDate(availability_start, availability_end);
+    }
+
     /*
     Returns the [Hours, minutes, seconds] until the ticket expires
     */
@@ -26,9 +30,9 @@ export class Ticket {
         const date_now = new Date();
         const date_future = this.end_date;
         let difference =  date_future - date_now;
-        console.log("time difference:", difference);
-        console.log("Date end: ", date_future);
-        console.log("Date start: ", date_now);
+        // console.log("time difference:", difference);
+        // console.log("Date end: ", date_future);
+        // console.log("Date start: ", date_now);
 
         let timeLeft = {
             days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -40,6 +44,17 @@ export class Ticket {
         return timeLeft;
     }
 
+    /*
+    Checks if the ticket is expired, if so then returns true
+    */
+    isExpired(){
+        const date_now = new Date();
+        if (date_now > this.end_date){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 
 }

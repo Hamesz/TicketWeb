@@ -1,4 +1,5 @@
 import {Ticket} from "./Ticket";
+import { TicketTemporary } from "./TicketTemporary";
 
 export class TicketFactory{
     createTicket(ticket_json_object){
@@ -26,6 +27,6 @@ export class TicketFactory{
 
         console.log("start and end strings as times", [start_string, end_string]);
 
-        return new Ticket(ticket_json_object["title"], start_string, end_string);
+        return new TicketTemporary(ticket_json_object["title"], start_string, end_string, start, end);
     }
 }

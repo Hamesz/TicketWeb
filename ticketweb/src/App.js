@@ -63,6 +63,7 @@ class App extends React.Component{
     return (
       <Ticket 
       ticket_current = {props.ticket_current}
+      expiredFunction = {props.expiredFunction}
       />
     );
   }
@@ -91,6 +92,7 @@ class App extends React.Component{
         console.log("Rendering ticket");
         const props = {
           ticket_current: this.state.ticket_current,
+          expiredFunction: () => this.handleExpired()
         }
         return (
           this.renderTicketView(props)
@@ -116,6 +118,16 @@ class App extends React.Component{
     }
     console.log("Ticket was chosen:", this.state.tickets[idx]);
     console.log("Ticket current:", this.state.ticket_current);
+  }
+
+  /*
+  Handles the case when the ticket has expired
+  */
+  handleExpired(){
+    // alert("Ticket has expired!");
+    this.setState(
+      {ticket_current: "None"}
+    ); 
   }
 
 }

@@ -11,6 +11,7 @@ function Ticket(props) {
          />
         <Content 
          ticket_current = {props.ticket_current}
+         expiredFunction = {props.expiredFunction}
         />
       </AppWrap>
   );
