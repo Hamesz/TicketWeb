@@ -1,0 +1,39 @@
+{
+    "network": {
+        "availability_start" : "05:30",
+        "availability_end" : "04:30",
+        "title" : "Adult Network Day Ticket",
+        "destinations" : [
+            "Anywhere (Airport, Edinburgh, East Coast etc)"
+        ]
+    },   
+
+    "day": {
+        "availability_start" : "05:30",
+        "availability_end" : "01:00",
+        "title" : "Adult DAYticket",
+        "destinations" : [
+            "Edinburgh",
+            "East Coast"
+        ]
+    },  
+
+    "late": {
+        "availability_start" : "18:30",
+        "availability_end" : "05:30",
+        "title" : "Adult LATEticket",
+        "destinations" : [
+            "Edinburgh",
+            "East Coast"
+        ]
+    }, 
+
+    "airlink": {
+        "availability_start" : "05:30",
+        "availability_end" : "05:30",
+        "title" : "Adult AIRLINK Single",
+        "destinations" : [
+            "Airport"
+        ]
+    }  
+}

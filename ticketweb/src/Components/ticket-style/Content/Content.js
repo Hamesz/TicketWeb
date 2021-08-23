@@ -1,6 +1,8 @@
 import react from "react";
 import { ContentWrap } from "./Content.styles";
-function Content() {
+function Content(props) {
+    const ticket = props.ticket_current;
+    let hours_minutes_seconds = ticket.getTimes();
     return (
         <ContentWrap>
             <div className="boxWrap">
@@ -19,11 +21,11 @@ function Content() {
                     <div className="grid-item_text">Hours</div>
                     <div className="grid-item_text">Minutes</div>
                     <div className="grid-item_text">Seconds</div>
-                    <div className="grid-item_patch">59</div>
-                    <div className="grid-item_patch">59</div>
+                    <div className="grid-item_patch">{hours_minutes_seconds[0]}</div>
+                    <div className="grid-item_patch">{hours_minutes_seconds[1]}</div>
                     <div className="grid-item-seconds">
                         <img src="assets/images/loading2.gif" alt="seconds animation"></img>
-                        <div className="second_text">59</div>
+                        <div className="second_text">{hours_minutes_seconds[2]}</div>
                     </div>
                 </div>
 
@@ -32,7 +34,7 @@ function Content() {
                 </div>
 
                 <div className="ticket">
-                    Adult DAYandNIGHTticket
+                    {props.ticket_current.title}
                 </div>
 
                 <div className="infoGrid">

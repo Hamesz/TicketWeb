@@ -3,6 +3,9 @@ import { ContentWrap } from "./Content.styles";
 
 function TicketList(props) {
     const ticket_types = props.tickets
+    const ticket_information = props.ticket_information
+
+    console.log("ticket info", ticket_information);
     return (
         <ContentWrap>
         {
@@ -13,17 +16,17 @@ function TicketList(props) {
                     onClick={() => props.onClick(idx)}
                 >
                     <h1>
-                        {type + ' Ticket'}
+                        {ticket_information[type]["title"]}
                     </h1>
-                    {/* <div className="bodyBox">
+                    <div className="bodyBox">
                         <div className="times">
-                            Availability: 18:30 until 19:30
+                            {"Availability: " + ticket_information[type]["availability_start"] + " until " + ticket_information[type]["availability_end"]}
                         </div>
                         <div className="info">
-                            Buses: East Coast
+                            {"Destinations: " + ticket_information[type]["destinations"]}
                         </div>
                         <h4>Tap to activate!</h4>
-                    </div> */}
+                    </div>
                 </button>
             )
         }

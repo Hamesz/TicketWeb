@@ -3,11 +3,15 @@ import React from 'react';
 import Header from "./Header/Header"
 import Content from './Content/Content';
 
-function Ticket(ticket) {
+function Ticket(props) {
   return (
       <AppWrap>
-         <Header />
-        <Content />
+         <Header 
+         ticket_current = {props.ticket_current}
+         />
+        <Content 
+         ticket_current = {props.ticket_current}
+        />
       </AppWrap>
   );
 }
