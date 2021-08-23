@@ -34,6 +34,10 @@
         "title" : "Adult AIRLINK Single",
         "destinations" : [
             "Airport"
-        ]
+        ],
+        "duration" : {
+            "minutes": "5"
+        }
+
     }  
 }

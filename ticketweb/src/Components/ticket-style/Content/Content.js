@@ -2,13 +2,19 @@ import React, { useEffect, useState } from "react";
 import { ContentWrap } from "./Content.styles";
 
 
+function getTimeandTimeLeft(ticket){
+    const date = new Date();
+    const hours_minutes_seconds = ticket.getTimes();
+    const current_time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+    return [hours_minutes_seconds, current_time];
+}
+
 function Content(props) {
     const ticket = props.ticket_current;
-    let hours_minutes_seconds = ticket.getTimes();
-    const [timeLeft, setTimeLeft] = useState(ticket.getTimes());
+    const [[timeLeft, current_time], setTimeLeft] = useState(getTimeandTimeLeft(ticket));
     useEffect(() => {
         const timer = setTimeout(() => {
-          setTimeLeft(ticket.getTimes());
+          setTimeLeft(getTimeandTimeLeft(ticket));
         }, 1000);
         // Clear timeout if the component is unmounted
         return () => clearTimeout(timer);
@@ -24,7 +30,7 @@ function Content(props) {
                     </div>
                     <div className="code_gif">
                         <img src= "assets/images/red_grey_start.gif" alt="red grey gif"></img>
-                        <div className="code_text"><b>10:10</b></div>
+                        <div className="code_text"><b>{current_time}</b></div>
                     </div>
                 </div>
 
@@ -41,7 +47,7 @@ function Content(props) {
                 </div>
 
                 <div className="date">
-                    Expires on Wed 13th Jan 2019 at 12:22
+                    {ticket.expiry_date_string}
                 </div>
 
                 <div className="ticket">
