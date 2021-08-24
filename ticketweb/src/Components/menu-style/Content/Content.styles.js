@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ContentWrap = styled.div`
     width: 100%;
-    border: 1px solid green;
+    // border: 1px solid green;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -11,9 +11,10 @@ export const ContentWrap = styled.div`
     .ticketView {
         width: 80%;
         margin: 10%;
+        margin-bottom: 3%;
         // border-radius: 10px;
         border: 1px solid black;
-        background-color: red;
+        background-color: black;
 
         display: flex;
         flex-flow: column nowrap;
@@ -31,13 +32,13 @@ export const ContentWrap = styled.div`
 
             .times{
                 color: grey;
-                font-size: 2vw;
+                font-size: 3vw;
                 font-weight: bold;
             }
 
             .info {
                 color: black;
-                font-size: 2vw;
+                font-size: 3vw;
             }
         }
 

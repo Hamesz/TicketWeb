@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const HeaderWrap = styled.div`
     width: 100%;
     height: 30%;
-    border: 1px solid blue;
+    // border: 1px solid blue;
     padding: 0%;
     background-color: white;
 

@@ -137,7 +137,7 @@ class App extends React.Component{
           this.handleExpired();
           return;
       }
-      console.log("Switching time and updating current time");
+      // console.log("Switching time and updating current time");
       this.setState (
         {time: current_time,
         timeLeft: hours_minutes_seconds,

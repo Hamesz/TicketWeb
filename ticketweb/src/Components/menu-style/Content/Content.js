@@ -25,7 +25,7 @@ function TicketList(props) {
                         <div className="info">
                             {"Destinations: " + ticket_information[type]["destinations"]}
                         </div>
-                        <h4>Tap to activate!</h4>
+                        <h5>Tap to activate!</h5>
                     </div>
                 </button>
             )
