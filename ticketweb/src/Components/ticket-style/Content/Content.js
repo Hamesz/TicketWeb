@@ -13,19 +13,17 @@ function getTimeandTimeLeft(ticket, expiredFunction){
 }
 
 function Content(props) {
-    const ticket = props.ticket_current;
-    const expiredFunction = props.expiredFunction
-    const [[timeLeft, current_time, expired], setTimeLeft] = useState(getTimeandTimeLeft(ticket, expiredFunction));
-    useEffect(() => {
-        const timer = setTimeout(() => {
-          setTimeLeft(getTimeandTimeLeft(ticket));
-        }, 1000);
-        // Clear timeout if the component is unmounted
-        return () => clearTimeout(timer);
-      });
+    // const ticket = props.ticket_current;
+    // const expiredFunction = props.expiredFunction
+    // const [[timeLeft, current_time, expired], setTimeLeft] = useState(getTimeandTimeLeft(ticket, expiredFunction));
+    // useEffect(() => {
+    //     const timer = setTimeout(() => {
+    //       setTimeLeft(getTimeandTimeLeft(ticket));
+    //     }, 1000);
+    //     // Clear timeout if the component is unmounted
+    //     return () => clearTimeout(timer);
+    //   });
     
-    
-
     return (
         <ContentWrap>
             <div className="boxWrap">
@@ -36,7 +34,7 @@ function Content(props) {
                     </div>
                     <div className="code_gif">
                         <img src= "assets/images/red_grey_start.gif" alt="red grey gif"></img>
-                        <div className="code_text"><b>{current_time}</b></div>
+                        <div className="code_text"><b>{props.current_time}</b></div>
                     </div>
                 </div>
 
@@ -44,29 +42,29 @@ function Content(props) {
                     <div className="grid-item_text">Hours</div>
                     <div className="grid-item_text">Minutes</div>
                     <div className="grid-item_text">Seconds</div>
-                    <div className="grid-item_patch">{timeLeft["hours"]}</div>
-                    <div className="grid-item_patch">{timeLeft["minutes"]}</div>
+                    <div className="grid-item_patch">{props.hours_left}</div>
+                    <div className="grid-item_patch">{props.minutes_left}</div>
                     <div className="grid-item-seconds">
                         <img src="assets/images/loading2.gif" alt="seconds animation"></img>
-                        <div className="second_text">{timeLeft["seconds"]}</div>
+                        <div className="second_text">{props.seconds_left}</div>
                     </div>
                 </div>
 
                 <div className="date">
-                    {ticket.expiry_date_string}
+                    {props.expiry_date}
                 </div>
 
                 <div className="ticket">
-                    {props.ticket_current.title}
+                    {props.title}
                 </div>
 
                 <div className="infoGrid">
                     <div class="grid-info-item-left">Provider</div>
                     <div class="grid-info-item-right">Transport for Edinburgh</div>
                     <div class="grid-info-item-left">Purchased</div>
-                    <div class="grid-info-item-right">Wed 30th Jun at 11:46</div>
+                    <div class="grid-info-item-right">{props.purchased_date}</div>
                     <div class="grid-info-item-left">Passanger</div>
-                    <div class="grid-info-item-right">Kyle Alexander</div>
+                    <div class="grid-info-item-right">{props.passanger}</div>
                 </div>
             </div>
         </ContentWrap>

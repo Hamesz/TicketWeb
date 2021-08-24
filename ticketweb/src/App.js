@@ -34,9 +34,13 @@ class App extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      ticket_current: "None",
+      ticket: undefined,
       ticket_information: require('./Tickets/ticket_information.json'), //load json info
-      tickets:["network","day","late","airlink"]
+      tickets:["network","day","late","airlink"],
+      time: ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2),
+      passanger: "Kyle Alexander",
+      timeLeft: {"hours":0,"minutes":0,"seconds":0},
+      switchTimeWithCode: false
     }
     console.log("State in the app class: + ", this.state);
   }
@@ -44,60 +48,80 @@ class App extends React.Component{
   /*
   Renders the view of all possible tickets to choose from (ticket list)
   */
-  renderTicketList(props) {
-    console.log("Props for render ticket list:", props);
-    return (
-      <TicketList 
-        onClick = {(i) => props.onClick(i)}
-        tickets = {props.tickets}
-        ticket_information = {props.ticket_information}
-      />
-    );
-  }
+  // renderTicketList(props) {
+  //   console.log("Props for render ticket list:", props);
+  //   return (
+  //     <TicketList 
+  //       onClick = {(i) => props.onClick(i)}
+  //       tickets = {props.tickets}
+  //       ticket_information = {props.ticket_information}
+  //     />
+  //   );
+  // }
 
   /*
   Renders the view of the actual ticket
   */
-  renderTicketView(props){  
-    console.log("Props for render ticket view:", props);
-    return (
-      <Ticket 
-      ticket_current = {props.ticket_current}
-      expiredFunction = {props.expiredFunction}
-      />
-    );
-  }
+  // renderTicketView(props){  
+  //   console.log("Props for render ticket view:", props);
+  //   return (
+  //     <Ticket 
+  //     ticket_current = {props.ticket_current}
+  //     expiredFunction = {props.expiredFunction}
+  //     />
+  //   );
+  // }
   
   /*
   If the user has selected a ticket then it will load the ticket else if they are visiting for the first time it
   will display the ticket options
   */
+
+  
+
   render() {
     console.log("Rendering App...");
-    console.log("Selected Ticket", this.state.ticket_current);
+    console.log("Selected Ticket", this.state.ticket);
 
     // choose a ticket
-    if (this.state.ticket_current == "None"){
-      console.log("Rendering ticket list");
-      const props = {
-        tickets: this.state.tickets,
-        onClick: (i) => this.handleClick(i),
-        ticket_information: this.state.ticket_information,
-      }
+    if (this.state.ticket === undefined){
       return (
-        this.renderTicketList(props)
+        <TicketList 
+        tickets = {this.state.tickets}
+        onClick = {(i) => this.handleClick(i)}
+        ticket_information = {this.state.ticket_information}
+        />
       );
     }else{
-        // view a ticket
-        console.log("Rendering ticket");
-        const props = {
-          ticket_current: this.state.ticket_current,
-          expiredFunction: () => this.handleExpired()
-        }
-        return (
-          this.renderTicketView(props)
-        );
+      // set up a timer
+      console.log("SwitchTimeWithCode: ", this.state.switchTimeWithCode);
+      // view a ticket
+      return (
+        <Ticket 
+            ticket_current = {this.state.ticket}
+            title = {this.state.ticket.title}
+            hours_left = { this.state.timeLeft["hours"]}
+            minutes_left = { this.state.timeLeft["minutes"]}
+            seconds_left = { this.state.timeLeft["seconds"]}
+            expiry_date = {this.state.ticket.expiry_date_string}
+            purchased_date = {"Tue 2021"}
+            expiredFunction = {() => this.handleExpired()}
+            passanger = {"Kyle Alexander"}
+            current_time = {this.state.switchTimeWithCode ? this.state.time : "2034"}
+        />
+      );
     }
+  }
+
+  componentDidMount(){
+    console.log('Mounting component');
+    const time_delay = 1000; //1000ms
+    this.timer = setInterval(() => {(this.getTimeandTimeLeft(this.state.ticket, this.handleExpired));}, time_delay);
+  }
+
+  componentWillUnmount(){
+    console.log("Unmounting Component!!!!!!!!!!!!!!");
+    clearInterval(this.timer);
   }
 
   /*
@@ -108,16 +132,23 @@ class App extends React.Component{
     // check if we can use this ticket
     const start_time = this.state.ticket_information[ticket_chosen]["availability_start"];
     const end_time =  this.state.ticket_information[ticket_chosen]["availability_end"];
+    
+    console.log("Ticket chosen was", ticket_chosen);
+
+    if (ticket_chosen === undefined){
+      return;
+    }
+
     if (!canOpenTicket(start_time, end_time)){
       alert("Can't open this ticket due to availablity!");
     }else{
       const ticket_object = new TicketFactory().createTicket(this.state.ticket_information[ticket_chosen])
+      console.log("Ticket created by factory:", ticket_object);
       this.setState(
-        {ticket_current: ticket_object}
+        {ticket: ticket_object}
         ); 
     }
     console.log("Ticket was chosen:", this.state.tickets[idx]);
-    console.log("Ticket current:", this.state.ticket_current);
   }
 
   /*
@@ -126,10 +157,33 @@ class App extends React.Component{
   handleExpired(){
     // alert("Ticket has expired!");
     this.setState(
-      {ticket_current: "None"}
+      {ticket: undefined}
     ); 
   }
 
+  getTimeandTimeLeft(ticket){
+    console.log("In timer method");
+    if (ticket !== undefined){
+      const date = new Date();
+      const hours_minutes_seconds = ticket.getTimes();
+      const current_time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+      
+      if (ticket.isExpired()){
+          console.log("Ticket has expired");
+          this.handleExpired();
+          return;
+      }
+      const switchTime = this.state.switchTimeWithCode;
+      console.log("Switching time and updating current time");
+      this.setState (
+        {time: current_time,
+        timeLeft: hours_minutes_seconds,
+        switchTimeWithCode: !switchTime}  
+      );
+    }
+  }
 }
+
+
 
 export default App;

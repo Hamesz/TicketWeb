@@ -7,11 +7,18 @@ function Ticket(props) {
   return (
       <AppWrap>
          <Header 
-         ticket_current = {props.ticket_current}
+         title = {props.title}
          />
         <Content 
-         ticket_current = {props.ticket_current}
-         expiredFunction = {props.expiredFunction}
+         title = {props.title}
+         hours_left = {props.hours_left}
+         minutes_left = {props.minutes_left}
+         seconds_left = {props.seconds_left}
+         expiry_date = {props.expiry_date}
+         purchased_date = {props.purchased_date}
+         expiredFunction = {() => props.expiredFunction()}
+         passanger = {props.passanger}
+         current_time = {props.current_time}
         />
       </AppWrap>
   );

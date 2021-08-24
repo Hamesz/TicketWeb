@@ -8,7 +8,7 @@ function Header(props) {
                 <div className="grid-item">
                     <img src="assets/images/arrow-left-icon.png" alt="back arrow"></img>
                 </div>
-                <div className="grid-item-text">{props.ticket_current.title}</div>
+                <div className="grid-item-text">{props.title}</div>
                 {/* <div className="grid-item">
                     <img src="assets/images/share_icon.png" alt="share icon"></img>
                 </div> */}
