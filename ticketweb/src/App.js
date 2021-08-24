@@ -23,11 +23,6 @@ import {TicketFactory} from "./Tickets/TicketFactory"
 // }
 // export default App;
 
-// function App() {
-//   return (
-//     <TicketList />
-//   );
-// }
 
 
 class App extends React.Component{
@@ -42,46 +37,16 @@ class App extends React.Component{
       timeLeft: {"hours":0,"minutes":0,"seconds":0},
       switchTimeWithCode: false
     }
-    console.log("State in the app class: + ", this.state);
+    // console.log("State in the app class: + ", this.state);
   }
 
-  /*
-  Renders the view of all possible tickets to choose from (ticket list)
-  */
-  // renderTicketList(props) {
-  //   console.log("Props for render ticket list:", props);
-  //   return (
-  //     <TicketList 
-  //       onClick = {(i) => props.onClick(i)}
-  //       tickets = {props.tickets}
-  //       ticket_information = {props.ticket_information}
-  //     />
-  //   );
-  // }
-
-  /*
-  Renders the view of the actual ticket
-  */
-  // renderTicketView(props){  
-  //   console.log("Props for render ticket view:", props);
-  //   return (
-  //     <Ticket 
-  //     ticket_current = {props.ticket_current}
-  //     expiredFunction = {props.expiredFunction}
-  //     />
-  //   );
-  // }
-  
   /*
   If the user has selected a ticket then it will load the ticket else if they are visiting for the first time it
   will display the ticket options
   */
-
-  
-
   render() {
-    console.log("Rendering App...");
-    console.log("Selected Ticket", this.state.ticket);
+    // console.log("Rendering App...");
+    // console.log("Selected Ticket", this.state.ticket);
 
     // choose a ticket
     if (this.state.ticket === undefined){
@@ -94,7 +59,6 @@ class App extends React.Component{
       );
     }else{
       // set up a timer
-      console.log("SwitchTimeWithCode: ", this.state.switchTimeWithCode);
       // view a ticket
       return (
         <Ticket 
@@ -114,13 +78,13 @@ class App extends React.Component{
   }
 
   componentDidMount(){
-    console.log('Mounting component');
+    console.log('Mounting timer');
     const time_delay = 1000; //1000ms
     this.timer = setInterval(() => {(this.getTimeandTimeLeft(this.state.ticket, this.handleExpired));}, time_delay);
   }
 
   componentWillUnmount(){
-    console.log("Unmounting Component!!!!!!!!!!!!!!");
+    console.log("Unmounting timer");
     clearInterval(this.timer);
   }
 
@@ -148,7 +112,7 @@ class App extends React.Component{
         {ticket: ticket_object}
         ); 
     }
-    console.log("Ticket was chosen:", this.state.tickets[idx]);
+    // console.log("Ticket was chosen:", this.state.tickets[idx]);
   }
 
   /*
@@ -162,7 +126,7 @@ class App extends React.Component{
   }
 
   getTimeandTimeLeft(ticket){
-    console.log("In timer method");
+    // console.log("In timer method");
     if (ticket !== undefined){
       const date = new Date();
       const hours_minutes_seconds = ticket.getTimes();
@@ -173,12 +137,11 @@ class App extends React.Component{
           this.handleExpired();
           return;
       }
-      const switchTime = this.state.switchTimeWithCode;
       console.log("Switching time and updating current time");
       this.setState (
         {time: current_time,
         timeLeft: hours_minutes_seconds,
-        switchTimeWithCode: !switchTime}  
+        switchTimeWithCode: !this.state.switchTimeWithCode}  
       );
     }
   }
