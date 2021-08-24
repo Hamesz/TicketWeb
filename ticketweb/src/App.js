@@ -35,7 +35,8 @@ class App extends React.Component{
       time: ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2),
       passanger: "Kyle Alexander",
       timeLeft: {"hours":0,"minutes":0,"seconds":0},
-      switchTimeWithCode: false
+      switchTimeWithCode: false,
+      randomPurchasedDate: createRandomPurchasedDate()
     }
     // console.log("State in the app class: + ", this.state);
   }
@@ -68,7 +69,7 @@ class App extends React.Component{
             minutes_left = { this.state.timeLeft["minutes"]}
             seconds_left = { this.state.timeLeft["seconds"]}
             expiry_date = {this.state.ticket.expiry_date_string}
-            purchased_date = {"Tue 2021"}
+            purchased_date = {this.state.randomPurchasedDate}
             expiredFunction = {() => this.handleExpired()}
             passanger = {"Kyle Alexander"}
             current_time = {this.state.switchTimeWithCode ? this.state.time : "2034"}
@@ -115,6 +116,15 @@ class App extends React.Component{
     // console.log("Ticket was chosen:", this.state.tickets[idx]);
   }
 
+  // used for when the back button is pressed (doesnt work)
+  componentDidUpdate(){    
+    window.onpopstate = (e => {
+       console.log("back button pressed!");
+       this.setState({ticket:undefined});
+       alert("no");
+    });
+  }
+
   /*
   Handles the case when the ticket has expired
   */
@@ -147,6 +157,29 @@ class App extends React.Component{
   }
 }
 
+function createRandomPurchasedDate(){
+  let fromTime = new Date();
+  console.log("from time: ", fromTime);
+  fromTime.setMonth(fromTime.getMonth() - 6);
+
+  console.log("from time: ", fromTime);
+
+  fromTime = fromTime.getTime(); //6 months before
+
+  
+
+  const toTime = new Date().getTime(); // todays date
+  const date = new Date(fromTime + Math.random() * (toTime - fromTime));
+
+  let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+  let month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date);
+  let day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date);
+  let weekday = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date);
+  let time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+
+  const date_as_string = `${weekday} ${day} ${month} at ${time}`
+  return date_as_string;
+}
 
 
 export default App;
