@@ -59,12 +59,12 @@ function Content(props) {
                 </div>
 
                 <div className="infoGrid">
-                    <div class="grid-info-item-left">Provider</div>
-                    <div class="grid-info-item-right">Transport for Edinburgh</div>
-                    <div class="grid-info-item-left">Purchased</div>
-                    <div class="grid-info-item-right">{props.purchased_date}</div>
-                    <div class="grid-info-item-left">Passanger</div>
-                    <div class="grid-info-item-right">{props.passanger}</div>
+                    <div className="grid-info-item-left">Provider</div>
+                    <div className="grid-info-item-right">Transport for Edinburgh</div>
+                    <div className="grid-info-item-left">Purchased</div>
+                    <div className="grid-info-item-right">{props.purchased_date}</div>
+                    <div className="grid-info-item-left">Passanger</div>
+                    <div className="grid-info-item-right">{props.passanger}</div>
                 </div>
             </div>
         </ContentWrap>

@@ -23,7 +23,7 @@ function TicketList(props) {
                             {"Availability: " + ticket_information[type]["availability_start"] + " until " + ticket_information[type]["availability_end"]}
                         </div>
                         <div className="info">
-                            {"Destinations: " + ticket_information[type]["destinations"]}
+                            {"Description: " + ticket_information[type]["description"]}
                         </div>
                         <h5>Tap to activate!</h5>
                     </div>

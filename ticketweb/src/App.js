@@ -72,7 +72,7 @@ class App extends React.Component{
             purchased_date = {this.state.randomPurchasedDate}
             expiredFunction = {() => this.handleExpired()}
             passanger = {"Kyle Alexander"}
-            current_time = {this.state.switchTimeWithCode ? this.state.time : "2034"}
+            current_time = {this.state.switchTimeWithCode ? this.state.time : "7074"}
         />
       );
     }
@@ -157,16 +157,13 @@ class App extends React.Component{
   }
 }
 
+/*
+Gets a random date between todays and 6 months before
+*/
 function createRandomPurchasedDate(){
   let fromTime = new Date();
-  console.log("from time: ", fromTime);
   fromTime.setMonth(fromTime.getMonth() - 6);
-
-  console.log("from time: ", fromTime);
-
   fromTime = fromTime.getTime(); //6 months before
-
-  
 
   const toTime = new Date().getTime(); // todays date
   const date = new Date(fromTime + Math.random() * (toTime - fromTime));
@@ -180,6 +177,4 @@ function createRandomPurchasedDate(){
   const date_as_string = `${weekday} ${day} ${month} at ${time}`
   return date_as_string;
 }
-
-
 export default App;

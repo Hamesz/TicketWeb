@@ -38,7 +38,7 @@ export const ContentWrap = styled.div`
 
             .info {
                 color: black;
-                font-size: 3vw;
+                font-size: 2vw;
             }
         }
 

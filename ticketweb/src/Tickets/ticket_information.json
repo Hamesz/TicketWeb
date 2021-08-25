@@ -3,38 +3,28 @@
         "availability_start" : "05:30",
         "availability_end" : "04:30",
         "title" : "Adult Network Day Ticket",
-        "destinations" : [
-            "Anywhere (Airport, Edinburgh, East Coast etc)"
-        ]
+        "description" : "Valid for unlimited travel on Edinburgh Trams and Lothian Buses in all zones including Lothian services NightBus and NightHawk."
     },   
 
     "day": {
         "availability_start" : "05:30",
         "availability_end" : "01:00",
         "title" : "Adult DAYticket",
-        "destinations" : [
-            "Edinburgh",
-            "East Coast"
-        ]
+        "description" : "Valid for unlimited travel on Edinburgh Trams and Lothian Buses in all zones including Lothian services NightBus and NightHawk. Not valid on Lothian services Airlink 100, Skylink 200, 300, 400; Lothian Country cityWEST & countryWEST zones; East Coast buses zones C-F; Edinburgh Bus Tours and special 97 or 98 services"
     },  
 
     "late": {
         "availability_start" : "18:30",
         "availability_end" : "05:30",
         "title" : "Adult LATEticket",
-        "destinations" : [
-            "Edinburgh",
-            "East Coast"
-        ]
+        "description" : "Valid for unlimited travel on Edinburgh Trams and Lothian Buses within the city zone including Lothian services NightBus and NightHawk. Not valid on Lothian services Airlink 100, Skylink 200, 300, 400; Lothian Country cityWEST & countryWEST zones; East Coast buses zones C-F; Edinburgh Bus Tours and special 97 or 98 services"
     }, 
 
     "airlink": {
         "availability_start" : "05:30",
         "availability_end" : "05:30",
         "title" : "Adult AIRLINK Single",
-        "destinations" : [
-            "Airport"
-        ],
+        "description" : "Valid for one journey in all zones going to the Airport. ",
         "duration" : {
             "minutes": "1"
         }
