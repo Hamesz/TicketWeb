@@ -17,6 +17,8 @@ export const HeaderWrap = styled.div`
     img {
         width: 50%;
         margin: 10%;
+        // margin-left: 20%;
+        // margin-right:20%;
         display: flex;
         justify-content: center;
         align-items: center;

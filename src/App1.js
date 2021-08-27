@@ -1,9 +1,17 @@
 import { AppWrap } from './App.styles';
 import React, {useCallback}  from 'react';
+
+// for tickets
 import Ticket from "./Components/ticket-style/ticket"
 import TicketList from "./Components/menu-style/Content/Content"
 import {canOpenTicket} from "./Tickets/Ticket"
 import {TicketFactory} from "./Tickets/TicketFactory"
+
+// for credential authentication
+import Amplify from "aws-amplify"
+import awsconfig from "./aws-exports"
+import {AmplifySignOut, withAuthenticator} from "@aws-amplify/ui-react"
+
 // import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 // function App() {
@@ -23,7 +31,7 @@ import {TicketFactory} from "./Tickets/TicketFactory"
 // }
 // export default App;
 
-
+Amplify.configure(awsconfig)
 
 class App extends React.Component{
   constructor(props){
@@ -52,14 +60,17 @@ class App extends React.Component{
     // choose a ticket
     if (this.state.ticket === undefined){
       return (
-        <TicketList 
-        tickets = {this.state.tickets}
-        onClick = {(i) => this.handleClick(i)}
-        ticket_information = {this.state.ticket_information}
+        <div className="Menu Screen">
+          <TicketList 
+          tickets = {this.state.tickets}
+          onClick = {(i) => this.handleClick(i)}
+          ticket_information = {this.state.ticket_information}
         />
+        <AmplifySignOut />
+        </div>
+        
       );
     }else{
-      // set up a timer
       // view a ticket
       return (
         <Ticket 
@@ -71,7 +82,7 @@ class App extends React.Component{
             expiry_date = {this.state.ticket.expiry_date_string}
             purchased_date = {this.state.randomPurchasedDate}
             expiredFunction = {() => this.handleExpired()}
-            passanger = {"Kyle Alexander"}
+            passanger = {"Karen Alexander"}
             current_time = {this.state.switchTimeWithCode ? this.state.time : "7074"}
         />
       );
@@ -81,6 +92,7 @@ class App extends React.Component{
   componentDidMount(){
     console.log('Mounting timer');
     const time_delay = 1000; //1000ms
+    // set up a timer
     this.timer = setInterval(() => {(this.getTimeandTimeLeft(this.state.ticket, this.handleExpired));}, time_delay);
   }
 
@@ -177,4 +189,4 @@ function createRandomPurchasedDate(){
   const date_as_string = `${weekday} ${day} ${month} at ${time}`
   return date_as_string;
 }
-export default App;
+export default withAuthenticator(App);

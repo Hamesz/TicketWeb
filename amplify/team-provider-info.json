@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-ticketweb-dev-230819-authRole",
+      "UnauthRoleArn": "arn:aws:iam::862543060503:role/amplify-ticketweb-dev-230819-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::862543060503:role/amplify-ticketweb-dev-230819-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-ticketweb-dev-230819-deployment",
+      "UnauthRoleName": "amplify-ticketweb-dev-230819-unauthRole",
+      "StackName": "amplify-ticketweb-dev-230819",
+      "StackId": "arn:aws:cloudformation:eu-west-1:862543060503:stack/amplify-ticketweb-dev-230819/20eb54a0-06ba-11ec-9b21-0a397a0898a1",
+      "AmplifyAppId": "d54ghn9fzmiih"
+    },
+    "categories": {
+      "auth": {
+        "ticketweb12bd1b70": {}
+      }
+    }
+  }
+}
