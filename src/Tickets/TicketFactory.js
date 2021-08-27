@@ -3,7 +3,7 @@ import { TicketTemporary } from "./TicketTemporary";
 
 export class TicketFactory{
     createTicket(ticket_json_object){
-        console.log("ticket info", ticket_json_object["duration"])
+        console.log("ticket info duration", ticket_json_object["duration"])
         if (ticket_json_object["duration"] === undefined){
             return this.createStandardTicket(ticket_json_object)
         }else{
