@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "ticketWebCodeAPI",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authticketweb12bd1b70",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

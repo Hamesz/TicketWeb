@@ -34,7 +34,7 @@ export const HeaderWrap = styled.div`
     }
 
     .grid-item-text {
-        font-size: 10vw;
+        font-size: 8vw;
         color: black;
         // display: flex;
         justify-content: center;

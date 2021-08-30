@@ -109,7 +109,7 @@ export function canOpenTicket(availability_start, availability_end){
     return date_now < end_date && date_now > start_date;
 }
 
-function isEarlyMorning(){
+export function isEarlyMorning(){
     const today = new Date();
     const hour = today.getHours().toString();
     const minute = ((today.getMinutes() < 10 ? '0' : '') + today.getMinutes()).toString();

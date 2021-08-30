@@ -77,6 +77,7 @@ export const ContentWrap = styled.div`
             justify-content: center;
             align-items: center;
             // border: 2px solid black;
+            // padding: 0%
           }
 
         .grid-item_patch {

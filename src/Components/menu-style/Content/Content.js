@@ -5,7 +5,7 @@ function TicketList(props) {
     const ticket_types = props.tickets
     const ticket_information = props.ticket_information
 
-    console.log("ticket info", ticket_information);
+    // console.log("ticket info", ticket_information);
     return (
         <ContentWrap>
         {
