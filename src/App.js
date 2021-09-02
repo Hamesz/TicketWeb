@@ -91,7 +91,7 @@ function App(){
 
     
   /*
-  Three States:
+  Four States:
   1) Prompt the user to sign in/sign up/forgotten password
   2) Display the Ticket selection menu
   3) Display the ticket chosen by the user

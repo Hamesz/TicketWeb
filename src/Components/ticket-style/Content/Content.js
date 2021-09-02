@@ -52,7 +52,7 @@ function Content(props) {
                     <div className="grid-info-item-right">Transport for Edinburgh</div>
                     <div className="grid-info-item-left">Purchased</div>
                     <div className="grid-info-item-right">{props.purchased_date}</div>
-                    <div className="grid-info-item-left">Passanger</div>
+                    <div className="grid-info-item-left">Passenger</div>
                     <div className="grid-info-item-right">{props.passanger}</div>
                 </div>
             </div>
