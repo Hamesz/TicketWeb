@@ -40,3 +40,81 @@ export const deleteCode = /* GraphQL */ `
     }
   }
 `;
+export const createUserPayment = /* GraphQL */ `
+  mutation CreateUserPayment(
+    $input: CreateUserPaymentInput!
+    $condition: ModelUserPaymentConditionInput
+  ) {
+    createUserPayment(input: $input, condition: $condition) {
+      id
+      year
+      subscriptionDate
+      January
+      February
+      March
+      April
+      May
+      June
+      July
+      August
+      September
+      October
+      November
+      December
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUserPayment = /* GraphQL */ `
+  mutation UpdateUserPayment(
+    $input: UpdateUserPaymentInput!
+    $condition: ModelUserPaymentConditionInput
+  ) {
+    updateUserPayment(input: $input, condition: $condition) {
+      id
+      year
+      subscriptionDate
+      January
+      February
+      March
+      April
+      May
+      June
+      July
+      August
+      September
+      October
+      November
+      December
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUserPayment = /* GraphQL */ `
+  mutation DeleteUserPayment(
+    $input: DeleteUserPaymentInput!
+    $condition: ModelUserPaymentConditionInput
+  ) {
+    deleteUserPayment(input: $input, condition: $condition) {
+      id
+      year
+      subscriptionDate
+      January
+      February
+      March
+      April
+      May
+      June
+      July
+      August
+      September
+      October
+      November
+      December
+      createdAt
+      updatedAt
+    }
+  }
+`;

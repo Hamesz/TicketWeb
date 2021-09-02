@@ -1,4 +1,3 @@
-import react from "react";
 import { ContentWrap } from "./Content.styles";
 
 function TicketList(props) {

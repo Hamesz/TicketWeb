@@ -2,3 +2,21 @@ type Code @model{
   id: String!
   code: String!
 }
+
+type UserPayment @model{
+  id: ID!
+  year: String!
+  subscriptionDate: String!
+  January: Boolean!
+  February: Boolean!
+  March: Boolean!
+  April: Boolean!
+  May: Boolean!
+  June: Boolean!
+  July: Boolean!
+  August: Boolean!
+  September: Boolean!
+  October: Boolean!
+  November: Boolean!
+  December: Boolean!
+}

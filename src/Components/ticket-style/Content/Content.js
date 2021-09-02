@@ -1,16 +1,5 @@
-import React, { useEffect, useState } from "react";
+// import React from "react";
 import { ContentWrap } from "./Content.styles";
-
-
-function getTimeandTimeLeft(ticket, expiredFunction){
-    const date = new Date();
-    const hours_minutes_seconds = ticket.getTimes();
-    const current_time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-    if (ticket.isExpired()){
-        expiredFunction();
-    }
-    return [hours_minutes_seconds, current_time, ticket.isExpired()];
-}
 
 function Content(props) {
     // const ticket = props.ticket_current;

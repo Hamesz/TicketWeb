@@ -28,3 +28,56 @@ export const listCodes = /* GraphQL */ `
     }
   }
 `;
+export const getUserPayment = /* GraphQL */ `
+  query GetUserPayment($id: ID!) {
+    getUserPayment(id: $id) {
+      id
+      year
+      subscriptionDate
+      January
+      February
+      March
+      April
+      May
+      June
+      July
+      August
+      September
+      October
+      November
+      December
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listUserPayments = /* GraphQL */ `
+  query ListUserPayments(
+    $filter: ModelUserPaymentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUserPayments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        year
+        subscriptionDate
+        January
+        February
+        March
+        April
+        May
+        June
+        July
+        August
+        September
+        October
+        November
+        December
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

@@ -12,6 +12,7 @@ import awsconfig from "./aws-exports"
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 // Code API
 import {listCodes, getCode} from "./graphql/queries"
+import {listUserPayments, getUserPayment} from "./graphql/queries"
 
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
@@ -23,12 +24,16 @@ function App(){
   const [switchTimeWithCode, setSwitchTimeWithCode] = React.useState(true);
   const [randomPurchasedDate, setRandomPurchasedDate] =  React.useState(createRandomPurchasedDate());
   const [ticketOptions, setTicketOptions] = React.useState(Object.keys(ticketInfo));  // gets the keys from the ticketInfo
-  const [code, setCode] = React.useState(["8008"]);
+  const [code, setCode] = React.useState("8008");
+  const [userPaid, setUserPaid] = React.useState(true);
 
   // authentication
   const [authState, setAuthState] = React.useState();
   const [user, setUser] = React.useState();
 
+  /*
+  Gets the code for today
+  */
   const fetchCode = async () => {
     const is_early_morning = isEarlyMorning();
     let date_for_code = new Date();
@@ -44,6 +49,21 @@ function App(){
       const code = codeData.data.getCode.code;
       console.log("Code: ", code);
       setCode(code);
+    }catch(error){
+      console.log("fetchCode Error: ", error);
+    }
+  }
+
+  const fetchUserPayment = async (user) => {
+    try {
+      const date = new Date();
+      // const allUserPaymentData = await API.graphql(graphqlOperation(listUserPayments));//getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+      // console.log("user attributes in fetchUserPayment: ", user.attributes);
+      const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+      const current_month = date.toLocaleString('default', { month: 'long' });
+      const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
+      console.log("userPaidForMonth: ", current_month, userPaidForMonth);
+      setUserPaid(userPaidForMonth);
     }catch(error){
       console.log("fetchCode Error: ", error);
     }
@@ -65,6 +85,7 @@ function App(){
       setUser(authData)
       console.log("user info", authData);
       fetchCode();
+      fetchUserPayment(authData);
     });
   }, []);
 
@@ -74,12 +95,13 @@ function App(){
   1) Prompt the user to sign in/sign up/forgotten password
   2) Display the Ticket selection menu
   3) Display the ticket chosen by the user
+  4) Display a blank screen alerting the user they have not paid
 
   State 1 is automaticlly shown, 
   In order to get to state 2 the user must authenticate and log in, 
   then to get to state 3 the user must choose an available ticket!
   */
-  if ((authState === AuthState.SignedIn && user)){
+  if ((authState === AuthState.SignedIn && user && userPaid)){
       // State 2
       if(ticket === undefined){
           return (
@@ -113,6 +135,15 @@ function App(){
           );
       }
   }
+  // state 4. Tell use they have not paid
+  else if (userPaid === false){
+    return (
+      <div>
+        <h1>You have not paid for this month. Contact Supplier!</h1>
+        <AmplifySignOut />
+      </div>
+      );
+  }
   // State 1. Authenticate
   else{
       return (
@@ -143,8 +174,10 @@ function App(){
               label: "First Name *",
               placeholder: "Bob",
               hint: "Used as the name on your ticket",
-              required: true,
-              inputProps: { required: true, autocomplete: "Bob" }
+              inputProps: { 
+                required: true, 
+                autocomplete: "Bob" 
+                }
               },
               // last name
               {
@@ -152,7 +185,6 @@ function App(){
               label: "Last Name *",
               placeholder: "White",
               hint: "Used as the name on your ticket",
-              required: true,
               inputProps: { required: true, autocomplete: "White" }
               },
             ]}
@@ -221,7 +253,7 @@ function createRandomPurchasedDate(){
     const toTime = new Date().getTime(); // todays date
     const date = new Date(fromTime + Math.random() * (toTime - fromTime));
   
-    let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+    // let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
     let month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date);
     let day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date);
     let weekday = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date);
