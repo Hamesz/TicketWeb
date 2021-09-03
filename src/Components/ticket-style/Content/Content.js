@@ -2,17 +2,6 @@
 import { ContentWrap } from "./Content.styles";
 
 function Content(props) {
-    // const ticket = props.ticket_current;
-    // const expiredFunction = props.expiredFunction
-    // const [[timeLeft, current_time, expired], setTimeLeft] = useState(getTimeandTimeLeft(ticket, expiredFunction));
-    // useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //       setTimeLeft(getTimeandTimeLeft(ticket));
-    //     }, 1000);
-    //     // Clear timeout if the component is unmounted
-    //     return () => clearTimeout(timer);
-    //   });
-    
     return (
         <ContentWrap>
             <div className="boxWrap">

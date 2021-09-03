@@ -4,7 +4,7 @@ import Navigation from "../navigation-style/Navigation"
 import Content from './Content/Content';
 
 function TicketMenu(props) {
-    console.log("Props in TicketMenu", props);
+    // console.log("Props in TicketMenu", props);
     return (
         <AppWrap>
            <Navigation
