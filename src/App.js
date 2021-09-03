@@ -1,7 +1,8 @@
 import React from 'react';
 // for tickets look
 import Ticket from "./Components/ticket-style/ticket"
-import TicketList from "./Components/menu-style/Content/Content"
+import TicketMenu from "./Components/menu-style/menu"
+import Info from "./Components/info-style/info"
 // for actual ticket
 import {canOpenTicket, isEarlyMorning} from "./Tickets/Ticket"
 import {TicketFactory} from "./Tickets/TicketFactory"
@@ -22,15 +23,19 @@ function App(){
   const [ticket, setTicket] = React.useState();
   const [ticketInfo, setTicketInfo] = React.useState(require('./Tickets/ticket_information.json'));
   const [switchTimeWithCode, setSwitchTimeWithCode] = React.useState(true);
+  const [timeState, setTimeState] = React.useState(0);
   const [randomPurchasedDate, setRandomPurchasedDate] =  React.useState(createRandomPurchasedDate());
   const [ticketOptions, setTicketOptions] = React.useState(Object.keys(ticketInfo));  // gets the keys from the ticketInfo
   const [code, setCode] = React.useState("8008");
   const [userPaid, setUserPaid] = React.useState(true);
+  const [viewInfo, setViewInfo] = React.useState(false); // for viewing info page
+  const [routes, setRoutes] = React.useState(["INFO","TICKET MENU"])
 
   // authentication
   const [authState, setAuthState] = React.useState();
   const [user, setUser] = React.useState();
 
+  const timerRefreshTimeMilli = 200;  // time for timer in milliseconds
   /*
   Gets the code for today
   */
@@ -73,7 +78,7 @@ function App(){
   React.useEffect(() => {
     const timer=setTimeout(() => {
       onTimerTick();
-    }, 1000);
+    }, timerRefreshTimeMilli);
     // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
   });
@@ -96,101 +101,144 @@ function App(){
   2) Display the Ticket selection menu
   3) Display the ticket chosen by the user
   4) Display a blank screen alerting the user they have not paid
+  5) Display information to the user about how they can display the ticket
 
   State 1 is automaticlly shown, 
   In order to get to state 2 the user must authenticate and log in, 
   then to get to state 3 the user must choose an available ticket!
   */
-  if ((authState === AuthState.SignedIn && user && userPaid)){
-      // State 2
-      if(ticket === undefined){
-          return (
-            <div className="Menu Screen">
-              <TicketList 
-                tickets = {ticketOptions}
-                onClick = {(i) => handleClick(i)}
-                ticket_information = {ticketInfo}
-              />
-              <AmplifySignOut />
-            </div>
-          );
-        }// State 3. View a ticket
-        else{
-          const date = new Date();
-          const time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-          const time_left = ticket.getTimes();
-          return (
-            <Ticket 
-              ticket_current = {ticket}
-              title = {ticket.title}
-              hours_left = { time_left["hours"] !== 0 ? time_left["hours"] : undefined}
-              minutes_left = { time_left["minutes"] !== 0 ? time_left["minutes"] : undefined}
-              seconds_left = { time_left["seconds"] !== 0 ? time_left["seconds"] : undefined}
-              expiry_date = {ticket.expiry_date_string}
-              purchased_date = {randomPurchasedDate}
-              expiredFunction = {() => this.handleExpired()}
-              passanger = {user.attributes.name + " " + user.attributes.family_name}
-              current_time = {switchTimeWithCode ? time : code}
-            />
-          );
-      }
-  }
-  // state 4. Tell use they have not paid
-  else if (userPaid === false){
-    return (
-      <div>
-        <h1>You have not paid for this month. Contact Supplier!</h1>
-        <AmplifySignOut />
-      </div>
-      );
-  }
-  // State 1. Authenticate
-  else{
+
+  // check if the user has signed In.
+  // This goes through States [2,3,4,5]
+  if (authState === AuthState.SignedIn && user){
+    // check if they want to see the info screen
+    if (viewInfo){
       return (
-        <AmplifyAuthenticator>
-          <AmplifySignUp
-            slot="sign-up"
-            formFields={[
-              {
-              type: "username",
-              label: "Username *",
-              inputProps: { required: true, autocomplete: "username" },
-              },
-              // Email
-              {
-              type: "email",
-              label: "Email *",
-              inputProps: { required: true, autocomplete: "username" },
-              },
-              // Password
-              {
-              type: "password",
-              label: "Password *",
-              inputProps: { required: true, autocomplete: "new-password" },
-              },
-              // First Name
-              {
-              type: "name",
-              label: "First Name *",
-              placeholder: "Bob",
-              hint: "Used as the name on your ticket",
-              inputProps: { 
-                required: true, 
-                autocomplete: "Bob" 
-                }
-              },
-              // last name
-              {
-              type: "family_name",
-              label: "Last Name *",
-              placeholder: "White",
-              hint: "Used as the name on your ticket",
-              inputProps: { required: true, autocomplete: "White" }
-              },
-            ]}
-          />
-        </AmplifyAuthenticator>
+        <Info
+        routes = {routes}
+        onClickRoute = {(i) => {
+          // alert("you pressed route:" + routes[i]);
+          switch(i){
+            case 0:
+              setViewInfo(true);
+              break;
+            case 1:
+              setViewInfo(false);
+              break;
+            default:
+              setViewInfo(false);
+              break;
+          }
+        }} 
+        />
       );
+    }
+    // check if the user has paid
+    if (!userPaid){
+      return (
+        <div>
+          <h1>You have not paid for this month. Contact Supplier!</h1>
+          <AmplifySignOut />
+        </div>
+        );
+    }
+    // check if the user has selected a ticket
+    else if (ticket === undefined){
+        return (
+          <div className="Menu Screen">
+            <TicketMenu 
+              routes = {routes}
+              onClickRoute = {(i) => {
+                // alert("you pressed route:" + routes[i]);
+                switch(i){
+                  case 0:
+                    setViewInfo(true);
+                    break;
+                  case 1:
+                    setViewInfo(false);
+                    break;
+                  default:
+                    setViewInfo(false);
+                    break;
+                }
+              }} 
+              tickets = {ticketOptions}
+              onClick = {(i) => handleClick(i)}
+              ticket_information = {ticketInfo}
+            />
+            {/* <AmplifySignOut /> */}
+          </div>
+        );
+    }
+    // They have chosen a ticket so show them the ticket
+    else{
+      const date = new Date();
+      const time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+      const time_left = ticket.getTimes();
+      return (
+        <Ticket 
+          ticket_current = {ticket}
+          title = {ticket.title}
+          hours_left = { time_left["hours"] !== 0 ? time_left["hours"] : undefined}
+          minutes_left = { time_left["minutes"] !== 0 ? time_left["minutes"] : undefined}
+          seconds_left = { time_left["seconds"]}
+          expiry_date = {ticket.expiry_date_string}
+          purchased_date = {randomPurchasedDate}
+          expiredFunction = {() => this.handleExpired()}
+          passanger = {user.attributes.name + " " + user.attributes.family_name}
+          current_time = {switchTimeWithCode ? time : code}
+        />
+      );
+    }
+  }
+  // Authenticate the user.
+  // This goes through states [1]
+  else {
+    return (
+      <AmplifyAuthenticator>
+        <AmplifySignUp
+          slot="sign-up"
+          formFields={[
+            {
+            type: "username",
+            label: "Username *",
+            inputProps: { required: true, autocomplete: "username" },
+            },
+            // Email
+            {
+            type: "email",
+            label: "Email *",
+            inputProps: { required: true, autocomplete: "username" },
+            },
+            // Password
+            {
+            type: "password",
+            label: "Password *",
+            inputProps: { required: true, autocomplete: "new-password" },
+            },
+            // First Name
+            {
+            type: "name",
+            label: "First Name *",
+            placeholder: "Bob",
+            hint: "Used as the name on your ticket",
+            inputProps: { 
+              required: true, 
+              autocomplete: "Bob" 
+              }
+            },
+            // last name
+            {
+            type: "family_name",
+            label: "Last Name *",
+            placeholder: "White",
+            hint: "Used as the name on your ticket",
+            inputProps: { required: true, autocomplete: "White" }
+            },
+          ]}
+        />
+      </AmplifyAuthenticator>
+    );
   }
 
   /*
@@ -237,7 +285,11 @@ function App(){
             handleExpired();
             return;
         }
-        setSwitchTimeWithCode(!switchTimeWithCode);
+        const num_states = 1000/timerRefreshTimeMilli;
+        setTimeState((timeState + 1)%num_states);
+        if (timeState === (num_states - 1)){
+          setSwitchTimeWithCode(!switchTimeWithCode);
+        }
       }
     }    
 }

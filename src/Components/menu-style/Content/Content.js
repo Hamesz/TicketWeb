@@ -1,10 +1,10 @@
 import { ContentWrap } from "./Content.styles";
 
-function TicketList(props) {
+function Content(props) {
     const ticket_types = props.tickets
     const ticket_information = props.ticket_information
 
-    // console.log("ticket info", ticket_information);
+    console.log("props in TicketMenu Content", props);
     return (
         <ContentWrap>
         {
@@ -33,4 +33,4 @@ function TicketList(props) {
     );
 }
 
-export default TicketList;
+export default Content;

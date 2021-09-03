@@ -24,3 +24,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* For Amplify Sign out button */
+:root {
+  --amplify-primary-color: black;
+  --amplify-primary-tint: grey;
+  --amplify-primary-shade: grey;
+}
