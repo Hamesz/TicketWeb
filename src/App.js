@@ -194,8 +194,15 @@ function App(){
   // Authenticate the user.
   // This goes through states [1]
   else {
+    // OAuth
+    // const federated = {
+    //   googleClientId: 'f34f4w4334w', // Enter your googleClientId here
+    //   facebookAppId: 'fqf4q3yt34y34', // Enter your facebookAppId here
+    //   amazonClientId: 'q4rtq3tq34tq34' // Enter your amazonClientId here
+    // };
     return (
-      <AmplifyAuthenticator>
+      //<AmplifyAuthenticator >//federated={federated}>
+      <AmplifyAuthenticator >
         <AmplifySignUp
           slot="sign-up"
           formFields={[
