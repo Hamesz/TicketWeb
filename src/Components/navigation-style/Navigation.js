@@ -1,6 +1,6 @@
 import React from "react";
 import {NavigationWrap} from "./Navigation.styles"
-import { AmplifyAuthenticator, AmplifySignUp, AmplifySignIn, AmplifySignOut, withAuthenticator } from '@aws-amplify/ui-react';
+import { AmplifySignOut } from '@aws-amplify/ui-react';
 function Navigation(props) {
     // console.log("props in Navigation Content", props);
     const routes = props.routes;
