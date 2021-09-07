@@ -27,8 +27,6 @@ function App(){
   const [randomPurchasedDate, setRandomPurchasedDate] =  React.useState(createRandomPurchasedDate());
   const [ticketOptions, setTicketOptions] = React.useState(Object.keys(ticketInfo));  // gets the keys from the ticketInfo
   const [code, setCode] = React.useState("8008");
-  // const [userPaid, setUserPaid] = React.useState(true);
-  // const [viewInfo, setViewInfo] = React.useState(false); // for viewing info page
   const [routes, setRoutes] = React.useState(["INFO","TICKET MENU", "PAYMENT"])
 
   /* The States of the App
@@ -40,12 +38,12 @@ function App(){
   5) Display payment to the user about how they can pay
   */
   const appStates = {
-    AUTH: 0,
-    TICKET_MENU: 1,
-    TICKET: 2,
-    NOT_PAID: 3,
-    INFO: 4,
-    PAYMENT: 5
+    AUTH: 0,        // Prompt the user to sign in/sign up/forgotten password
+    TICKET_MENU: 1, // Display the Ticket selection menu
+    TICKET: 2,      // Display the ticket chosen by the user
+    NOT_PAID: 3,    // Display not paid screen alerting the user they have not paid
+    INFO: 4,        // Display information to the user about how they can display the ticket
+    PAYMENT: 5      // Display payment to the user about how they can pay
   };
   const [appState, setAppState] = React.useState(appStates.AUTH);
 
