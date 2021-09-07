@@ -6,7 +6,9 @@ function Header(props) {
         <HeaderWrap>
             <div className="headerGrid">
                 <div className="grid-item">
-                    <img src="assets/images/arrow-left-icon.png" alt="back arrow"></img>
+                    <button className="back-button" onClick = {()=>{props.onClickBackButton()}}>
+                        <img src="assets/images/arrow-left-icon.png" alt="back arrow"></img>
+                    </button>
                 </div>
                 <div className="grid-item-text">{props.title}</div>
                 {/* <div className="grid-item">

@@ -8,6 +8,7 @@ function Ticket(props) {
       <AppWrap>
          <Header 
          title = {props.title}
+         onClickBackButton = {() => props.onClickBackButton()}
          />
         <Content 
          title = {props.title}

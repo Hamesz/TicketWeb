@@ -238,6 +238,7 @@ function App(){
             expiredFunction = {() => this.handleExpired()}
             passanger = {user.attributes.name + " " + user.attributes.family_name}
             current_time = {switchTimeWithCode ? time : code}
+            onClickBackButton = {() => handleOnClickBackButton()}
           />
         );
   
@@ -279,6 +280,10 @@ function App(){
     }
   }
 
+  function handleOnClickBackButton(){
+    setAppState(appStates.TICKET_MENU);
+    setTicket(undefined);
+  }
   /*
   Sets the ticket chosen by the user and will reload the app to display the ticket
   */

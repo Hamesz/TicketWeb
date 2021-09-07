@@ -55,6 +55,14 @@ export const HeaderWrap = styled.div`
         // border: 2px solid black;
     }
 
+    .back-button{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: Transparent;
+        border: none;
+    }
+
     .grid-item-arrow {
         display: flex;
         justify-content: center;
