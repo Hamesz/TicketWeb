@@ -54,46 +54,6 @@ function App(){
   const [user, setUser] = React.useState();
 
   const timerRefreshTimeMilli = 200;  // time for timer in milliseconds
-  // /*
-  // Gets the code for today
-  // */
-  // const fetchCode = async () => {
-  //   const is_early_morning = isEarlyMorning();
-  //   let date_for_code = new Date();
-  //   if (is_early_morning){
-  //     // we want yesterdays date as the code is assigned to it
-  //     date_for_code.setDate(date_for_code.getDate() - 1);
-  //   }
-  //   // convert date to "YYYY-MM-dd" format
-  //   const date_for_code_string = date_for_code.toISOString().split('T')[0];
-  //   console.log("date for code: ", date_for_code, date_for_code_string);
-  //   try {
-  //     const codeData = await API.graphql(graphqlOperation(getCode,{"id":date_for_code_string}));//listCodes));//getCode,{"id":"2021-08-30"}));
-  //     const code = codeData.data.getCode.code;
-  //     console.log("Code: ", code);
-  //     setCode(code);
-  //   }catch(error){
-  //     console.log("fetchCode Error: ", error);
-  //   }
-  // }
-
-  // const fetchUserPayment = async (user) => {
-  //   try {
-  //     const date = new Date();
-  //     // const allUserPaymentData = await API.graphql(graphqlOperation(listUserPayments));//getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
-  //     // console.log("user attributes in fetchUserPayment: ", user.attributes);
-  //     const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
-  //     const current_month = date.toLocaleString('default', { month: 'long' });
-  //     const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
-  //     console.log("userPaidForMonth: ", current_month, userPaidForMonth);
-      
-  //     if (userPaidForMonth === false){
-  //       setAppState(appStates.NOT_PAID);
-  //     }
-  //   }catch(error){
-  //     console.log("fetchCode Error: ", error);
-  //   }
-  // }
 
   // timer
   React.useEffect(() => {
@@ -104,7 +64,10 @@ function App(){
     return () => clearTimeout(timer);
   });
 
-  // used for logging in and out
+  /*
+  Used for logging in and out and contains the fetchCode and fetchUserPayment methods
+  since these are only ever called by this method
+  */
   React.useEffect(() => {
     /*
     Gets the code for today
@@ -349,7 +312,7 @@ function App(){
       // alert("Ticket has expired!");
       setTicket(undefined);
       setAppState(appStates.TICKET_MENU);
-    }
+  }
   
   /*
   Handles everything to do on the timer tick. This includes checking if the ticket has expired
@@ -369,7 +332,7 @@ function App(){
           setSwitchTimeWithCode(!switchTimeWithCode);
         }
       }
-    }    
+  }    
 }
 
 /*
