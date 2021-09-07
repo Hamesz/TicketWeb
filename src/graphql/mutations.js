@@ -118,3 +118,60 @@ export const deleteUserPayment = /* GraphQL */ `
     }
   }
 `;
+export const createPaymentDetails = /* GraphQL */ `
+  mutation CreatePaymentDetails(
+    $input: CreatePaymentDetailsInput!
+    $condition: ModelPaymentDetailsConditionInput
+  ) {
+    createPaymentDetails(input: $input, condition: $condition) {
+      id
+      Type
+      email
+      accountNumber
+      sortCode
+      Beneficiary
+      IBAN
+      BIC
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updatePaymentDetails = /* GraphQL */ `
+  mutation UpdatePaymentDetails(
+    $input: UpdatePaymentDetailsInput!
+    $condition: ModelPaymentDetailsConditionInput
+  ) {
+    updatePaymentDetails(input: $input, condition: $condition) {
+      id
+      Type
+      email
+      accountNumber
+      sortCode
+      Beneficiary
+      IBAN
+      BIC
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deletePaymentDetails = /* GraphQL */ `
+  mutation DeletePaymentDetails(
+    $input: DeletePaymentDetailsInput!
+    $condition: ModelPaymentDetailsConditionInput
+  ) {
+    deletePaymentDetails(input: $input, condition: $condition) {
+      id
+      Type
+      email
+      accountNumber
+      sortCode
+      Beneficiary
+      IBAN
+      BIC
+      createdAt
+      updatedAt
+    }
+  }
+`;

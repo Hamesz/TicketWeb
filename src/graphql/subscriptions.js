@@ -100,3 +100,51 @@ export const onDeleteUserPayment = /* GraphQL */ `
     }
   }
 `;
+export const onCreatePaymentDetails = /* GraphQL */ `
+  subscription OnCreatePaymentDetails {
+    onCreatePaymentDetails {
+      id
+      Type
+      email
+      accountNumber
+      sortCode
+      Beneficiary
+      IBAN
+      BIC
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdatePaymentDetails = /* GraphQL */ `
+  subscription OnUpdatePaymentDetails {
+    onUpdatePaymentDetails {
+      id
+      Type
+      email
+      accountNumber
+      sortCode
+      Beneficiary
+      IBAN
+      BIC
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeletePaymentDetails = /* GraphQL */ `
+  subscription OnDeletePaymentDetails {
+    onDeletePaymentDetails {
+      id
+      Type
+      email
+      accountNumber
+      sortCode
+      Beneficiary
+      IBAN
+      BIC
+      createdAt
+      updatedAt
+    }
+  }
+`;

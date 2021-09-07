@@ -18,7 +18,7 @@ function Navigation(props) {
                     </button>
                 )
                 }
-                <button className="navigationItem" > 
+                <button className="navigationItemSignOut" > 
                     <AmplifySignOut />
                 </button>
             </div>

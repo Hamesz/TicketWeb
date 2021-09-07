@@ -5,7 +5,7 @@ export const NavigationWrap = styled.div`
     width: 100vw;
     display: grid;
     background-color: green;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     text-align: center;
 }
 
@@ -16,7 +16,18 @@ export const NavigationWrap = styled.div`
     background-color: black;
     font-weight: bold;
     color: white;
-    // padding: 14px 28px;
+    padding: 14px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+// no padding because it does not scale properly to other buttons
+.navigationItemSignOut {
+    border: 1px solid white;
+    background-color: black;
+    font-weight: bold;
+    color: white;
     font-size: 14px;
     cursor: pointer;
     display: inline-block;

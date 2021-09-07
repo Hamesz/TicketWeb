@@ -81,3 +81,42 @@ export const listUserPayments = /* GraphQL */ `
     }
   }
 `;
+export const getPaymentDetails = /* GraphQL */ `
+  query GetPaymentDetails($id: ID!) {
+    getPaymentDetails(id: $id) {
+      id
+      Type
+      email
+      accountNumber
+      sortCode
+      Beneficiary
+      IBAN
+      BIC
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listPaymentDetails = /* GraphQL */ `
+  query ListPaymentDetails(
+    $filter: ModelPaymentDetailsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPaymentDetails(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        Type
+        email
+        accountNumber
+        sortCode
+        Beneficiary
+        IBAN
+        BIC
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

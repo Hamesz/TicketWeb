@@ -20,3 +20,14 @@ type UserPayment @model{
   November: Boolean!
   December: Boolean!
 }
+
+type PaymentDetails @model{
+  id: ID!
+  Type: String!
+  email: String!
+  accountNumber: String
+  sortCode: String
+  Beneficiary: String!
+  IBAN: String
+  BIC: String
+}
