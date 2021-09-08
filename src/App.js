@@ -3,6 +3,7 @@ import React from 'react';
 import Ticket from "./Components/ticket-style/ticket"
 import TicketMenu from "./Components/menu-style/menu"
 import Info from "./Components/info-style/info"
+import Payment from './Components/payment-style/payment';
 // for actual ticket
 import {canOpenTicket, isEarlyMorning} from "./Tickets/Ticket"
 import {TicketFactory} from "./Tickets/TicketFactory"
@@ -28,6 +29,7 @@ function App(){
   const [ticketOptions, setTicketOptions] = React.useState(Object.keys(ticketInfo));  // gets the keys from the ticketInfo
   const [code, setCode] = React.useState("8008");
   const [routes, setRoutes] = React.useState(["INFO","TICKET MENU", "PAYMENT"])
+  const [userPaid, setUserPaid] = React.useState(true);
 
   /* The States of the App
   0) Prompt the user to sign in/sign up/forgotten password
@@ -102,9 +104,9 @@ function App(){
         const current_month = date.toLocaleString('default', { month: 'long' });
         const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
         console.log("userPaidForMonth: ", current_month, userPaidForMonth);
-        
+        setUserPaid(userPaidForMonth);
         if (userPaidForMonth === false){
-          setAppState(appStates.NOT_PAID);
+          setAppState(appStates.PAYMENT);
         }
       }catch(error){
         console.log("fetchCode Error: ", error);
@@ -140,7 +142,7 @@ function App(){
       default:
         return (
           <div>
-            <h1>Something went wrong, please sign out and try again</h1>
+            <h1>Something went wrong, please sign out and refresh.</h1>
             <AmplifySignOut/>
           </div>
         );
@@ -242,17 +244,25 @@ function App(){
   
       case appStates.NOT_PAID:
         return (
-          <div>
-            <h1>You have not paid for this month. Contact Supplier!</h1>
-            <AmplifySignOut />
-          </div>
+          <Payment 
+          routes = {routes}
+          onClickRoute = {(i) => {handleOnClickRoute(i)}}
+          bankInfo = {{type:"local", sortCode:"01-01-01", accountNumber:"01234567", benificiary:"Kyle Alexander", ref:"bus app", email:"test@gmail.com"}}
+          paymentInfo = {{month: "September", amount:"15.00"}}
+          />
         );
     
       case appStates.PAYMENT:
+        if (!userPaid){
+          alert("You have not paid for this month!");
+        }
         return (
-          <div>
-            <h1>Payment Info!</h1>
-          </div>
+          <Payment 
+          routes = {routes}
+          onClickRoute = {(i) => {handleOnClickRoute(i)}}
+          bankInfo = {{type:"local", sortCode:"01-01-01", accountNumber:"01234567", benificiary:"Kyle Alexander", ref:"bus app Sep", email:"test@gmail.com"}}
+          paymentInfo = {{month: "September", amount:"15.00"}}
+          />
         );
     }
   }
@@ -261,7 +271,12 @@ function App(){
   Sets the appState based on what route was clicked
   */
   function handleOnClickRoute(i){
-    // 
+    // if user has not paid thenonly show them payment page
+    if (!userPaid){ 
+      setAppState(appStates.PAYMENT);
+      return;
+    }
+    // else allow them to freely move between pages
     switch(i){
       case 0:
         setAppState(appStates.INFO);

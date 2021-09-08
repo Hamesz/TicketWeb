@@ -23,11 +23,11 @@ type UserPayment @model{
 
 type PaymentDetails @model{
   id: ID!
-  Type: String!
+  type: String!
   email: String!
   accountNumber: String
   sortCode: String
-  Beneficiary: String!
+  beneficiary: String!
   IBAN: String
   BIC: String
 }

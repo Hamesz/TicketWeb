@@ -85,11 +85,11 @@ export const getPaymentDetails = /* GraphQL */ `
   query GetPaymentDetails($id: ID!) {
     getPaymentDetails(id: $id) {
       id
-      Type
+      type
       email
       accountNumber
       sortCode
-      Beneficiary
+      beneficiary
       IBAN
       BIC
       createdAt
@@ -106,11 +106,11 @@ export const listPaymentDetails = /* GraphQL */ `
     listPaymentDetails(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        Type
+        type
         email
         accountNumber
         sortCode
-        Beneficiary
+        beneficiary
         IBAN
         BIC
         createdAt

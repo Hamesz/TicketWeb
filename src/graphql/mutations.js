@@ -125,11 +125,11 @@ export const createPaymentDetails = /* GraphQL */ `
   ) {
     createPaymentDetails(input: $input, condition: $condition) {
       id
-      Type
+      type
       email
       accountNumber
       sortCode
-      Beneficiary
+      beneficiary
       IBAN
       BIC
       createdAt
@@ -144,11 +144,11 @@ export const updatePaymentDetails = /* GraphQL */ `
   ) {
     updatePaymentDetails(input: $input, condition: $condition) {
       id
-      Type
+      type
       email
       accountNumber
       sortCode
-      Beneficiary
+      beneficiary
       IBAN
       BIC
       createdAt
@@ -163,11 +163,11 @@ export const deletePaymentDetails = /* GraphQL */ `
   ) {
     deletePaymentDetails(input: $input, condition: $condition) {
       id
-      Type
+      type
       email
       accountNumber
       sortCode
-      Beneficiary
+      beneficiary
       IBAN
       BIC
       createdAt
