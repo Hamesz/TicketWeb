@@ -15,6 +15,7 @@ import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 // Code API
 import {listCodes, getCode} from "./graphql/queries"
 import {listUserPayments, getUserPayment} from "./graphql/queries"
+import {listPaymentDetails} from "./graphql/queries"
 
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
@@ -30,7 +31,7 @@ function App(){
   const [code, setCode] = React.useState("8008");
   const [routes, setRoutes] = React.useState(["INFO","TICKET MENU", "PAYMENT"])
   const [userPaid, setUserPaid] = React.useState(true);
-
+  const [paymentDetails, setPaymentDetails] = React.useState(); 
   /* The States of the App
   0) Prompt the user to sign in/sign up/forgotten password
   1) Display the Ticket selection menu
@@ -113,6 +114,21 @@ function App(){
       }
     }
 
+    /*
+    Gets the user payment info
+    */
+    const fetchPaymentDetails = async (user) => {
+      try {
+        const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
+        console.log("listed paymentDetails: ", allPaymentDetails);
+        const payment_details = allPaymentDetails.data.listPaymentDetails.items[0];
+        console.log("Payment Details for user:", payment_details);
+        setPaymentDetails(payment_details);
+      }catch(error){
+        console.log("fetchCode Error: ", error);
+      }
+    }
+
     return onAuthUIStateChange((nextAuthState, authData) => {
       setAuthState(nextAuthState);
       setUser(authData)
@@ -126,6 +142,7 @@ function App(){
         fetchCode();
         fetchUserPayment(authData);
         setAppState(appStates.TICKET_MENU);
+        fetchPaymentDetails();
       }
     });
   }, [appStates.AUTH, appStates.TICKET_MENU, appStates.NOT_PAID]);
@@ -247,7 +264,7 @@ function App(){
           <Payment 
           routes = {routes}
           onClickRoute = {(i) => {handleOnClickRoute(i)}}
-          bankInfo = {{type:"local", sortCode:"01-01-01", accountNumber:"01234567", benificiary:"Kyle Alexander", ref:"bus app", email:"test@gmail.com"}}
+          bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
           paymentInfo = {{month: "September", amount:"15.00"}}
           />
         );
@@ -260,7 +277,7 @@ function App(){
           <Payment 
           routes = {routes}
           onClickRoute = {(i) => {handleOnClickRoute(i)}}
-          bankInfo = {{type:"local", sortCode:"01-01-01", accountNumber:"01234567", benificiary:"Kyle Alexander", ref:"bus app Sep", email:"test@gmail.com"}}
+          bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
           paymentInfo = {{month: "September", amount:"15.00"}}
           />
         );

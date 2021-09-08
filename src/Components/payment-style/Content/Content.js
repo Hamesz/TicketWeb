@@ -39,7 +39,7 @@ function returnInternational({bankInfo, paymentInfo}){
                 <div className="infoItemRight">{bankInfo.BAC}</div>
                 {/* Name */}
                 <div className="infoItemLeft">Name</div>
-                <div className="infoItemRight">{bankInfo.benificiary}</div>
+                <div className="infoItemRight">{bankInfo.beneficiary}</div>
                 {/* Reference */}
                 <div className="infoItemLeft">Reference</div>
                 <div className="infoItemRight">{bankInfo.ref}</div>
@@ -84,7 +84,7 @@ function returnLocal({bankInfo, paymentInfo}){
                 <div className="infoItemRight">{bankInfo.accountNumber}</div>
                 {/* Name */}
                 <div className="infoItemLeft">Name</div>
-                <div className="infoItemRight">{bankInfo.benificiary}</div>
+                <div className="infoItemRight">{bankInfo.beneficiary}</div>
                 {/* Reference */}
                 <div className="infoItemLeft">Reference</div>
                 <div className="infoItemRight">{bankInfo.ref}</div>
