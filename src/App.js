@@ -20,18 +20,27 @@ import {listPaymentDetails} from "./graphql/queries"
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
 
+// constants
+const CODE_INITIAL = "8008";
+const ROUTES = ["INFO","TICKET MENU", "PAYMENT"];
+const USER_PAID = true;
+const SWITCH_TIME_WITH_CODE = true;
+const DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH = 5;  //The # of days where you alert user to pay for next month
+const MONTHLY_FEE = "15.00";
+
 function App(){
   // states
   const [ticket, setTicket] = React.useState();
   const [ticketInfo, setTicketInfo] = React.useState(require('./Tickets/ticket_information.json'));
-  const [switchTimeWithCode, setSwitchTimeWithCode] = React.useState(true);
+  const [switchTimeWithCode, setSwitchTimeWithCode] = React.useState(SWITCH_TIME_WITH_CODE);
   const [timeState, setTimeState] = React.useState(0);
   const [randomPurchasedDate, setRandomPurchasedDate] =  React.useState(createRandomPurchasedDate());
   const [ticketOptions, setTicketOptions] = React.useState(Object.keys(ticketInfo));  // gets the keys from the ticketInfo
-  const [code, setCode] = React.useState("8008");
-  const [routes, setRoutes] = React.useState(["INFO","TICKET MENU", "PAYMENT"])
-  const [userPaid, setUserPaid] = React.useState(true);
+  const [code, setCode] = React.useState(CODE_INITIAL);
+  const [routes, setRoutes] = React.useState(ROUTES)
+  const [userPaid, setUserPaid] = React.useState(USER_PAID);
   const [paymentDetails, setPaymentDetails] = React.useState(); 
+  const [userPayment, setUserPayment] = React.useState();
   /* The States of the App
   0) Prompt the user to sign in/sign up/forgotten password
   1) Display the Ticket selection menu
@@ -105,9 +114,11 @@ function App(){
         const current_month = date.toLocaleString('default', { month: 'long' });
         const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
         console.log("userPaidForMonth: ", current_month, userPaidForMonth);
+        console.log("User Payment: ", userPaymentData.data.getUserPayment);
         setUserPaid(userPaidForMonth);
+        setUserPayment(userPaymentData.data.getUserPayment);
         if (userPaidForMonth === false){
-          setAppState(appStates.PAYMENT);
+          setAppState(appStates.NOT_PAID);
         }
       }catch(error){
         console.log("fetchCode Error: ", error);
@@ -260,25 +271,25 @@ function App(){
         );
   
       case appStates.NOT_PAID:
-        return (
-          <Payment 
-          routes = {routes}
-          onClickRoute = {(i) => {handleOnClickRoute(i)}}
-          bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
-          paymentInfo = {{month: "September", amount:"15.00"}}
-          />
-        );
-    
-      case appStates.PAYMENT:
         if (!userPaid){
-          alert("You have not paid for this month!");
+          alert("You have not paid for this month");
         }
         return (
           <Payment 
           routes = {routes}
+          onClickRoute = {(i) => {alert("To have access to the app, you need to pay!")}}
+          bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
+          paymentInfo = {generatePaymentInfo(userPayment)}
+          />
+        );
+    
+      case appStates.PAYMENT:
+        return (
+          <Payment 
+          routes = {routes}
           onClickRoute = {(i) => {handleOnClickRoute(i)}}
           bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
-          paymentInfo = {{month: "September", amount:"15.00"}}
+          paymentInfo = {generatePaymentInfo(userPayment)}
           />
         );
     }
@@ -389,6 +400,75 @@ function createRandomPurchasedDate(){
   
     const date_as_string = `${weekday} ${day} ${month} at ${time}`
     return date_as_string;
+}
+
+/*
+Determines the month payment is due and for how much.
+If the user has not paid for the current month then that is returned with PAYMENT_FEE as amount.
+If they have paid then amount is 0.00, unless its DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH before the end of
+the month. At which we tell the user to pay for the next month (in advance so they are guaranteed access).
+Again if they have paid for the next month then they will be shown amount of 0.
+*/
+function generatePaymentInfo(userPayment){
+  /*
+  Get the number of days remaining within the current month
+  */
+  function getRemainingDaysUntilEndOfMonth(){
+    const date = new Date();
+    let time = new Date(date.getTime());
+    time.setMonth(date.getMonth() + 1);
+    time.setDate(0);
+    const days = time.getDate() > date.getDate() ? time.getDate() - date.getDate() : 0;
+    return days;
+  }
+
+  const date = new Date();
+  const date_next_month = new Date(date.getTime());
+  date_next_month.setMonth(date.getMonth() + 1);
+
+  const current_month = date.toLocaleString('default', { month: 'long' });
+  const next_month = date_next_month.toLocaleString('default', { month: 'long' });
+  const userPaidForCurrentMonth = userPayment[current_month];
+  
+  let month_to_pay;
+  let amount;
+  // check if user has paid for current month
+  if (userPaidForCurrentMonth){
+    console.log("user paid for current month: ", current_month);
+    // check if date is 5 days before month end
+    const days_left = getRemainingDaysUntilEndOfMonth();
+
+    // check if user has paid for next month and set amount appropriatly
+    if (days_left < DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH){
+      console.log("Time to alert user to pay for next month: ", next_month);
+      // check if the month is december in which the next month is Januray but for the next year
+      let userPaidForNextMonth;
+      if (current_month === 12){
+        userPaidForNextMonth = userPayment["JanuaryNextYear"];
+      }else{
+        userPaidForNextMonth = userPayment[next_month];
+      }
+      month_to_pay = next_month;
+      if (userPaidForNextMonth){
+        amount = "0.00";
+        console.log("User paid for next month");
+      }else{
+        amount = MONTHLY_FEE;
+        console.log("User not paid for next month");
+      }
+    }else{
+      // user has paid for current month but it is too soon to tell them
+      // to pay for next month
+      month_to_pay = current_month;
+      amount = "0.00";
+    }
+  }else{
+    // user has not paid for current month
+    console.log("user not paid for current month: ", current_month);
+    month_to_pay = current_month;
+    amount = MONTHLY_FEE;
+  }
+  return {month:month_to_pay, amount:amount};
 }
 
 export default App;

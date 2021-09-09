@@ -35,6 +35,7 @@ export const getUserPayment = /* GraphQL */ `
       year
       subscriptionDate
       January
+      JanuaryNextYear
       February
       March
       April
@@ -63,6 +64,7 @@ export const listUserPayments = /* GraphQL */ `
         year
         subscriptionDate
         January
+        JanuaryNextYear
         February
         March
         April

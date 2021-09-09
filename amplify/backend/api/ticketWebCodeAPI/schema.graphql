@@ -8,6 +8,7 @@ type UserPayment @model{
   year: String!
   subscriptionDate: String!
   January: Boolean!
+  JanuaryNextYear: Boolean!
   February: Boolean!
   March: Boolean!
   April: Boolean!

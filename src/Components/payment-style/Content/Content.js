@@ -14,8 +14,6 @@ function returnInternational({bankInfo, paymentInfo}){
         <ContentWrap>
             {/* Payment info showing how much they owe for what month */}
             <div className="title">Payment Due</div>
-            <h3>The amount will be updated if you have paid for the corresponding month.</h3>
-            
             <div className="infoGrid">
                 {/* Month Due */}
                 <div className="infoItemLeft">Month</div>
@@ -24,6 +22,8 @@ function returnInternational({bankInfo, paymentInfo}){
                 <div className="infoItemLeft">Amount</div>
                 <div className="infoItemRight">£{paymentInfo.amount}</div>
             </div>
+            <div className="info">The amount will be 0 if you have paid for the corresponding month</div>
+            <div className="info">The next month will show a few days before the end of the month to give you time to send the payment and guarantee access to the app.</div>
             <br></br>
             <div className="title">Bank Information</div>
             {/* All the left hand side info */}
@@ -47,6 +47,8 @@ function returnInternational({bankInfo, paymentInfo}){
                 <div className="infoItemLeft">Email</div>
                 <div className="infoItemRight">{bankInfo.email}</div>
             </div>
+            <div className="info">Please send an email when you have sent the payment.</div>
+            <div className="info"><b>If you do not wish to use the app for the corresponding month, then no action is required.</b></div>
         </ContentWrap>
     );
 }
@@ -56,7 +58,6 @@ function returnLocal({bankInfo, paymentInfo}){
         <ContentWrap>
             {/* Payment info showing how much they owe for what month */}
             <div className="title">Payment Due</div>
-            
             <div className="infoGrid">
                 {/* Month Due */}
                 <div className="infoItemLeft">Month</div>
@@ -66,9 +67,7 @@ function returnLocal({bankInfo, paymentInfo}){
                 <div className="infoItemRight">£{paymentInfo.amount}</div>
             </div>
             <div className="info">The amount will be 0 if you have paid for the corresponding month</div>
-            
-            <div className="info">If the month shown is the current month then you need to pay to use the app.</div>
-            <div className="info">If the month shown is the next month then you need to pay before the start of the next month to guarantee access. The earlier the better!</div>
+            <div className="info">The next month will show a few days before the end of the month to give you time to send the payment and guarantee access to the app.</div>
             <br></br>
             <div className="title">Bank Information</div>
             {/* All the left hand side info */}
@@ -93,7 +92,7 @@ function returnLocal({bankInfo, paymentInfo}){
                 <div className="infoItemRight">{bankInfo.email}</div>
             </div>
             <div className="info">Please send an email when you have sent the payment.</div>
-            <div className="info">If you do not wish to use the app for the corresponding month, then no action is required.</div>
+            <div className="info"><b>If you do not wish to use the app for the corresponding month, then no action is required.</b></div>
         </ContentWrap>
     );
 }

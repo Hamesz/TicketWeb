@@ -50,6 +50,7 @@ export const createUserPayment = /* GraphQL */ `
       year
       subscriptionDate
       January
+      JanuaryNextYear
       February
       March
       April
@@ -76,6 +77,7 @@ export const updateUserPayment = /* GraphQL */ `
       year
       subscriptionDate
       January
+      JanuaryNextYear
       February
       March
       April
@@ -102,6 +104,7 @@ export const deleteUserPayment = /* GraphQL */ `
       year
       subscriptionDate
       January
+      JanuaryNextYear
       February
       March
       April
