@@ -55,7 +55,8 @@ function App(){
     TICKET: 2,      // Display the ticket chosen by the user
     NOT_PAID: 3,    // Display not paid screen alerting the user they have not paid
     INFO: 4,        // Display information to the user about how they can display the ticket
-    PAYMENT: 5      // Display payment to the user about how they can pay
+    PAYMENT: 5,      // Display payment to the user about how they can pay
+    ERROR: 6        // An error has occured and will show the user what it is
   };
   const [appState, setAppState] = React.useState(appStates.AUTH);
 
@@ -98,7 +99,7 @@ function App(){
         console.log("Code: ", code);
         setCode(code);
       }catch(error){
-        console.log("fetchCode Error: ", error);
+        handleError(error, fetchCode);
       }
     }
 
@@ -121,7 +122,7 @@ function App(){
           setAppState(appStates.NOT_PAID);
         }
       }catch(error){
-        console.log("fetchCode Error: ", error);
+        handleError(error, fetchUserPayment);
       }
     }
 
@@ -136,7 +137,7 @@ function App(){
         console.log("Payment Details for user:", payment_details);
         setPaymentDetails(payment_details);
       }catch(error){
-        console.log("fetchCode Error: ", error);
+        handleError(error, fetchPaymentDetails);
       }
     }
 
@@ -292,7 +293,12 @@ function App(){
           paymentInfo = {generatePaymentInfo(userPayment)}
           />
         );
-    }
+    
+      case appStates.ERROR:
+        return (
+          <h1>An error has occured. Please try again and if the error persists then contact the supplier with the error message included.</h1>
+        );
+      }
   }
 
   /*
@@ -379,6 +385,20 @@ function App(){
         }
       }
   }    
+
+  /*
+  Handles an error by setting the app state to ERROR
+  */
+  function handleError(error, f){
+    console.log("An error occured: ", error);
+    console.log("This was thrown by function: ", f.name);
+    const error_msg = error.errors[0].message;
+    const alert_msg = "An Error has occured: \"" + error_msg + "\". Please try again and if the problem persists then send an email with the error message included.";
+    
+    alert(alert_msg);
+    setAppState(appStates.ERROR);
+
+  }
 }
 
 /*
@@ -401,6 +421,8 @@ function createRandomPurchasedDate(){
     const date_as_string = `${weekday} ${day} ${month} at ${time}`
     return date_as_string;
 }
+
+
 
 /*
 Determines the month payment is due and for how much.
@@ -428,6 +450,7 @@ function generatePaymentInfo(userPayment){
 
   const current_month = date.toLocaleString('default', { month: 'long' });
   const next_month = date_next_month.toLocaleString('default', { month: 'long' });
+  console.log("User Payment: ", userPayment);
   const userPaidForCurrentMonth = userPayment[current_month];
   
   let month_to_pay;
