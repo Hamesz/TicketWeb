@@ -203,14 +203,12 @@ function App(){
 
       // check if the user is signid in
       if (nextAuthState === "signedin"){
-        // fetchCode();
         fetchUserPayment(authData);
         fetchPaymentDetails();
         console.log("Pending app State in AUTH: ", pendingAppState);
         if (pendingAppState){
           console.log("setting next state to pending app state: ", pendingAppState);
           setAppState(pendingAppState);
-          // setPendingAppState(undefined);
         }else{
           console.log("no pending app state, setting state to: ", appStates.TICKET_MENU);
           setAppState(appStates.TICKET_MENU);
@@ -410,7 +408,6 @@ function App(){
           setPendingAppState(appStates.INFO);
           break;
       }
-      // setAppState(appStates.AUTH);
       return;
     }
     // else allow them to freely move between pages
