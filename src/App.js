@@ -108,7 +108,7 @@ function App(){
       console.log("after changing pending state, setting app state to: ", appStates.AUTH);
       setAppState(appStates.AUTH);
     }
-  }, [pendingAppState, appStates.AUTH])
+  }, [pendingAppState])
   
   // this effect gets the code if the user has paid
   React.useEffect(() => {
@@ -134,6 +134,7 @@ function App(){
         handleError(error, fetchCode);
       }
     }
+
     if (userPaid === true){
       console.log("user has paid so fetching code...");
       fetchCode();
@@ -155,57 +156,117 @@ function App(){
   Used for logging in and out and contains the fetchCode and fetchUserPayment methods
   since these are only ever called by this method
   */
-  React.useEffect(() => {  
-    /*
-    Gets the user payment info
-    */
-    const fetchUserPayment = async (user) => {
-      try {
-        const date = new Date();
-        // const allUserPaymentData = await API.graphql(graphqlOperation(listUserPayments));//getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
-        // console.log("user attributes in fetchUserPayment: ", user.attributes);
-        const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
-        const current_month = date.toLocaleString('default', { month: 'long' });
-        const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
-        console.log("userPaidForMonth: ", current_month, userPaidForMonth);
-        console.log("Fetched User Payment: ", userPaymentData.data.getUserPayment);
-        setUserPaid(userPaidForMonth);
-        setUserPayment(userPaymentData.data.getUserPayment);
-        if (userPaidForMonth === false){
-          console.log("User not paid, setting state to ", appStates.PAYMENT);
-          setAppState(appStates.PAYMENT);
-        }
-      }catch(error){
-        handleError(error, fetchUserPayment);
-      }
-    }
+  // React.useEffect(() => {  
+  //   /*
+  //   Gets the user payment info
+  //   */
+  //   const fetchUserPayment = async (user) => {
+  //     try {
+  //       const date = new Date();
+  //       // const allUserPaymentData = await API.graphql(graphqlOperation(listUserPayments));//getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+  //       // console.log("user attributes in fetchUserPayment: ", user.attributes);
+  //       const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+  //       const current_month = date.toLocaleString('default', { month: 'long' });
+  //       const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
+  //       console.log("userPaidForMonth: ", current_month, userPaidForMonth);
+  //       console.log("Fetched User Payment: ", userPaymentData.data.getUserPayment);
+  //       setUserPaid(userPaidForMonth);
+  //       setUserPayment(userPaymentData.data.getUserPayment);
+  //       if (userPaidForMonth === false){
+  //         console.log("User not paid, setting state to ", appStates.PAYMENT);
+  //         setAppState(appStates.PAYMENT);
+  //       }
+  //     }catch(error){
+  //       handleError(error, fetchUserPayment);
+  //     }
+  //   }
 
-    /*
-    Gets the user payment info
-    */
-    const fetchPaymentDetails = async (user) => {
-      try {
-        const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
-        console.log("listed paymentDetails: ", allPaymentDetails);
-        const payment_details = allPaymentDetails.data.listPaymentDetails.items[0];
-        console.log("Payment Details for user:", payment_details);
-        setPaymentDetails(payment_details);
-      }catch(error){
-        handleError(error, fetchPaymentDetails);
-      }
-    }
+  //   /*
+  //   Gets the user payment info
+  //   */
+  //   const fetchPaymentDetails = async (user) => {
+  //     try {
+  //       const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
+  //       console.log("listed paymentDetails: ", allPaymentDetails);
+  //       const payment_details = allPaymentDetails.data.listPaymentDetails.items[0];
+  //       console.log("Payment Details for user:", payment_details);
+  //       setPaymentDetails(payment_details);
+  //     }catch(error){
+  //       handleError(error, fetchPaymentDetails);
+  //     }
+  //   }
+
+  //   return onAuthUIStateChange((nextAuthState, authData) => {
+  //     // check if we are already in auth state
+  //     console.log("\ncurrent app state: ", appState);
+  //     console.log("Current auth state: ", authState);
+  //     console.log("next auth state: ", nextAuthState);
+  //     // if (appState === appStates.AUTH){
+  //     //   return;
+  //     // }
+  //     // setAuthState(nextAuthState);
+  //     // setUser(authData)
+  //     // console.log("user info", authData);
+  //     // console.log("Next auth State:", nextAuthState);
+
+  //     // check if the user is signid in
+  //     if (nextAuthState === AuthState.SignedIn && authData){
+  //       setAuthState(nextAuthState);
+  //       setUser(authData)
+  //       console.log("user info", authData);
+  //       // console.log("Next auth State:", nextAuthState);
+
+  //       // fetchUserPayment(authData);
+  //       // fetchPaymentDetails();
+  //       // console.log("Pending app State in AUTH: ", pendingAppState);
+  //       // if (pendingAppState){
+  //       //   console.log("setting next state to pending app state: ", pendingAppState);
+  //       //   setAppState(pendingAppState);
+  //       // }else{
+  //       //   console.log("no pending app state, setting state to: ", appStates.TICKET_MENU);
+  //         setAppState(appStates.TICKET_MENU);
+  //       // }
+  //     }else if (nextAuthState === AuthState.SignedOut){
+  //       //nextAuthState === "signin" || nextAuthState === "signedout" || nextAuthState === forgotpassword
+  //       console.log("in auth but not signed in, setting app state to: ", appStates.AUTH);
+  //       if (appState === appStates.AUTH){
+  //         setAuthState(nextAuthState);
+  //         setUser(authData)
+  //       }else{
+  //         setAppState(appStates.AUTH);
+  //       }
+  //     }
+  //   });
+  // }, [appStates.PAYMENT, appStates.TICKET_MENU, handleError, pendingAppState]);
+
+  React.useEffect(() => {
+    // console.log("Auth state out of return: ", authState);
+    // if (authState !== "signedin"){
+    //   setAppState(appStates.AUTH);
+    // }
 
     return onAuthUIStateChange((nextAuthState, authData) => {
+      console.log("\ncurrent app state: ", appState);
+      console.log("Current AuthState: ", authState);
+      console.log("next auth state: ", nextAuthState);
+      console.log("Auth data: ", authData);
       setAuthState(nextAuthState);
       setUser(authData)
-      console.log("user info", authData);
-      console.log("Next auth State:", nextAuthState);
 
-      // check if the user is signid in
+      // fetch data after refreshing page when logged in
+      if (nextAuthState === "signedin" && authData && authState === undefined){
+        console.log("fetching data...");
+      // fetchUserPayment(authData);
+      // fetchPaymentDetails();
+      }
+      // fetch data after logging in
+      if (nextAuthState === "signedin" && authData && authState === "signin"){
+        console.log("fetching data...");
+      // fetchUserPayment(authData);
+      // fetchPaymentDetails();
+      }
+
       if (nextAuthState === "signedin"){
-        fetchUserPayment(authData);
-        fetchPaymentDetails();
-        console.log("Pending app State in AUTH: ", pendingAppState);
         if (pendingAppState){
           console.log("setting next state to pending app state: ", pendingAppState);
           setAppState(pendingAppState);
@@ -214,11 +275,12 @@ function App(){
           setAppState(appStates.TICKET_MENU);
         }
       }else{
-        //nextAuthState === "signin" || nextAuthState === "signedout" || nextAuthState === forgotpassword
+        console.log("In auth hook and setting app state to AUTH");
         setAppState(appStates.AUTH);
       }
-    });
-  }, [appStates.AUTH, appStates.TICKET_MENU, appStates.NOT_PAID, pendingAppState, appStates.PAYMENT]);
+    })
+  })
+
 
   return (returnAppState());
 
@@ -244,6 +306,7 @@ function App(){
         //   facebookAppId: 'fqf4q3yt34y34', // Enter your facebookAppId here
         //   amazonClientId: 'q4rtq3tq34tq34' // Enter your amazonClientId here
         // };
+        // console.log("Should be returning something now...");
         return (
           //<AmplifyAuthenticator >//federated={federated}>
           <AmplifyAuthenticator >
@@ -391,8 +454,8 @@ function App(){
   function handleOnClickRoute(i){
     console.log("leaving state: ", appState);
 
-    // if user has not paid then only show them payment page
-    if (!user){ 
+    // if user has not signed in then sign them in and remeber what route they clicked
+    if (!(authState === Auth.SignedIn && user)){ 
       console.log("User is not signed in, setting state: ", appStates.AUTH);
       switch (i){
         case 0:
