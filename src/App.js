@@ -16,6 +16,7 @@ import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import {listCodes, getCode} from "./graphql/queries"
 import {listUserPayments, getUserPayment} from "./graphql/queries"
 import {listPaymentDetails} from "./graphql/queries"
+import { AppState } from '@aws-amplify/core';
 
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
@@ -23,10 +24,43 @@ Amplify.configure(awsconfig);
 // constants
 const CODE_INITIAL = "8008";
 const ROUTES = ["INFO","TICKET MENU", "PAYMENT"];
-const USER_PAID = true;
+const USER_PAID = false;
 const SWITCH_TIME_WITH_CODE = true;
 const DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH = 5;  //The # of days where you alert user to pay for next month
 const MONTHLY_FEE = "15.00";
+
+const PAYMENT_DETAILS_PLACEHOLDER = {
+  id: "",
+  beneficiary: "",
+  sortCode: "",
+  updatedAt: "",
+  IBAN: "",
+  createdAt: "",
+  BIC: "",
+  email: "",
+  accountNumber: "",
+  type: ""
+}
+const USER_PAYMENT_PLACEHOLDER = {
+  id: undefined,
+  November: undefined,
+  JanuaryNextYear: undefined,
+  May: undefined,
+  February: undefined,
+  subscriptionDate: undefined,
+  July: undefined,
+  createdAt: undefined,
+  October: undefined,
+  September: undefined,
+  January: undefined,
+  June: undefined,
+  August: undefined,
+  updatedAt: undefined,
+  year: undefined,
+  April: undefined,
+  March: undefined,
+  December: undefined
+}
 
 function App(){
   // states
@@ -39,8 +73,8 @@ function App(){
   const [code, setCode] = React.useState(CODE_INITIAL);
   const [routes, setRoutes] = React.useState(ROUTES)
   const [userPaid, setUserPaid] = React.useState(USER_PAID);
-  const [paymentDetails, setPaymentDetails] = React.useState(); 
-  const [userPayment, setUserPayment] = React.useState();
+  const [paymentDetails, setPaymentDetails] = React.useState(PAYMENT_DETAILS_PLACEHOLDER); 
+  const [userPayment, setUserPayment] = React.useState(USER_PAYMENT_PLACEHOLDER);
   /* The States of the App
   0) Prompt the user to sign in/sign up/forgotten password
   1) Display the Ticket selection menu
@@ -58,14 +92,24 @@ function App(){
     PAYMENT: 5,      // Display payment to the user about how they can pay
     ERROR: 6        // An error has occured and will show the user what it is
   };
-  const [appState, setAppState] = React.useState(appStates.AUTH);
+  const [appState, setAppState] = React.useState(appStates.INFO);
+  const [pendingAppState, setPendingAppState] = React.useState();
 
   // authentication
   const [authState, setAuthState] = React.useState();
   const [user, setUser] = React.useState();
 
   const timerRefreshTimeMilli = 200;  // time for timer in milliseconds
-
+  
+  // this is called after pendingAppState has been changed
+  React.useEffect(() => {
+    console.log("Pending app state: ", pendingAppState);
+    if (pendingAppState !== undefined){
+      console.log("after changing pending state, setting app state to: ", appStates.AUTH);
+      setAppState(appStates.AUTH);
+    }
+  }, [pendingAppState, appStates.AUTH])
+  
   // timer
   React.useEffect(() => {
     const timer=setTimeout(() => {
@@ -115,11 +159,12 @@ function App(){
         const current_month = date.toLocaleString('default', { month: 'long' });
         const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
         console.log("userPaidForMonth: ", current_month, userPaidForMonth);
-        console.log("User Payment: ", userPaymentData.data.getUserPayment);
+        console.log("Fetched User Payment: ", userPaymentData.data.getUserPayment);
         setUserPaid(userPaidForMonth);
         setUserPayment(userPaymentData.data.getUserPayment);
         if (userPaidForMonth === false){
-          setAppState(appStates.NOT_PAID);
+          console.log("User not paid, setting state to ", appStates.PAYMENT);
+          setAppState(appStates.PAYMENT);
         }
       }catch(error){
         handleError(error, fetchUserPayment);
@@ -147,17 +192,26 @@ function App(){
       console.log("user info", authData);
       console.log("Next auth State:", nextAuthState);
 
-      // check if the user is signing out (signedout) or already signed out (signing)
-      if (nextAuthState === "signin" || nextAuthState === "signedout" ){
-        setAppState(appStates.AUTH);
-      }else{
+      // check if the user is signid in
+      if (nextAuthState === "signedin"){
         fetchCode();
         fetchUserPayment(authData);
-        setAppState(appStates.TICKET_MENU);
         fetchPaymentDetails();
+        console.log("Pending app State in AUTH: ", pendingAppState);
+        if (pendingAppState){
+          console.log("setting next state to pending app state: ", pendingAppState);
+          setAppState(pendingAppState);
+          // setPendingAppState(undefined);
+        }else{
+          console.log("no pending app state, setting state to: ", appStates.TICKET_MENU);
+          setAppState(appStates.TICKET_MENU);
+        }
+      }else{
+        //nextAuthState === "signin" || nextAuthState === "signedout" || nextAuthState === forgotpassword
+        setAppState(appStates.AUTH);
       }
     });
-  }, [appStates.AUTH, appStates.TICKET_MENU, appStates.NOT_PAID]);
+  }, [appStates.AUTH, appStates.TICKET_MENU, appStates.NOT_PAID, pendingAppState, appStates.PAYMENT]);
 
   return (returnAppState());
 
@@ -225,6 +279,15 @@ function App(){
                 hint: "Used as the name on your ticket",
                 inputProps: { required: true, autocomplete: "White" }
                 },
+                // btc wallet address
+                {
+                type: "custom:btc_wallet_address",
+                label: "Bitcoin Wallet Address *",
+                placeholder: "3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5",
+                hint: "Used to identify who has paid",
+                inputProps: { required: true}
+                },
+
               ]}
             />
           </AmplifyAuthenticator>
@@ -245,7 +308,7 @@ function App(){
               routes = {routes}
               onClickRoute = {(i) => {handleOnClickRoute(i)}}
               tickets = {ticketOptions}
-              onClick = {(i) => handleClick(i)}
+              onClick = {(i) => handleTicketClick(i)}
               ticket_information = {ticketInfo}
             />
           </div>
@@ -271,32 +334,46 @@ function App(){
           />
         );
   
-      case appStates.NOT_PAID:
-        if (!userPaid){
-          alert("You have not paid for this month");
-        }
-        return (
-          <Payment 
-          routes = {routes}
-          onClickRoute = {(i) => {alert("To have access to the app, you need to pay!")}}
-          bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
-          paymentInfo = {generatePaymentInfo(userPayment)}
-          />
-        );
+      // case appStates.NOT_PAID:
+      //   // if (!userPaid){
+      //   //   alert("You have not paid for this month");
+      //   // }
+      //   return (
+      //     <Payment 
+      //     routes = {routes}
+      //     onClickRoute = {(i) => {alert("To have access to the app, you need to pay!")}}
+      //     bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
+      //     paymentInfo = {generatePaymentInfo(userPayment)}
+      //     />
+      //   );
     
       case appStates.PAYMENT:
+        let message = "";
+        if (userPayment === USER_PAYMENT_PLACEHOLDER || paymentDetails === PAYMENT_DETAILS_PLACEHOLDER){
+          message = "Data still waiting to be retrieved...";
+        }
         return (
-          <Payment 
-          routes = {routes}
-          onClickRoute = {(i) => {handleOnClickRoute(i)}}
-          bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
-          paymentInfo = {generatePaymentInfo(userPayment)}
-          />
+          <div>
+            <div>
+            <Payment 
+              routes = {routes}
+              onClickRoute = {(i) => {handleOnClickRoute(i)}}
+              bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
+              paymentInfo = {generatePaymentInfo(userPayment)}
+            />
+          </div>
+          <div className="message">
+            {message}
+          </div>
+          </div>
+          
         );
     
       case appStates.ERROR:
         return (
-          <h1>An error has occured. Please try again and if the error persists then contact the supplier with the error message included.</h1>
+          <div className="message">
+            An error has occured. Please try again and if the error persists then contact the supplier with the error message included.
+          </div>
         );
       }
   }
@@ -305,24 +382,53 @@ function App(){
   Sets the appState based on what route was clicked
   */
   function handleOnClickRoute(i){
-    // if user has not paid thenonly show them payment page
-    if (!userPaid){ 
-      setAppState(appStates.PAYMENT);
+    console.log("leaving state: ", appState);
+
+    // if user has not paid then only show them payment page
+    if (!user){ 
+      console.log("User is not signed in, setting state: ", appStates.AUTH);
+      switch (i){
+        case 0:
+          setPendingAppState(appStates.INFO);
+          break;
+        case 1:
+          setPendingAppState(appStates.TICKET_MENU);
+          break;
+        case 2:
+          setPendingAppState(appStates.PAYMENT)
+          break
+        default:
+          setPendingAppState(appStates.INFO);
+          break;
+      }
+      // setAppState(appStates.AUTH);
       return;
     }
     // else allow them to freely move between pages
     switch(i){
       case 0:
+        console.log("User clicked route 0, setting state: ", appStates.INFO);
         setAppState(appStates.INFO);
         break;
       case 1:
-        setAppState(appStates.TICKET_MENU);
+        if (userPaid === true){
+          console.log("User clicked route 1, setting state: ", appStates.TICKET_MENU);
+          setAppState(appStates.TICKET_MENU);
+        }else{
+          console.log("User clicked route 0 but has not paid, setting state: ", appStates.PAYMENT);
+          setAppState(appStates.PAYMENT);
+        }
         break;
       case 2:
+        console.log("User clicked route 2, setting state: ", appStates.PAYMENT);
         setAppState(appStates.PAYMENT);
         break;
       default:
-        setAppState(appStates.TICKET_MENU);
+        if (userPaid === true){
+          setAppState(appStates.TICKET_MENU);
+        }else{
+          setAppState(appStates.INFO);
+        }
         break;
     }
   }
@@ -334,27 +440,37 @@ function App(){
   /*
   Sets the ticket chosen by the user and will reload the app to display the ticket
   */
-  function handleClick(idx){
-      const ticket_chosen = ticketOptions[idx]
-      // check if we can use this ticket
-      const start_time = ticketInfo[ticket_chosen]["availability_start"];
-      const end_time =  ticketInfo[ticket_chosen]["availability_end"];
-      
-      console.log("Ticket chosen was", ticket_chosen);
-  
-      if (ticket_chosen === undefined){
-        setAppState(appStates.TICKET_MENU);
-        return;
-      }
-  
-      if (!canOpenTicket(start_time, end_time)){
-        alert("Can't open this ticket due to availablity!");
-      }else{
-        const ticket_object = new TicketFactory().createTicket(ticketInfo[ticket_chosen])
-        console.log("Ticket created by factory:", ticket_object);
-        setTicket(ticket_object); 
-        setAppState(appStates.TICKET);
-      }
+  function handleTicketClick(idx){
+    // first check if user has paid and logged In
+    if (!(user)){
+      setAppState(appStates.AUTH);
+      return;
+    }
+    if (!userPaid){
+      setAppState(appStates.PAYMENT);
+      return;
+    }
+
+    const ticket_chosen = ticketOptions[idx]
+    // check if we can use this ticket
+    const start_time = ticketInfo[ticket_chosen]["availability_start"];
+    const end_time =  ticketInfo[ticket_chosen]["availability_end"];
+    
+    console.log("Ticket chosen was", ticket_chosen);
+
+    if (ticket_chosen === undefined){
+      setAppState(appStates.TICKET_MENU);
+      return;
+    }
+
+    if (!canOpenTicket(start_time, end_time)){
+      alert("Can't open this ticket due to availablity!");
+    }else{
+      const ticket_object = new TicketFactory().createTicket(ticketInfo[ticket_chosen])
+      console.log("Ticket created by factory:", ticket_object);
+      setTicket(ticket_object); 
+      setAppState(appStates.TICKET);
+    }
   }
 
   /*
@@ -392,12 +508,15 @@ function App(){
   function handleError(error, f){
     console.log("An error occured: ", error);
     console.log("This was thrown by function: ", f.name);
-    const error_msg = error.errors[0].message;
+    let error_msg;
+    if (error.errors){
+      let error_msg = error.errors[0].message;
+    }else{
+      let error_msg = error
+    }
     const alert_msg = "An Error has occured: \"" + error_msg + "\". Please try again and if the problem persists then send an email with the error message included.";
-    
     alert(alert_msg);
     setAppState(appStates.ERROR);
-
   }
 }
 
@@ -443,20 +562,20 @@ function generatePaymentInfo(userPayment){
     const days = time.getDate() > date.getDate() ? time.getDate() - date.getDate() : 0;
     return days;
   }
-
+  console.log("In getRemainingDaysUntilEndOfMonth");
   const date = new Date();
   const date_next_month = new Date(date.getTime());
   date_next_month.setMonth(date.getMonth() + 1);
 
   const current_month = date.toLocaleString('default', { month: 'long' });
   const next_month = date_next_month.toLocaleString('default', { month: 'long' });
-  console.log("User Payment: ", userPayment);
+  // console.log("User Payment: ", userPayment);
   const userPaidForCurrentMonth = userPayment[current_month];
   
   let month_to_pay;
   let amount;
   // check if user has paid for current month
-  if (userPaidForCurrentMonth){
+  if (userPaidForCurrentMonth === true){
     console.log("user paid for current month: ", current_month);
     // check if date is 5 days before month end
     const days_left = getRemainingDaysUntilEndOfMonth();
@@ -472,12 +591,14 @@ function generatePaymentInfo(userPayment){
         userPaidForNextMonth = userPayment[next_month];
       }
       month_to_pay = next_month;
-      if (userPaidForNextMonth){
+      if (userPaidForNextMonth === true){
         amount = "0.00";
         console.log("User paid for next month");
-      }else{
+      }else if (userPaidForNextMonth === false){
         amount = MONTHLY_FEE;
         console.log("User not paid for next month");
+      }else{
+        amount = "";
       }
     }else{
       // user has paid for current month but it is too soon to tell them
@@ -485,11 +606,14 @@ function generatePaymentInfo(userPayment){
       month_to_pay = current_month;
       amount = "0.00";
     }
-  }else{
+  }else if (userPaidForCurrentMonth === false){
     // user has not paid for current month
     console.log("user not paid for current month: ", current_month);
     month_to_pay = current_month;
     amount = MONTHLY_FEE;
+  }else{
+    month_to_pay = "";
+    amount = "";
   }
   return {month:month_to_pay, amount:amount};
 }
