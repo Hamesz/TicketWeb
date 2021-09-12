@@ -80,7 +80,7 @@ function getStartEndDate(availability_start, availability_end){
     if (is_early_morning){
         date_end = new Date();
         date_start = new Date(date_now);
-        date_start.setDate(date_start.getDate() - 1);
+        date_start.setDate(date_start.getDate() - 1);   // set the start date to yesterday
     }else{
         date_end = new Date(date_now);
         date_end.setDate(date_end.getDate() + 1)

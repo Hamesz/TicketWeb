@@ -16,7 +16,7 @@ import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import {listCodes, getCode} from "./graphql/queries"
 import {listUserPayments, getUserPayment} from "./graphql/queries"
 import {listPaymentDetails} from "./graphql/queries"
-import { AppState } from '@aws-amplify/core';
+import { AppState, ConsoleLogger } from '@aws-amplify/core';
 
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
@@ -110,19 +110,7 @@ function App(){
     }
   }, [pendingAppState, appStates.AUTH])
   
-  // timer
-  React.useEffect(() => {
-    const timer=setTimeout(() => {
-      onTimerTick();
-    }, timerRefreshTimeMilli);
-    // Clear timeout if the component is unmounted
-    return () => clearTimeout(timer);
-  });
-
-  /*
-  Used for logging in and out and contains the fetchCode and fetchUserPayment methods
-  since these are only ever called by this method
-  */
+  // this effect gets the code if the user has paid
   React.useEffect(() => {
     /*
     Gets the code for today
@@ -146,7 +134,28 @@ function App(){
         handleError(error, fetchCode);
       }
     }
+    if (userPaid === true){
+      console.log("user has paid so fetching code...");
+      fetchCode();
+    }else{
+      console.log("user has NOT paid so not fetching code...");
+    }
+  }, [userPaid])
 
+  // timer
+  React.useEffect(() => {
+    const timer=setTimeout(() => {
+      onTimerTick();
+    }, timerRefreshTimeMilli);
+    // Clear timeout if the component is unmounted
+    return () => clearTimeout(timer);
+  });
+
+  /*
+  Used for logging in and out and contains the fetchCode and fetchUserPayment methods
+  since these are only ever called by this method
+  */
+  React.useEffect(() => {  
     /*
     Gets the user payment info
     */
@@ -194,7 +203,7 @@ function App(){
 
       // check if the user is signid in
       if (nextAuthState === "signedin"){
-        fetchCode();
+        // fetchCode();
         fetchUserPayment(authData);
         fetchPaymentDetails();
         console.log("Pending app State in AUTH: ", pendingAppState);
