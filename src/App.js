@@ -4,6 +4,7 @@ import Ticket from "./Components/ticket-style/ticket"
 import TicketMenu from "./Components/menu-style/menu"
 import Info from "./Components/info-style/info"
 import Payment from './Components/payment-style/payment';
+import Error from './Components/error-style/error';
 // for actual ticket
 import {canOpenTicket, isEarlyMorning} from "./Tickets/Ticket"
 import {TicketFactory} from "./Tickets/TicketFactory"
@@ -22,7 +23,7 @@ Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
 
 // constants
-const CODE_INITIAL = "8008";
+const CODE_INITIAL = undefined;
 const ROUTES = ["INFO","TICKET MENU", "PAYMENT"];
 const USER_PAID = false;
 const SWITCH_TIME_WITH_CODE = true;
@@ -75,6 +76,8 @@ function App(){
   const [userPaid, setUserPaid] = React.useState(USER_PAID);
   const [paymentDetails, setPaymentDetails] = React.useState(PAYMENT_DETAILS_PLACEHOLDER); 
   const [userPayment, setUserPayment] = React.useState(USER_PAYMENT_PLACEHOLDER);
+  const [errorMsg, setErrorMsg] = React.useState();
+
   /* The States of the App
   0) Prompt the user to sign in/sign up/forgotten password
   1) Display the Ticket selection menu
@@ -82,6 +85,7 @@ function App(){
   3) Display a blank screen alerting the user they have not paid
   4) Display information to the user about how they can display the ticket
   5) Display payment to the user about how they can pay
+  6) Display an Error to the user
   */
   const appStates = {
     AUTH: 0,        // Prompt the user to sign in/sign up/forgotten password
@@ -89,8 +93,8 @@ function App(){
     TICKET: 2,      // Display the ticket chosen by the user
     NOT_PAID: 3,    // Display not paid screen alerting the user they have not paid
     INFO: 4,        // Display information to the user about how they can display the ticket
-    PAYMENT: 5,      // Display payment to the user about how they can pay
-    ERROR: 6        // An error has occured and will show the user what it is
+    PAYMENT: 5,     // Display payment to the user about how they can pay
+    ERROR: 6        // Display an Error to the user
   };
   const [appState, setAppState] = React.useState(appStates.INFO);
   const [pendingAppState, setPendingAppState] = React.useState();
@@ -108,7 +112,7 @@ function App(){
       console.log("after changing pending state, setting app state to: ", appStates.AUTH);
       setAppState(appStates.AUTH);
     }
-  }, [pendingAppState])
+  }, [pendingAppState, appStates.AUTH])
   
   // this effect gets the code if the user has paid
   React.useEffect(() => {
@@ -127,6 +131,7 @@ function App(){
       console.log("date for code: ", date_for_code, date_for_code_string);
       try {
         const codeData = await API.graphql(graphqlOperation(getCode,{"id":date_for_code_string}));//listCodes));//getCode,{"id":"2021-08-30"}));
+        console.log("Code Data: ", codeData);
         const code = codeData.data.getCode.code;
         console.log("Code: ", code);
         setCode(code);
@@ -135,13 +140,13 @@ function App(){
       }
     }
 
-    if (userPaid === true){
+    if (userPaid === true && code === undefined){
       console.log("user has paid so fetching code...");
       fetchCode();
     }else{
       console.log("user has NOT paid so not fetching code...");
     }
-  }, [userPaid])
+  }, [userPaid, code]);
 
   // timer
   React.useEffect(() => {
@@ -157,44 +162,44 @@ function App(){
   since these are only ever called by this method
   */
   // React.useEffect(() => {  
-  //   /*
-  //   Gets the user payment info
-  //   */
-  //   const fetchUserPayment = async (user) => {
-  //     try {
-  //       const date = new Date();
-  //       // const allUserPaymentData = await API.graphql(graphqlOperation(listUserPayments));//getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
-  //       // console.log("user attributes in fetchUserPayment: ", user.attributes);
-  //       const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
-  //       const current_month = date.toLocaleString('default', { month: 'long' });
-  //       const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
-  //       console.log("userPaidForMonth: ", current_month, userPaidForMonth);
-  //       console.log("Fetched User Payment: ", userPaymentData.data.getUserPayment);
-  //       setUserPaid(userPaidForMonth);
-  //       setUserPayment(userPaymentData.data.getUserPayment);
-  //       if (userPaidForMonth === false){
-  //         console.log("User not paid, setting state to ", appStates.PAYMENT);
-  //         setAppState(appStates.PAYMENT);
-  //       }
-  //     }catch(error){
-  //       handleError(error, fetchUserPayment);
-  //     }
-  //   }
+    // /*
+    // Gets the user payment info
+    // */
+    // const fetchUserPayment = async (user) => {
+    //   try {
+    //     const date = new Date();
+    //     // const allUserPaymentData = await API.graphql(graphqlOperation(listUserPayments));//getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+    //     // console.log("user attributes in fetchUserPayment: ", user.attributes);
+    //     const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+    //     const current_month = date.toLocaleString('default', { month: 'long' });
+    //     const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
+    //     console.log("userPaidForMonth: ", current_month, userPaidForMonth);
+    //     console.log("Fetched User Payment: ", userPaymentData.data.getUserPayment);
+    //     setUserPaid(userPaidForMonth);
+    //     setUserPayment(userPaymentData.data.getUserPayment);
+    //     if (userPaidForMonth === false){
+    //       console.log("User not paid, setting state to ", appStates.PAYMENT);
+    //       setAppState(appStates.PAYMENT);
+    //     }
+    //   }catch(error){
+    //     handleError(error, fetchUserPayment);
+    //   }
+    // }
 
-  //   /*
-  //   Gets the user payment info
-  //   */
-  //   const fetchPaymentDetails = async (user) => {
-  //     try {
-  //       const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
-  //       console.log("listed paymentDetails: ", allPaymentDetails);
-  //       const payment_details = allPaymentDetails.data.listPaymentDetails.items[0];
-  //       console.log("Payment Details for user:", payment_details);
-  //       setPaymentDetails(payment_details);
-  //     }catch(error){
-  //       handleError(error, fetchPaymentDetails);
-  //     }
-  //   }
+    // /*
+    // Gets the user payment info
+    // */
+    // const fetchPaymentDetails = async (user) => {
+    //   try {
+    //     const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
+    //     console.log("listed paymentDetails: ", allPaymentDetails);
+    //     const payment_details = allPaymentDetails.data.listPaymentDetails.items[0];
+    //     console.log("Payment Details for user:", payment_details);
+    //     setPaymentDetails(payment_details);
+    //   }catch(error){
+    //     handleError(error, fetchPaymentDetails);
+    //   }
+    // }
 
   //   return onAuthUIStateChange((nextAuthState, authData) => {
   //     // check if we are already in auth state
@@ -241,9 +246,45 @@ function App(){
 
   React.useEffect(() => {
     // console.log("Auth state out of return: ", authState);
-    // if (authState !== "signedin"){
-    //   setAppState(appStates.AUTH);
-    // }
+
+       /*
+    Gets the user payment info
+    */
+    const fetchUserPayment = async (user) => {
+      try {
+        const date = new Date();
+        // const allUserPaymentData = await API.graphql(graphqlOperation(listUserPayments));//getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+        // console.log("user attributes in fetchUserPayment: ", user.attributes);
+        const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+        const current_month = date.toLocaleString('default', { month: 'long' });
+        const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
+        console.log("userPaidForMonth: ", current_month, userPaidForMonth);
+        console.log("Fetched User Payment: ", userPaymentData.data.getUserPayment);
+        setUserPaid(userPaidForMonth);
+        setUserPayment(userPaymentData.data.getUserPayment);
+        if (userPaidForMonth === false){
+          console.log("User not paid, setting state to ", appStates.PAYMENT);
+          setAppState(appStates.PAYMENT);
+        }
+      }catch(error){
+        handleError(error, fetchUserPayment);
+      }
+    }
+
+    /*
+    Gets the user payment info
+    */
+    const fetchPaymentDetails = async (user) => {
+      try {
+        const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
+        console.log("listed paymentDetails: ", allPaymentDetails);
+        const payment_details = allPaymentDetails.data.listPaymentDetails.items[0];
+        console.log("Payment Details for user:", payment_details);
+        setPaymentDetails(payment_details);
+      }catch(error){
+        handleError(error, fetchPaymentDetails);
+      }
+    }
 
     return onAuthUIStateChange((nextAuthState, authData) => {
       console.log("\ncurrent app state: ", appState);
@@ -256,17 +297,8 @@ function App(){
       // fetch data after refreshing page when logged in
       if (nextAuthState === "signedin" && authData && authState === undefined){
         console.log("fetching data...");
-      // fetchUserPayment(authData);
-      // fetchPaymentDetails();
-      }
-      // fetch data after logging in
-      if (nextAuthState === "signedin" && authData && authState === "signin"){
-        console.log("fetching data...");
-      // fetchUserPayment(authData);
-      // fetchPaymentDetails();
-      }
-
-      if (nextAuthState === "signedin"){
+        fetchUserPayment(authData);
+        fetchPaymentDetails();
         if (pendingAppState){
           console.log("setting next state to pending app state: ", pendingAppState);
           setAppState(pendingAppState);
@@ -274,10 +306,21 @@ function App(){
           console.log("no pending app state, setting state to: ", appStates.TICKET_MENU);
           setAppState(appStates.TICKET_MENU);
         }
-      }else{
-        console.log("In auth hook and setting app state to AUTH");
-        setAppState(appStates.AUTH);
+        return;
       }
+      // fetch data after logging in
+      if (nextAuthState === "signedin" && authData && authState === "signin"){
+        console.log("fetching data...");
+        setAppState(appStates.TICKET_MENU);
+        fetchUserPayment(authData);
+        fetchPaymentDetails();
+        return;
+      }
+        if (!authData){
+          console.log("In auth hook and setting app state to AUTH");
+          setAppState(appStates.AUTH);
+        }
+      // }
     })
   })
 
@@ -404,19 +447,6 @@ function App(){
           />
         );
   
-      // case appStates.NOT_PAID:
-      //   // if (!userPaid){
-      //   //   alert("You have not paid for this month");
-      //   // }
-      //   return (
-      //     <Payment 
-      //     routes = {routes}
-      //     onClickRoute = {(i) => {alert("To have access to the app, you need to pay!")}}
-      //     bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
-      //     paymentInfo = {generatePaymentInfo(userPayment)}
-      //     />
-      //   );
-    
       case appStates.PAYMENT:
         let message = "";
         if (userPayment === USER_PAYMENT_PLACEHOLDER || paymentDetails === PAYMENT_DETAILS_PLACEHOLDER){
@@ -441,9 +471,11 @@ function App(){
     
       case appStates.ERROR:
         return (
-          <div className="message">
-            An error has occured. Please try again and if the error persists then contact the supplier with the error message included.
-          </div>
+          < Error 
+            routes = {routes}
+            onClickRoute = {(i) => {handleOnClickRoute(i)}}
+            errorMsg = {errorMsg}
+          />
         );
       }
   }
@@ -455,7 +487,7 @@ function App(){
     console.log("leaving state: ", appState);
 
     // if user has not signed in then sign them in and remeber what route they clicked
-    if (!(authState === Auth.SignedIn && user)){ 
+    if (!user){ 
       console.log("User is not signed in, setting state: ", appStates.AUTH);
       switch (i){
         case 0:
@@ -579,12 +611,12 @@ function App(){
     console.log("This was thrown by function: ", f.name);
     let error_msg;
     if (error.errors){
-      let error_msg = error.errors[0].message;
+      error_msg = error.errors[0].message;
     }else{
-      let error_msg = error
+      error_msg = error
     }
-    const alert_msg = "An Error has occured: \"" + error_msg + "\". Please try again and if the problem persists then send an email with the error message included.";
-    alert(alert_msg);
+    // const alert_msg = "An Error has occured: \"" + error_msg + "\". Please try again and if the problem persists then send an email with the error message included.";
+    setErrorMsg(error_msg);
     setAppState(appStates.ERROR);
   }
 }
