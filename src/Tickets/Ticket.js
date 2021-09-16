@@ -62,29 +62,26 @@ export class Ticket {
 /*
 Checks if a ticket can be opened
 */
-export function getStartEndDate(availability_start, availability_end){
+export function getStartEndDate(date_now, availability_start, availability_end){
 
-    console.log("Getting start and end date", [availability_start, availability_end]);
+    console.info("Getting start and end date with date note", date_now, [availability_start, availability_end]);
 
-    const date_now = new Date();
-    const is_early_morning = isEarlyMorning(new Date());
+    // const date_now = new Date();
+    const is_early_morning = isEarlyMorning(date_now, availability_start);
 
     console.log("Is early Morning?", is_early_morning);
     
     let hours_mins_end = availability_end.split(':');
     let hours_mins_start = availability_start.split(':');
 
-    let date_end = new Date();
-    let date_start = new Date();
+    let date_end = new Date(date_now);
+    let date_start = new Date(date_now);
 
     if (is_early_morning){
-        date_end = new Date();
-        date_start = new Date(date_now);
+        // date_start = new Date(date_now);
         date_start.setDate(date_start.getDate() - 1);   // set the start date to yesterday
     }else{
-        date_end = new Date(date_now);
-        date_end.setDate(date_end.getDate() + 1)
-        date_start = new Date();
+        date_end.setDate(date_end.getDate() + 1); // tomorrows date
     }
 
     // set date end
@@ -97,23 +94,23 @@ export function getStartEndDate(availability_start, availability_end){
     date_start.setMinutes(parseInt(hours_mins_start[1],10));
     date_start.setSeconds(0);
 
-    console.log("Date end: ", date_end);
-    console.log("Date start: ", date_start);
+    console.info("Date end: ", date_end);
+    console.info("Date start: ", date_start);
     // need to check if date_end is greater than date_now
     return [date_start, date_end]
 }
 
-export function canOpenTicket(availability_start, availability_end){
-    console.log(`Checking if ticket can be opened based on start availability: ${availability_start} & end availability: ${availability_end}`)
-    const date_now = new Date();
-    const [start_date, end_date] = getStartEndDate(availability_start, availability_end);
-    const can_open =  date_now < end_date && date_now > start_date;
+export function canOpenTicket(date_now, availability_start, availability_end){
+    console.log(`Checking if ticket can be opened based on start availability: ${availability_start} & end availability: ${availability_end} for date: ${date_now.toISOString()}`)
+    // const date_now = new Date();
+    const [start_date, end_date] = getStartEndDate(date_now, availability_start, availability_end);
+    const can_open =  date_now < end_date && date_now >= start_date;
     console.log(`Can open: ${can_open}`);
     return can_open;
 }
 
-export function isEarlyMorning(today){
-    console.log(`Checking if early morning with date: ${today}`);
+export function isEarlyMorning(today, morning_time){
+    console.log(`Checking if early morning with todays date: ${today} and morning_time: ${morning_time}`);
     // const today = new Date();
     const hour = today.getHours().toString();
     const minute = ((today.getMinutes() < 10 ? '0' : '') + today.getMinutes()).toString();
@@ -122,8 +119,18 @@ export function isEarlyMorning(today){
     let time = hour+minute;
     time = parseInt(time, 10);
 
+    // get date in morning's minutes and hours
+    const [hour_date_in_morning,minute_hour_date_in_morning] = morning_time.split(":");
+    let time_morning = hour_date_in_morning + minute_hour_date_in_morning;
+    try{
+        time_morning = parseInt(time_morning, 10);
+    }catch(error){
+        console.error("Error: ", error);
+        console.error("Setting time morning to 530 manually");
+        time_morning = 530;
+    }
     // check whether the ticket expires today or tomorrow
-    if (time >= 0 && time <= 530){
+    if (time >= 0 && time < time_morning){
         console.log(`It is early morning`);
         return true;
     }else{

@@ -17,55 +17,17 @@ import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import {listCodes, getCode} from "./graphql/queries"
 import {listUserPayments, getUserPayment} from "./graphql/queries"
 import {listPaymentDetails} from "./graphql/queries"
-import { AppState, ConsoleLogger } from '@aws-amplify/core';
-
+// constants from config
+import {USER_PAID, CODE_INITIAL, ROUTES, SWITCH_TIME_WITH_CODE, 
+  DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH, MONTHLY_FEE, 
+  PAYMENT_DETAILS_PLACEHOLDER, USER_PAYMENT_PLACEHOLDER,
+  USER_PAYMENT_PAGE_INFO} from "./config";
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
 
-// constants
-const CODE_INITIAL = undefined;
-const ROUTES = ["INFO","TICKET MENU", "PAYMENT"];
-const USER_PAID = false;
-const SWITCH_TIME_WITH_CODE = true;
-const DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH = 5;  //The # of days where you alert user to pay for next month
-const MONTHLY_FEE = "15.00";
+
 const RANDOM_PURCHASE_DATE = createRandomPurchasedDate(new Date(), 6);
-const PAYMENT_DETAILS_PLACEHOLDER = {
-  id: "",
-  beneficiary: "",
-  sortCode: "",
-  updatedAt: "",
-  IBAN: "",
-  createdAt: "",
-  BIC: "",
-  email: "",
-  accountNumber: "",
-  type: ""
-}
-const USER_PAYMENT_PLACEHOLDER = {
-  id: undefined,
-  November: undefined,
-  JanuaryNextYear: undefined,
-  May: undefined,
-  February: undefined,
-  subscriptionDate: undefined,
-  July: undefined,
-  createdAt: undefined,
-  October: undefined,
-  September: undefined,
-  January: undefined,
-  June: undefined,
-  August: undefined,
-  updatedAt: undefined,
-  year: undefined,
-  April: undefined,
-  March: undefined,
-  December: undefined
-}
-const USER_PAYMENT_PAGE_INFO = {
-  month:"", 
-  amount:""
-}
+
 
 
 
@@ -518,7 +480,7 @@ function App(){
       return;
     }
 
-    if (!canOpenTicket(start_time, end_time)){
+    if (!canOpenTicket(new Date(), start_time, end_time)){
       console.info(`availability: start time = ${start_time}, end time = ${end_time}\nfor the ticket is unavailable`)
       alert("Can't open this ticket due to availablity!");
     }else{
