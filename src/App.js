@@ -27,9 +27,9 @@ const CODE_INITIAL = undefined;
 const ROUTES = ["INFO","TICKET MENU", "PAYMENT"];
 const USER_PAID = false;
 const SWITCH_TIME_WITH_CODE = true;
-const DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH = 30;  //The # of days where you alert user to pay for next month
+const DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH = 5;  //The # of days where you alert user to pay for next month
 const MONTHLY_FEE = "15.00";
-
+const RANDOM_PURCHASE_DATE = createRandomPurchasedDate(new Date(), 6);
 const PAYMENT_DETAILS_PLACEHOLDER = {
   id: "",
   beneficiary: "",
@@ -62,6 +62,12 @@ const USER_PAYMENT_PLACEHOLDER = {
   March: undefined,
   December: undefined
 }
+const USER_PAYMENT_PAGE_INFO = {
+  month:"", 
+  amount:""
+}
+
+
 
 function App(){
   // states
@@ -69,7 +75,7 @@ function App(){
   const [ticketInfo, setTicketInfo] = React.useState(require('./Tickets/ticket_information.json'));
   const [switchTimeWithCode, setSwitchTimeWithCode] = React.useState(SWITCH_TIME_WITH_CODE);
   const [timeState, setTimeState] = React.useState(0);
-  const [randomPurchasedDate, setRandomPurchasedDate] =  React.useState(createRandomPurchasedDate());
+  const [randomPurchasedDate, setRandomPurchasedDate] =  React.useState(RANDOM_PURCHASE_DATE);
   const [ticketOptions, setTicketOptions] = React.useState(Object.keys(ticketInfo));  // gets the keys from the ticketInfo
   const [code, setCode] = React.useState(CODE_INITIAL);
   const [routes, setRoutes] = React.useState(ROUTES)
@@ -77,6 +83,7 @@ function App(){
   const [paymentDetails, setPaymentDetails] = React.useState(PAYMENT_DETAILS_PLACEHOLDER); 
   const [userPayment, setUserPayment] = React.useState(USER_PAYMENT_PLACEHOLDER);
   const [errorMsg, setErrorMsg] = React.useState();
+  const [userPaymentPageInfo, setUserPaymentPageInfo] = React.useState(USER_PAYMENT_PAGE_INFO);
 
   /* The States of the App
   0) Prompt the user to sign in/sign up/forgotten password
@@ -107,45 +114,51 @@ function App(){
   
   // this is called after pendingAppState has been changed
   React.useEffect(() => {
-    console.log("Pending app state: ", pendingAppState);
+    console.group("Pending app state use Effect: ", pendingAppState);
     if (pendingAppState !== undefined){
-      console.log("after changing pending state, setting app state to: ", appStates.AUTH);
+      console.debug("after changing pending state, setting app state to: ", appStates.AUTH);
       setAppState(appStates.AUTH);
     }
+    console.groupEnd();
   }, [pendingAppState, appStates.AUTH])
   
   // this effect gets the code if the user has paid
   React.useEffect(() => {
+    console.group("Fetch Code use Effect");
     /*
     Gets the code for today
     */
     const fetchCode = async () => {
-      const is_early_morning = isEarlyMorning();
+      console.group("Fetching Code");
+      const is_early_morning = isEarlyMorning(new Date());
       let date_for_code = new Date();
       if (is_early_morning){
         // we want yesterdays date as the code is assigned to it
         date_for_code.setDate(date_for_code.getDate() - 1);
+        console.debug(`It is early morning so setting date - 1: ${date_for_code.toDateString()}`);
       }
       // convert date to "YYYY-MM-dd" format
       const date_for_code_string = date_for_code.toISOString().split('T')[0];
-      console.log("date for code: ", date_for_code, date_for_code_string);
+      console.debug("date for code: ", date_for_code, date_for_code_string);
       try {
         const codeData = await API.graphql(graphqlOperation(getCode,{"id":date_for_code_string}));//listCodes));//getCode,{"id":"2021-08-30"}));
-        console.log("Code Data: ", codeData);
+        console.info("Code Data: ", codeData);
         const code = codeData.data.getCode.code;
-        console.log("Code: ", code);
+        console.debug("Code: ", code);
         setCode(code);
       }catch(error){
         handleError(error, fetchCode);
       }
+      console.groupEnd();
     }
 
     if (userPaid === true && code === undefined){
-      console.log("user has paid so fetching code...");
+      console.debug("user has paid so fetching code...");
       fetchCode();
     }else{
-      console.log("user has NOT paid so not fetching code...");
+      console.debug("user has NOT paid so not fetching code...");
     }
+    console.groupEnd();
   }, [userPaid, code]);
 
   // timer
@@ -158,87 +171,99 @@ function App(){
   });
 
   React.useEffect(() => {
-       /*
+    /*
     Gets the user payment info
     */
     const fetchUserPayment = async (user) => {
+      console.group(`Fetching user payment for user: ${user.username}`);
       try {
         const date = new Date();
         // const allUserPaymentData = await API.graphql(graphqlOperation(listUserPayments));//getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
-        // console.log("user attributes in fetchUserPayment: ", user.attributes);
+        // console.debug("user attributes in fetchUserPayment: ", user.attributes);
         const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+        const user_payment = userPaymentData.data.getUserPayment;
         const current_month = date.toLocaleString('default', { month: 'long' });
         const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
-        console.log("userPaidForMonth: ", current_month, userPaidForMonth);
-        console.log("Fetched User Payment: ", userPaymentData.data.getUserPayment);
+        console.debug("userPaidForMonth: ", current_month, userPaidForMonth);
+        console.info("Fetched User Payment: ", userPaymentData.data.getUserPayment);
         setUserPaid(userPaidForMonth);
-        setUserPayment(userPaymentData.data.getUserPayment);
+        setUserPayment(user_payment);
         if (userPaidForMonth === false){
-          console.log("User not paid, setting state to ", appStates.PAYMENT);
+          console.info("User not paid, setting state to ", appStates.PAYMENT);
           setAppState(appStates.PAYMENT);
         }
+        const user_payment_page_info = generatePaymentInfo(user_payment);
+        setUserPaymentPageInfo(user_payment_page_info);
       }catch(error){
         handleError(error, fetchUserPayment);
       }
+      console.groupEnd();
     }
 
     /*
     Gets the user payment info
     */
-    const fetchPaymentDetails = async (user) => {
+    const fetchPaymentDetails = async () => {
+      console.group(`Fetching Payment details`)
       try {
         const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
-        console.log("listed paymentDetails: ", allPaymentDetails);
+        console.debug("listed paymentDetails: ", allPaymentDetails);
         const payment_details = allPaymentDetails.data.listPaymentDetails.items[0];
-        console.log("Payment Details for user:", payment_details);
+        console.info("Payment Details for user:", payment_details);
         setPaymentDetails(payment_details);
       }catch(error){
         handleError(error, fetchPaymentDetails);
       }
+      console.groupEnd();
     }
 
     return onAuthUIStateChange((nextAuthState, authData) => {
-      console.log("\ncurrent app state: ", appState);
-      console.log("Current AuthState: ", authState);
-      console.log("next auth state: ", nextAuthState);
-      console.log("Auth data: ", authData);
+      console.group("onAuthUIStateChange");
+      console.debug("\ncurrent app state: ", appState);
+      console.debug("Current AuthState: ", authState);
+      console.debug("next auth state: ", nextAuthState);
+      console.debug("Auth data: ", authData);
       setAuthState(nextAuthState);
       setUser(authData)
 
       // fetch data after refreshing page when logged in
       if (nextAuthState === "signedin" && authData && authState === undefined){
-        console.log("fetching data...");
+        console.debug("fetching data...");
         fetchUserPayment(authData);
         fetchPaymentDetails();
         if (pendingAppState){
-          console.log("setting next state to pending app state: ", pendingAppState);
+          console.debug("setting next state to pending app state: ", pendingAppState);
           setAppState(pendingAppState);
         }else{
-          console.log("no pending app state, setting state to: ", appStates.TICKET_MENU);
+          console.debug("no pending app state, setting state to: ", appStates.TICKET_MENU);
           setAppState(appStates.TICKET_MENU);
         }
+        console.groupEnd();
         return;
       }
       // fetch data after logging in
       if (nextAuthState === "signedin" && authData && authState === "signin"){
-        console.log("fetching data...");
+        console.debug("fetching data...");
         setAppState(appStates.TICKET_MENU);
         fetchUserPayment(authData);
         fetchPaymentDetails();
+        console.groupEnd();
         return;
       }
       if (!authData){
-        console.log("In auth hook and setting app state to AUTH");
+        console.debug("In auth hook and setting app state to AUTH");
         setAppState(appStates.AUTH);
+        console.groupEnd();
         return;
       }
 
-      if (authState == "signedin" && nextAuthState == "signedin"){
+      if (authState === "signedin" && nextAuthState === "signedin"){
         setAppState(appStates.TICKET_MENU);
+        console.groupEnd();
         return;
 
       }
-      // }
+      console.groupEnd();
     })
   })
 
@@ -250,7 +275,7 @@ function App(){
   corresponding render
   */
   function returnAppState(){
-    console.log("In state: ", appState);
+    console.info("In state: ", appState);
     switch (appState){
       default:
         return (
@@ -267,7 +292,7 @@ function App(){
         //   facebookAppId: 'fqf4q3yt34y34', // Enter your facebookAppId here
         //   amazonClientId: 'q4rtq3tq34tq34' // Enter your amazonClientId here
         // };
-        // console.log("Should be returning something now...");
+        // console.debug("Should be returning something now...");
         return (
           //<AmplifyAuthenticator >//federated={federated}>
           <AmplifyAuthenticator >
@@ -377,7 +402,7 @@ function App(){
               routes = {routes}
               onClickRoute = {(i) => {handleOnClickRoute(i)}}
               bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
-              paymentInfo = {generatePaymentInfo(userPayment)}
+              paymentInfo = {userPaymentPageInfo}
             />
           </div>
           <div className="message">
@@ -402,7 +427,8 @@ function App(){
   Sets the appState based on what route was clicked
   */
   function handleOnClickRoute(i){
-    console.log("leaving state: ", appState);
+    console.group(`Handling Clicking Route: ${i}`);
+    console.info("leaving state: ", appState);
 
     // if user has not signed in then sign them in and remeber what route they clicked
     if (!user){ 
@@ -420,25 +446,26 @@ function App(){
           setPendingAppState(appStates.INFO);
           break;
       }
+      console.groupEnd();
       return;
     }
     // else allow them to freely move between pages
     switch(i){
       case 0:
-        console.log("User clicked route 0, setting state: ", appStates.INFO);
+        console.debug("User clicked route 0, setting state: ", appStates.INFO);
         setAppState(appStates.INFO);
         break;
       case 1:
         if (userPaid === true){
-          console.log("User clicked route 1, setting state: ", appStates.TICKET_MENU);
+          console.debug("User clicked route 1, setting state: ", appStates.TICKET_MENU);
           setAppState(appStates.TICKET_MENU);
         }else{
-          console.log("User clicked route 0 but has not paid, setting state: ", appStates.PAYMENT);
+          console.debug("User clicked route 0 but has not paid, setting state: ", appStates.PAYMENT);
           setAppState(appStates.PAYMENT);
         }
         break;
       case 2:
-        console.log("User clicked route 2, setting state: ", appStates.PAYMENT);
+        console.debug("User clicked route 2, setting state: ", appStates.PAYMENT);
         setAppState(appStates.PAYMENT);
         break;
       default:
@@ -449,23 +476,31 @@ function App(){
         }
         break;
     }
+    console.groupEnd();
   }
 
   function handleOnClickBackButton(){
+    console.group("Handling on click back button")
     setAppState(appStates.TICKET_MENU);
     setTicket(undefined);
+    console.groupEnd();
   }
   /*
   Sets the ticket chosen by the user and will reload the app to display the ticket
   */
   function handleTicketClick(idx){
+    console.group(`handle Ticket Click: ${idx}`);
     // first check if user has paid and logged In
     if (!(user)){
+      console.info(`User ${JSON.stringify(user)} is undefined, set app state to AUTH`);
       setAppState(appStates.AUTH);
+      console.groupEnd();
       return;
     }
     if (!userPaid){
+      console.info(`User ${userPaid} is false, set app state to PAYMENT`);
       setAppState(appStates.PAYMENT);
+      console.groupEnd();
       return;
     }
 
@@ -474,30 +509,38 @@ function App(){
     const start_time = ticketInfo[ticket_chosen]["availability_start"];
     const end_time =  ticketInfo[ticket_chosen]["availability_end"];
     
-    console.log("Ticket chosen was", ticket_chosen);
+    console.info("Ticket chosen was", ticket_chosen);
 
     if (ticket_chosen === undefined){
+      console.debug("ticket was undefined so going to main menu");
       setAppState(appStates.TICKET_MENU);
+      console.groupEnd();
       return;
     }
 
     if (!canOpenTicket(start_time, end_time)){
+      console.info(`availability: start time = ${start_time}, end time = ${end_time}\nfor the ticket is unavailable`)
       alert("Can't open this ticket due to availablity!");
     }else{
       const ticket_object = new TicketFactory().createTicket(ticketInfo[ticket_chosen])
-      console.log("Ticket created by factory:", ticket_object);
+      console.debug("Ticket created by factory:", ticket_object);
       setTicket(ticket_object); 
       setAppState(appStates.TICKET);
     }
+    console.groupEnd();
   }
 
   /*
   Handles the case when the ticket has expired
   */
   function handleExpired(){
+      console.group("Handling ticket being expired");
+      console.info(`setting ticket: ${JSON.stringify(ticket)} to undefined`);
+      console.debug(`Setting App state to TICKET_MENU`);
       // alert("Ticket has expired!");
       setTicket(undefined);
       setAppState(appStates.TICKET_MENU);
+      console.groupEnd();
   }
   
   /*
@@ -505,27 +548,32 @@ function App(){
   and setting switch time with code
   */
   function onTimerTick(){
-      // console.log("In timer method");
-      if (ticket !== undefined){
-        if (ticket.isExpired()){
-            console.log("Ticket has expired");
-            handleExpired();
-            return;
-        }
-        const num_states = 1000/timerRefreshTimeMilli;
-        setTimeState((timeState + 1)%num_states);
-        if (timeState === (num_states - 1)){
-          setSwitchTimeWithCode(!switchTimeWithCode);
-        }
+    console.group("In timer method");
+    if (ticket !== undefined){
+      console.debug(`ticket: ${JSON.stringify(ticket)} is not undefined`);
+      if (ticket.isExpired(new Date())){
+          console.debug("Ticket has expired");
+          handleExpired();
+          console.groupEnd();
+          return;
       }
+      const num_states = 1000/timerRefreshTimeMilli;
+      setTimeState((timeState + 1)%num_states);
+      if (timeState === (num_states - 1)){
+        console.debug(`time state: ${timeState}, which means its stime to invert switchTimeWithCode`);
+        setSwitchTimeWithCode(!switchTimeWithCode);
+      }
+    }
+    console.groupEnd();
   }    
 
   /*
   Handles an error by setting the app state to ERROR
   */
   function handleError(error, f){
-    console.log("An error occured: ", error);
-    console.log("This was thrown by function: ", f.name);
+    console.group("An Error was thrown");
+    console.error("An error occured: ", error);
+    console.error("This was thrown by function: ", f.name);
     let error_msg;
     if (error.errors){
       error_msg = error.errors[0].message;
@@ -533,29 +581,37 @@ function App(){
       error_msg = error
     }
     // const alert_msg = "An Error has occured: \"" + error_msg + "\". Please try again and if the problem persists then send an email with the error message included.";
+    console.error(`Setting Error msg to: ${error_msg}`);
+    console.error(`Setting app state to ERROR`);
     setErrorMsg(error_msg);
     setAppState(appStates.ERROR);
+    console.groupEnd();
   }
 }
 
 /*
 Gets a random date between todays and 6 months before
 */
-function createRandomPurchasedDate(){
-    let fromTime = new Date();
-    fromTime.setMonth(fromTime.getMonth() - 6);
-    fromTime = fromTime.getTime(); //6 months before
-  
-    const toTime = new Date().getTime(); // todays date
-    const date = new Date(fromTime + Math.random() * (toTime - fromTime));
-  
+function createRandomPurchasedDate(date_1, months_before){
+    console.group(`Creating random date from Date: ${date_1} until ${months_before} months before`);
+    date_1.setMonth(date_1.getMonth() - months_before);
+    const fromTime = date_1.getTime(); //original date
+
+    const toTime = new Date().getTime(); // date x months ahead
+    const date_random = new Date(fromTime + Math.random() * (toTime - fromTime));
+    
+    console.debug(`Starting Date: ${date_1.toISOString()}`);
+    console.debug(`End Date: ${new Date().toISOString()}`);
+
     // let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
-    let month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date);
-    let day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date);
-    let weekday = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date);
-    let time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+    let month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date_random);
+    let day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date_random);
+    let weekday = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date_random);
+    let time = ("0" + date_random.getHours()).slice(-2) + ":" + ("0" + date_random.getMinutes()).slice(-2);
   
     const date_as_string = `${weekday} ${day} ${month} at ${time}`
+    console.debug(`Random Date as string: ${date_as_string}`);
+    console.groupEnd();
     return date_as_string;
 }
 
@@ -569,71 +625,91 @@ the month. At which we tell the user to pay for the next month (in advance so th
 Again if they have paid for the next month then they will be shown amount of 0.
 */
 function generatePaymentInfo(userPayment){
+  console.group(`Generating Payment Info with user payment`);
+  console.info("User Payment: ", userPayment);
   /*
   Get the number of days remaining within the current month
   */
-  function getRemainingDaysUntilEndOfMonth(){
-    const date = new Date();
+  function getRemainingDaysUntilEndOfMonth(date){
+    console.group(`Getting Ramainig days until the end of the month from date: ${date}`);
+    // const date = new Date();
     let time = new Date(date.getTime());
     time.setMonth(date.getMonth() + 1);
     time.setDate(0);
     const days = time.getDate() > date.getDate() ? time.getDate() - date.getDate() : 0;
+    console.debug(`Days left until end of the month: ${days}`);
     return days;
   }
-  console.log("In getRemainingDaysUntilEndOfMonth");
+
   const date = new Date();
   const date_next_month = new Date(date.getTime());
   date_next_month.setMonth(date.getMonth() + 1);
 
   const current_month = date.toLocaleString('default', { month: 'long' });
+  console.debug(`Current Month: ${current_month}`);
   const next_month = date_next_month.toLocaleString('default', { month: 'long' });
-  // console.log("User Payment: ", userPayment);
+  console.debug(`Next Month: ${next_month}`);
   const userPaidForCurrentMonth = userPayment[current_month];
-  
+  console.debug(`User has paid for current month: ${userPaidForCurrentMonth}`);
+
   let month_to_pay;
   let amount;
   // check if user has paid for current month
   if (userPaidForCurrentMonth === true){
-    console.log("user paid for current month: ", current_month);
+    console.debug("user paid for current month: ", current_month);
     // check if date is 5 days before month end
-    const days_left = getRemainingDaysUntilEndOfMonth();
-
+    const days_left = getRemainingDaysUntilEndOfMonth(date);
     // check if user has paid for next month and set amount appropriatly
     if (days_left < DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH){
-      console.log("Time to alert user to pay for next month: ", next_month);
+      console.debug("Time to alert user to pay for next month: ", next_month);
       // check if the month is december in which the next month is Januray but for the next year
       let userPaidForNextMonth;
       if (current_month === 12){
+        console.debug(`Current Month is December so checking is user paid for JanuaryNextYear`);
         userPaidForNextMonth = userPayment["JanuaryNextYear"];
       }else{
+        console.debug(`Current Month is not December`);
         userPaidForNextMonth = userPayment[next_month];
       }
+      console.debug(`User paid for next month: ${userPaidForNextMonth}`);
       month_to_pay = next_month;
       if (userPaidForNextMonth === true){
         amount = "0.00";
-        console.log("User paid for next month");
+        console.debug(`User paid for next month, so setting amount to: ${amount}`);
       }else if (userPaidForNextMonth === false){
         amount = MONTHLY_FEE;
-        console.log("User not paid for next month");
+        console.debug(`User not paid for next month, so setting amount to ${amount}`);
       }else{
         amount = "";
+        console.debug(`Data not fetched, so setting amount to: ${amount}`);
       }
     }else{
       // user has paid for current month but it is too soon to tell them
       // to pay for next month
       month_to_pay = current_month;
       amount = "0.00";
+      console.debug(`Not time to alert the user for next months payment`);
+      console.debug(`Setting month to pay: ${month_to_pay}`);
+      console.debug(`Setting amount: ${amount}`);
     }
   }else if (userPaidForCurrentMonth === false){
     // user has not paid for current month
-    console.log("user not paid for current month: ", current_month);
+    console.debug(`user not paid for current month: ${current_month}`);
     month_to_pay = current_month;
     amount = MONTHLY_FEE;
+    console.debug(`Setting month to pay: ${month_to_pay}`);
+      console.debug(`Setting amount: ${amount}`);
   }else{
     month_to_pay = "";
     amount = "";
+    console.debug(`Data not fetched`);
+    console.debug(`Setting month to pay: ${month_to_pay}`);
+    console.debug(`Setting amount: ${amount}`);
   }
-  return {month:month_to_pay, amount:amount};
+  const payment_page_info = {month:month_to_pay, amount:amount};
+  console.info(`payment_page_info: ${JSON.stringify(payment_page_info)}`)
+  console.groupEnd();
+  return payment_page_info;
 }
 
 export default App;

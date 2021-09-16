@@ -1,15 +1,15 @@
 export class Ticket {
-    constructor(title, availability_start, availability_end){
+    constructor(title, start_date, end_date){
+        console.group(`Creating ticket ${title}`);
         this.title = title;
-        this.availability_start = availability_start;
-        this.availability_end = availability_end;
-
-        [this.start_date, this.end_date] = this.getStartEndDate(availability_start, availability_end);
+        this.start_date = start_date;
+        this.end_date = end_date;
         this.expiry_date_string = this.getExpiryString(this.end_date);
+        console.groupEnd();
     }
 
     getExpiryString(date){
-        console.log("Getting ExpiryString", date)
+        console.log(`Getting ExpiryString for date: ${date}`);
         let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
         let month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date);
         let day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date);
@@ -18,14 +18,11 @@ export class Ticket {
         return `Expires on ${weekday} ${day} ${month} ${year} at ${time}`
     }
 
-    getStartEndDate(availability_start, availability_end){
-        return getStartEndDate(availability_start, availability_end);
-    }
-
     /*
     Returns the [Hours, minutes, seconds] until the ticket expires
     */
     getTimes(){
+        console.log(`Getting times`);
         // calculate the hours minutes and seconds until availability_end is reached
         const date_now = new Date();
         const date_future = this.end_date;
@@ -40,18 +37,21 @@ export class Ticket {
             minutes: Math.floor((difference / 1000 / 60) % 60),
             seconds: Math.floor((difference / 1000) % 60)
           };
-
+        console.log(`Time left: ${JSON.stringify(timeLeft)}`);
         return timeLeft;
     }
 
     /*
     Checks if the ticket is expired, if so then returns true
     */
-    isExpired(){
-        const date_now = new Date();
+    isExpired(date_now){
+        console.log(`Checking if ticket is expired with date: ${date_now}`);
+        // const date_now = new Date();
         if (date_now > this.end_date){
+            console.log(`Ticket is expired`);
             return true;
         }else{
+            console.log(`Ticket is not expired`);
             return false;
         }
     }
@@ -62,12 +62,12 @@ export class Ticket {
 /*
 Checks if a ticket can be opened
 */
-function getStartEndDate(availability_start, availability_end){
+export function getStartEndDate(availability_start, availability_end){
 
     console.log("Getting start and end date", [availability_start, availability_end]);
 
     const date_now = new Date();
-    const is_early_morning = isEarlyMorning();
+    const is_early_morning = isEarlyMorning(new Date());
 
     console.log("Is early Morning?", is_early_morning);
     
@@ -104,13 +104,17 @@ function getStartEndDate(availability_start, availability_end){
 }
 
 export function canOpenTicket(availability_start, availability_end){
+    console.log(`Checking if ticket can be opened based on start availability: ${availability_start} & end availability: ${availability_end}`)
     const date_now = new Date();
     const [start_date, end_date] = getStartEndDate(availability_start, availability_end);
-    return date_now < end_date && date_now > start_date;
+    const can_open =  date_now < end_date && date_now > start_date;
+    console.log(`Can open: ${can_open}`);
+    return can_open;
 }
 
-export function isEarlyMorning(){
-    const today = new Date();
+export function isEarlyMorning(today){
+    console.log(`Checking if early morning with date: ${today}`);
+    // const today = new Date();
     const hour = today.getHours().toString();
     const minute = ((today.getMinutes() < 10 ? '0' : '') + today.getMinutes()).toString();
     
@@ -120,8 +124,10 @@ export function isEarlyMorning(){
 
     // check whether the ticket expires today or tomorrow
     if (time >= 0 && time <= 530){
+        console.log(`It is early morning`);
         return true;
     }else{
+        console.log(`It is not early morning`);
         return false;
     }
 }
