@@ -71,7 +71,7 @@ function Crypto({bankInfo}){
             <div className="infoGrid">
                 {/* Account Type */}
                 <div className="infoItemLeft">Crypto Type</div>
-                <div className="infoItemRight">{bankInfo.crpyoType}</div>
+                <div className="infoItemRight">{bankInfo.cryptoType}</div>
                 {/* Sort Code */}
                 <div className="infoItemLeft">Bitcoin Wallet Address</div>
                 <div className="infoItemRight">{bankInfo.BTCWalletAddress}</div>

@@ -76,10 +76,17 @@ function App(){
 
   const timerRefreshTimeMilli = 200;  // time for timer in milliseconds
   
-  function getAndSetBTCPrice(){
-    console.log("getting BTC amount...");
+  /*
+  This function gets the BTC price for 15 pounds and sets it
+  */
+  function getAndSetBTCPrice(amount){
+    console.debug("getting BTC amount: ", amount);
     const currency="GBP";
-    const amount = MONTHLY_FEE;
+    if(amount === ""){
+      console.warn(`amount for getting BTC was \"\", setting to \"...\"`);
+      setBTCAmount("...");
+      return;
+    }
     fetch(`https://blockchain.info/tobtc?currency=${currency}&value=${amount}`)
       .then(async response => {
         const data = await(response.json());
@@ -158,8 +165,6 @@ function App(){
       console.group(`Fetching user payment for user: ${user.username}`);
       try {
         const date = new Date();
-        // const allUserPaymentData = await API.graphql(graphqlOperation(listUserPayments));//getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
-        // console.debug("user attributes in fetchUserPayment: ", user.attributes);
         const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
         const user_payment = userPaymentData.data.getUserPayment;
         const current_month = date.toLocaleString('default', { month: 'long' });
@@ -188,7 +193,14 @@ function App(){
       try {
         const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
         console.debug("listed paymentDetails: ", allPaymentDetails);
-        const payment_details = allPaymentDetails.data.listPaymentDetails.items[0];
+        let payment_details;
+        for (const [key, value] of Object.entries(allPaymentDetails.data.listPaymentDetails.items)) {
+          if (value.type === "crypto"){
+            payment_details = value;
+            break;
+          }
+        }
+        // const payment_details = allPaymentDetails.data.listPaymentDetails.items[2];
         console.info("Payment Details for user:", payment_details);
         setPaymentDetails(payment_details);
       }catch(error){
@@ -382,7 +394,10 @@ function App(){
             <Payment 
               routes = {routes}
               onClickRoute = {(i) => {handleOnClickRoute(i)}}
-              bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
+              bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, 
+                accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, 
+                ref:"bus app", email:paymentDetails.email, BTCWalletAddress:paymentDetails.BTCWalletAddress,
+                cryptoType:paymentDetails.cryptoType}}
               paymentInfo = {userPaymentPageInfo}
               BTCAmount = {BTCAmount}
             />
@@ -580,7 +595,6 @@ function App(){
   function generatePaymentInfo(userPayment){
     console.group(`Generating Payment Info with user payment`);
     console.info("User Payment: ", userPayment);
-    getAndSetBTCPrice();
     /*
     Get the number of days remaining within the current month
     */
@@ -660,6 +674,7 @@ function App(){
       console.debug(`Setting month to pay: ${month_to_pay}`);
       console.debug(`Setting amount: ${amount}`);
     }
+    getAndSetBTCPrice(amount);
     const payment_page_info = {month:month_to_pay, amount:amount};
     console.info(`payment_page_info: ${JSON.stringify(payment_page_info)}`)
     console.groupEnd();
