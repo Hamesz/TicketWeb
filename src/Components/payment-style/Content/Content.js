@@ -1,39 +1,40 @@
 import { ContentWrap } from "./Content.styles";
 
-function Content(props) {
+function Content({bankInfo, paymentInfo, BTCAmount}) {
     // check if account type is local
-    if (props.bankInfo.type === "local"){
-        return returnLocal(props)
-    }else{
-        return returnInternational(props)
-    }
-}
-
-function returnInternational({bankInfo, paymentInfo}){
+    // console.log("BTC amount: ", BTCAmount);
     return (
         <ContentWrap>
-            Information about send the correct amount of bitcoin 
-            <div className="title">Information about sending Bitcoin</div>
-            <div className="info">The price of bitcoin can change quite a lot within a day and the purchase and sending of it can incur fees. 
-            It is your responsability to ensure that the correct amount of Bitcoin is actually sent to the provided wallet address.
-            Here is a <a 
-                rel="noopener noreferrer" target="_blank" href="https://www.coingecko.com/en/coins/bitcoin/gbp">website</a> that 
-                converts GBP to BTC (Bitcoin), use this to determine how much you need to send. 
-                Make sure you look at the actual Bitcoin you will be sending after the fees and check this website to see if it equals the amount due.
-                Don't worry if it is a little off due to the price always changing.</div>
             {/* Payment info showing how much they owe for what month */}
             <div className="title">Payment Due</div>
             <div className="infoGrid">
                 {/* Month Due */}
                 <div className="infoItemLeft">Month</div>
                 <div className="infoItemRight">{paymentInfo.month}</div>
-                {/* Month Due */}
+                {/* Amount Due in GDP */}
                 <div className="infoItemLeft">Amount</div>
                 <div className="infoItemRight">£{paymentInfo.amount}</div>
+                {/* Amount Due in crypto */}
+                <div className="infoItemLeft">
+                    <a rel="noopener noreferrer" target="_blank" href="https://blockchain.info/api/exchange_rates_api">Amount in Bitcoin</a>
+                </div>
+                <div className="infoItemRight">{BTCAmount}</div>
             </div>
             <div className="info">The amount will be 0 if you have paid for the corresponding month</div>
             <div className="info">The next month will show a few days before the end of the month to give you time to send the payment and guarantee access to the app.</div>
             <br></br>
+        
+            {bankInfo.type === "local" && < Local bankInfo={bankInfo} />}
+            {bankInfo.type === "crypto" && < Crypto bankInfo={bankInfo} />
+            }
+            {bankInfo.type === "international" && < International bankInfo={bankInfo} />}
+        </ContentWrap>
+    );
+}
+
+function International({bankInfo}){
+    return (
+        <ContentWrap>
             <div className="title">Bank Information</div>
             {/* All the left hand side info */}
             <div className="infoGrid">
@@ -62,31 +63,31 @@ function returnInternational({bankInfo, paymentInfo}){
     );
 }
 
-function returnLocal({bankInfo, paymentInfo}){
+function Crypto({bankInfo}){
     return (
         <ContentWrap>
-            {/* Information about send the correct amount of bitcoin  */}
-            <div className="title">Information about sending Bitcoin</div>
-            <div className="info">The price of bitcoin can change quite a lot within a day and the purchase and sending of it can incur fees. 
-            It is your responsability to ensure that the correct amount of Bitcoin is actually sent to the provided wallet address.
-            Here is a <a 
-                rel="noopener noreferrer" target="_blank" href="https://www.coingecko.com/en/coins/bitcoin/gbp">website</a> that 
-                converts GBP to BTC (Bitcoin), use this to determine how much you need to send. 
-                Make sure you look at the actual Bitcoin you will be sending after the fees and check this website to see if it equals the amount due.
-                Don't worry if it is a little off due to the price always changing.</div>
-            {/* Payment info showing how much they owe for what month */}
-            <div className="title">Payment Due</div>
+        <div className="title">Crypto Information</div>
+            {/* All the left hand side info */}
             <div className="infoGrid">
-                {/* Month Due */}
-                <div className="infoItemLeft">Month</div>
-                <div className="infoItemRight">{paymentInfo.month}</div>
-                {/* Month Due */}
-                <div className="infoItemLeft">Amount</div>
-                <div className="infoItemRight">£{paymentInfo.amount}</div>
+                {/* Account Type */}
+                <div className="infoItemLeft">Crypto Type</div>
+                <div className="infoItemRight">{bankInfo.crpyoType}</div>
+                {/* Sort Code */}
+                <div className="infoItemLeft">Bitcoin Wallet Address</div>
+                <div className="infoItemRight">{bankInfo.BTCWalletAddress}</div>
+                {/* Email */}
+                <div className="infoItemLeft">Email</div>
+                <div className="infoItemRight">{bankInfo.email}</div>
             </div>
-            <div className="info">The amount will be 0 if you have paid for the corresponding month</div>
-            <div className="info">The next month will show a few days before the end of the month to give you time to send the payment and guarantee access to the app.</div>
-            <br></br>
+            <div className="info">Please send an email when you have sent the payment.</div>
+            <div className="info"><b>If you do not wish to use the app for the corresponding month, then no action is required.</b></div>
+            </ContentWrap>
+    )
+}
+
+function Local({bankInfo}){
+    return (
+        <ContentWrap>
             <div className="title">Bank Information</div>
             {/* All the left hand side info */}
             <div className="infoGrid">

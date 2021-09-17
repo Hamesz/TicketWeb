@@ -135,6 +135,8 @@ export const createPaymentDetails = /* GraphQL */ `
       beneficiary
       IBAN
       BIC
+      cryptoType
+      BTCWalletAddress
       createdAt
       updatedAt
     }
@@ -154,6 +156,8 @@ export const updatePaymentDetails = /* GraphQL */ `
       beneficiary
       IBAN
       BIC
+      cryptoType
+      BTCWalletAddress
       createdAt
       updatedAt
     }
@@ -173,6 +177,8 @@ export const deletePaymentDetails = /* GraphQL */ `
       beneficiary
       IBAN
       BIC
+      cryptoType
+      BTCWalletAddress
       createdAt
       updatedAt
     }

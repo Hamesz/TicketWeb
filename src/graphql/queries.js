@@ -94,6 +94,8 @@ export const getPaymentDetails = /* GraphQL */ `
       beneficiary
       IBAN
       BIC
+      cryptoType
+      BTCWalletAddress
       createdAt
       updatedAt
     }
@@ -115,6 +117,8 @@ export const listPaymentDetails = /* GraphQL */ `
         beneficiary
         IBAN
         BIC
+        cryptoType
+        BTCWalletAddress
         createdAt
         updatedAt
       }

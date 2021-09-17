@@ -28,7 +28,9 @@ type PaymentDetails @model{
   email: String!
   accountNumber: String
   sortCode: String
-  beneficiary: String!
+  beneficiary: String
   IBAN: String
   BIC: String
+  cryptoType: String
+  BTCWalletAddress: String
 }

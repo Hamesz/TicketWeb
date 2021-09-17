@@ -1,4 +1,5 @@
 import React from 'react';
+// import fetch from 
 // for tickets look
 import Ticket from "./Components/ticket-style/ticket"
 import TicketMenu from "./Components/menu-style/menu"
@@ -46,6 +47,7 @@ function App(){
   const [userPayment, setUserPayment] = React.useState(USER_PAYMENT_PLACEHOLDER);
   const [errorMsg, setErrorMsg] = React.useState();
   const [userPaymentPageInfo, setUserPaymentPageInfo] = React.useState(USER_PAYMENT_PAGE_INFO);
+  const [BTCAmount, setBTCAmount] = React.useState("...");
 
   /* The States of the App
   0) Prompt the user to sign in/sign up/forgotten password
@@ -74,6 +76,22 @@ function App(){
 
   const timerRefreshTimeMilli = 200;  // time for timer in milliseconds
   
+  function getAndSetBTCPrice(){
+    console.log("getting BTC amount...");
+    const currency="GBP";
+    const amount = MONTHLY_FEE;
+    fetch(`https://blockchain.info/tobtc?currency=${currency}&value=${amount}`)
+      .then(async response => {
+        const data = await(response.json());
+        console.log("Got BTC data: ", data);
+        setBTCAmount(data);
+      })
+      .catch(error => {
+        console.error("There was an error fetch BTC price:", error);
+        handleError(error);
+      })
+  }
+
   // this is called after pendingAppState has been changed
   React.useEffect(() => {
     console.group("Pending app state use Effect: ", pendingAppState);
@@ -357,6 +375,7 @@ function App(){
         if (userPayment === USER_PAYMENT_PLACEHOLDER || paymentDetails === PAYMENT_DETAILS_PLACEHOLDER){
           message = "Data still waiting to be retrieved...";
         }
+        console.log(`BTC amount: ${BTCAmount}`);
         return (
           <div>
             <div>
@@ -365,6 +384,7 @@ function App(){
               onClickRoute = {(i) => {handleOnClickRoute(i)}}
               bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, ref:"bus app", email:paymentDetails.email}}
               paymentInfo = {userPaymentPageInfo}
+              BTCAmount = {BTCAmount}
             />
           </div>
           <div className="message">
@@ -549,6 +569,102 @@ function App(){
     setAppState(appStates.ERROR);
     console.groupEnd();
   }
+
+  /*
+  Determines the month payment is due and for how much.
+  If the user has not paid for the current month then that is returned with PAYMENT_FEE as amount.
+  If they have paid then amount is 0.00, unless its DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH before the end of
+  the month. At which we tell the user to pay for the next month (in advance so they are guaranteed access).
+  Again if they have paid for the next month then they will be shown amount of 0.
+  */
+  function generatePaymentInfo(userPayment){
+    console.group(`Generating Payment Info with user payment`);
+    console.info("User Payment: ", userPayment);
+    getAndSetBTCPrice();
+    /*
+    Get the number of days remaining within the current month
+    */
+    function getRemainingDaysUntilEndOfMonth(date){
+      console.group(`Getting Ramainig days until the end of the month from date: ${date}`);
+      // const date = new Date();
+      let time = new Date(date.getTime());
+      time.setMonth(date.getMonth() + 1);
+      time.setDate(0);
+      const days = time.getDate() > date.getDate() ? time.getDate() - date.getDate() : 0;
+      console.debug(`Days left until end of the month: ${days}`);
+      return days;
+    }
+
+    const date = new Date();
+    const date_next_month = new Date(date.getTime());
+    date_next_month.setMonth(date.getMonth() + 1);
+
+    const current_month = date.toLocaleString('default', { month: 'long' });
+    console.debug(`Current Month: ${current_month}`);
+    const next_month = date_next_month.toLocaleString('default', { month: 'long' });
+    console.debug(`Next Month: ${next_month}`);
+    const userPaidForCurrentMonth = userPayment[current_month];
+    console.debug(`User has paid for current month: ${userPaidForCurrentMonth}`);
+
+    let month_to_pay;
+    let amount;
+    // check if user has paid for current month
+    if (userPaidForCurrentMonth === true){
+      console.debug("user paid for current month: ", current_month);
+      // check if date is 5 days before month end
+      const days_left = getRemainingDaysUntilEndOfMonth(date);
+      // check if user has paid for next month and set amount appropriatly
+      if (days_left < DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH){
+        console.debug("Time to alert user to pay for next month: ", next_month);
+        // check if the month is december in which the next month is Januray but for the next year
+        let userPaidForNextMonth;
+        if (current_month === 12){
+          console.debug(`Current Month is December so checking is user paid for JanuaryNextYear`);
+          userPaidForNextMonth = userPayment["JanuaryNextYear"];
+        }else{
+          console.debug(`Current Month is not December`);
+          userPaidForNextMonth = userPayment[next_month];
+        }
+        console.debug(`User paid for next month: ${userPaidForNextMonth}`);
+        month_to_pay = next_month;
+        if (userPaidForNextMonth === true){
+          amount = "0.00";
+          console.debug(`User paid for next month, so setting amount to: ${amount}`);
+        }else if (userPaidForNextMonth === false){
+          amount = MONTHLY_FEE;
+          console.debug(`User not paid for next month, so setting amount to ${amount}`);
+        }else{
+          amount = "";
+          console.debug(`Data not fetched, so setting amount to: ${amount}`);
+        }
+      }else{
+        // user has paid for current month but it is too soon to tell them
+        // to pay for next month
+        month_to_pay = current_month;
+        amount = "0.00";
+        console.debug(`Not time to alert the user for next months payment`);
+        console.debug(`Setting month to pay: ${month_to_pay}`);
+        console.debug(`Setting amount: ${amount}`);
+      }
+    }else if (userPaidForCurrentMonth === false){
+      // user has not paid for current month
+      console.debug(`user not paid for current month: ${current_month}`);
+      month_to_pay = current_month;
+      amount = MONTHLY_FEE;
+      console.debug(`Setting month to pay: ${month_to_pay}`);
+        console.debug(`Setting amount: ${amount}`);
+    }else{
+      month_to_pay = "";
+      amount = "";
+      console.debug(`Data not fetched`);
+      console.debug(`Setting month to pay: ${month_to_pay}`);
+      console.debug(`Setting amount: ${amount}`);
+    }
+    const payment_page_info = {month:month_to_pay, amount:amount};
+    console.info(`payment_page_info: ${JSON.stringify(payment_page_info)}`)
+    console.groupEnd();
+    return payment_page_info;
+  }
 }
 
 /*
@@ -579,100 +695,7 @@ function createRandomPurchasedDate(date_1, months_before){
 
 
 
-/*
-Determines the month payment is due and for how much.
-If the user has not paid for the current month then that is returned with PAYMENT_FEE as amount.
-If they have paid then amount is 0.00, unless its DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH before the end of
-the month. At which we tell the user to pay for the next month (in advance so they are guaranteed access).
-Again if they have paid for the next month then they will be shown amount of 0.
-*/
-function generatePaymentInfo(userPayment){
-  console.group(`Generating Payment Info with user payment`);
-  console.info("User Payment: ", userPayment);
-  /*
-  Get the number of days remaining within the current month
-  */
-  function getRemainingDaysUntilEndOfMonth(date){
-    console.group(`Getting Ramainig days until the end of the month from date: ${date}`);
-    // const date = new Date();
-    let time = new Date(date.getTime());
-    time.setMonth(date.getMonth() + 1);
-    time.setDate(0);
-    const days = time.getDate() > date.getDate() ? time.getDate() - date.getDate() : 0;
-    console.debug(`Days left until end of the month: ${days}`);
-    return days;
-  }
 
-  const date = new Date();
-  const date_next_month = new Date(date.getTime());
-  date_next_month.setMonth(date.getMonth() + 1);
-
-  const current_month = date.toLocaleString('default', { month: 'long' });
-  console.debug(`Current Month: ${current_month}`);
-  const next_month = date_next_month.toLocaleString('default', { month: 'long' });
-  console.debug(`Next Month: ${next_month}`);
-  const userPaidForCurrentMonth = userPayment[current_month];
-  console.debug(`User has paid for current month: ${userPaidForCurrentMonth}`);
-
-  let month_to_pay;
-  let amount;
-  // check if user has paid for current month
-  if (userPaidForCurrentMonth === true){
-    console.debug("user paid for current month: ", current_month);
-    // check if date is 5 days before month end
-    const days_left = getRemainingDaysUntilEndOfMonth(date);
-    // check if user has paid for next month and set amount appropriatly
-    if (days_left < DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH){
-      console.debug("Time to alert user to pay for next month: ", next_month);
-      // check if the month is december in which the next month is Januray but for the next year
-      let userPaidForNextMonth;
-      if (current_month === 12){
-        console.debug(`Current Month is December so checking is user paid for JanuaryNextYear`);
-        userPaidForNextMonth = userPayment["JanuaryNextYear"];
-      }else{
-        console.debug(`Current Month is not December`);
-        userPaidForNextMonth = userPayment[next_month];
-      }
-      console.debug(`User paid for next month: ${userPaidForNextMonth}`);
-      month_to_pay = next_month;
-      if (userPaidForNextMonth === true){
-        amount = "0.00";
-        console.debug(`User paid for next month, so setting amount to: ${amount}`);
-      }else if (userPaidForNextMonth === false){
-        amount = MONTHLY_FEE;
-        console.debug(`User not paid for next month, so setting amount to ${amount}`);
-      }else{
-        amount = "";
-        console.debug(`Data not fetched, so setting amount to: ${amount}`);
-      }
-    }else{
-      // user has paid for current month but it is too soon to tell them
-      // to pay for next month
-      month_to_pay = current_month;
-      amount = "0.00";
-      console.debug(`Not time to alert the user for next months payment`);
-      console.debug(`Setting month to pay: ${month_to_pay}`);
-      console.debug(`Setting amount: ${amount}`);
-    }
-  }else if (userPaidForCurrentMonth === false){
-    // user has not paid for current month
-    console.debug(`user not paid for current month: ${current_month}`);
-    month_to_pay = current_month;
-    amount = MONTHLY_FEE;
-    console.debug(`Setting month to pay: ${month_to_pay}`);
-      console.debug(`Setting amount: ${amount}`);
-  }else{
-    month_to_pay = "";
-    amount = "";
-    console.debug(`Data not fetched`);
-    console.debug(`Setting month to pay: ${month_to_pay}`);
-    console.debug(`Setting amount: ${amount}`);
-  }
-  const payment_page_info = {month:month_to_pay, amount:amount};
-  console.info(`payment_page_info: ${JSON.stringify(payment_page_info)}`)
-  console.groupEnd();
-  return payment_page_info;
-}
 
 export default App;
 
