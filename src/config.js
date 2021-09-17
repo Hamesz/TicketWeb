@@ -5,6 +5,7 @@ export const USER_PAID = false;
 export const SWITCH_TIME_WITH_CODE = true;
 export const DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH = 5;  //The # of days where you alert user to pay for next month
 export const MONTHLY_FEE = "15.00";
+export const EARLY_MORNING_TIME_FOR_CODE = "05:30";
 export const PAYMENT_DETAILS_PLACEHOLDER = {
   id: "",
   beneficiary: "",

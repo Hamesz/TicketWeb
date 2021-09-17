@@ -12,6 +12,15 @@ function Content(props) {
 function returnInternational({bankInfo, paymentInfo}){
     return (
         <ContentWrap>
+            Information about send the correct amount of bitcoin 
+            <div className="title">Information about sending Bitcoin</div>
+            <div className="info">The price of bitcoin can change quite a lot within a day and the purchase and sending of it can incur fees. 
+            It is your responsability to ensure that the correct amount of Bitcoin is actually sent to the provided wallet address.
+            Here is a <a 
+                rel="noopener noreferrer" target="_blank" href="https://www.coingecko.com/en/coins/bitcoin/gbp">website</a> that 
+                converts GBP to BTC (Bitcoin), use this to determine how much you need to send. 
+                Make sure you look at the actual Bitcoin you will be sending after the fees and check this website to see if it equals the amount due.
+                Don't worry if it is a little off due to the price always changing.</div>
             {/* Payment info showing how much they owe for what month */}
             <div className="title">Payment Due</div>
             <div className="infoGrid">
@@ -56,6 +65,15 @@ function returnInternational({bankInfo, paymentInfo}){
 function returnLocal({bankInfo, paymentInfo}){
     return (
         <ContentWrap>
+            {/* Information about send the correct amount of bitcoin  */}
+            <div className="title">Information about sending Bitcoin</div>
+            <div className="info">The price of bitcoin can change quite a lot within a day and the purchase and sending of it can incur fees. 
+            It is your responsability to ensure that the correct amount of Bitcoin is actually sent to the provided wallet address.
+            Here is a <a 
+                rel="noopener noreferrer" target="_blank" href="https://www.coingecko.com/en/coins/bitcoin/gbp">website</a> that 
+                converts GBP to BTC (Bitcoin), use this to determine how much you need to send. 
+                Make sure you look at the actual Bitcoin you will be sending after the fees and check this website to see if it equals the amount due.
+                Don't worry if it is a little off due to the price always changing.</div>
             {/* Payment info showing how much they owe for what month */}
             <div className="title">Payment Due</div>
             <div className="infoGrid">

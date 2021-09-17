@@ -21,7 +21,7 @@ import {listPaymentDetails} from "./graphql/queries"
 import {USER_PAID, CODE_INITIAL, ROUTES, SWITCH_TIME_WITH_CODE, 
   DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH, MONTHLY_FEE, 
   PAYMENT_DETAILS_PLACEHOLDER, USER_PAYMENT_PLACEHOLDER,
-  USER_PAYMENT_PAGE_INFO} from "./config";
+  USER_PAYMENT_PAGE_INFO, EARLY_MORNING_TIME_FOR_CODE} from "./config";
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
 
@@ -92,7 +92,7 @@ function App(){
     */
     const fetchCode = async () => {
       console.group("Fetching Code");
-      const is_early_morning = isEarlyMorning(new Date());
+      const is_early_morning = isEarlyMorning(new Date(), EARLY_MORNING_TIME_FOR_CODE);
       let date_for_code = new Date();
       if (is_early_morning){
         // we want yesterdays date as the code is assigned to it
