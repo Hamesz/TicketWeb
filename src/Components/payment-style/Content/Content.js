@@ -34,7 +34,7 @@ and for how much
 */
 function AmountAndMonth({paymentInfo, BTCAmount}){
     return (
-        <ContentWrap>
+        <div>
             {/* Payment info showing how much they owe for what month */}
             <div className="title">Payment Due</div>
             <div className="infoGrid">
@@ -53,7 +53,7 @@ function AmountAndMonth({paymentInfo, BTCAmount}){
             <div className="info">The amount will be 0 if you have paid for the corresponding month</div>
             <div className="info">The next month will show a few days before the end of the month to give you time to send the payment and guarantee access to the app.</div>
             <br></br>
-        </ContentWrap>
+        </div>
     );
 }
 
@@ -63,7 +63,7 @@ bank account
 */
 function International({bankInfo}){
     return (
-        <ContentWrap>
+        <div>
             <div className="title">Bank Information</div>
             {/* All the left hand side info */}
             <div className="infoGrid">
@@ -86,7 +86,7 @@ function International({bankInfo}){
                 <div className="infoItemLeft">Email</div>
                 <div className="infoItemRight">{bankInfo.email}</div>
             </div>
-        </ContentWrap>
+        </div>
     );
 }
 
@@ -95,7 +95,7 @@ Returns the crypto details for paying in Bitcoin
 */
 function Crypto({bankInfo}){
     return (
-        <ContentWrap>
+        <div>
             <div className="title">Crypto Information</div>
             {/* All the left hand side info */}
             <div className="infoGrid">
@@ -109,7 +109,7 @@ function Crypto({bankInfo}){
                 <div className="infoItemLeft">Email</div>
                 <div className="infoItemRight">{bankInfo.email}</div>
             </div>
-        </ContentWrap>
+        </div>
     )
 }
 

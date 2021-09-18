@@ -15,13 +15,13 @@ Returns the section for the Overview
 */
 function Overview(){
     return (
-        <ContentWrap>
+        <div>
             {/* Requirements */}
             <div className="infoGrid">
                 <div className="title-black">Overview</div>
                 <div className="info-black">This page contains information about how to use the web abb properly, along with how to set up your crypto wallet for payment.</div>
             </div>
-        </ContentWrap>
+        </div>
     );
 }
 
@@ -30,7 +30,7 @@ Returns the section for setting up the users device
 */
 function DeviceSetUp(){
     return (
-        <ContentWrap>
+        <div>
             {/* Setting up your device to use this web app */}
             <div className="infoGrid-no-border">
                 <div className="title-black">Setting up your device to use this web app</div>
@@ -69,16 +69,17 @@ function DeviceSetUp(){
                     <div className="title-black">iOS/Apple</div>
                     <br></br>
                     <div className="instructions">
-                    The instructions below are taken from this <a rel="noopener noreferrer" target="_blank" href="https://natomasunified.org/kb/add-website-to-mobile-device-home-screen/">tutorial</a> and 
+                    The instructions below are taken from this <a rel="noopener noreferrer" target="_blank" href="https://www.macrumors.com/how-to/add-a-web-link-to-home-screen-iphone-ipad/">tutorial</a> and 
                     target the <a rel="noopener noreferrer" target="_blank" href="https://www.apple.com/uk/safari/">Safarfi browser</a>:
                     
                     <ol>
                         <li>Safari comes already installed on iOS phones, but if it isn't available then download it from the app store.</li>
                         <li>Launch “Safari” app.</li>
                         <li>Open this web app.</li>
-                        <li>Tap the icon featuring a right-pointing arrow coming out of a box along the top of the Safari window to open a drop-down menu..</li>
-                        <li>Tap “Add to Home Screen.” The Add to Home dialog box will appear, with the icon that will be used for this website on the left side of the dialog box..</li>    
-                        <li>Enter the name for the shortcut using the on-screen keyboard and tap “Add.” Safari will close automatically and you will be taken to where the icon is located on your iOS desktop</li>
+                        <li>Tap the Share icon (the square with an arrow pointing out of it) at the bottom of the screen.</li>
+                        <li>Scroll down to the list of actions and tap Add to Home Screen. (If you don't see the action, scroll to the bottom and tap Edit Actions, then tap Add next to the Add to Home Screen action. After that, you'll be able to select it from the Share Sheet.)</li>    
+                        <li>Type a name for your site link. This will be the title that appears beneath its icon on your Home screen.</li>
+                        <li>Tap Add in the top-right corner of the screen.</li>
                     </ol>
 
                     Now when you open the web app using the shortuct you just made, you should notice the toolbars and URL are gone.
@@ -90,7 +91,7 @@ function DeviceSetUp(){
                     <img src="assets/images/ios_ticket.jpg" alt="Example of ticket with an iOS/Apple phone"></img>
                 </div>
             </div>
-        </ContentWrap>
+        </div>
     );
 }
 
@@ -110,7 +111,7 @@ Returns the section for paying with crypto
 */
 function CryptoPayment(){
     return (
-        <ContentWrap>
+        <div>
             {/* Payment */}
             <div className="infoGrid">
                 <div className="title-black">Payment</div>
@@ -153,7 +154,7 @@ function CryptoPayment(){
                     If you do not wish to pay with crypto, then email your supplier. 
                     </div>
             </div>
-        </ContentWrap>
+        </div>
     );
 }
 

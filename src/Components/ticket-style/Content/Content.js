@@ -32,7 +32,7 @@ function Content(props) {
 
 function LogoAndTime({current_time}){
     return (
-        <ContentWrap>
+        <div>
             {/* contains all the containers for the icon and the code */}
             <div className="icon_code">
                 <div className="icon">
@@ -43,13 +43,13 @@ function LogoAndTime({current_time}){
                     <div className="code_text"><b>{current_time}</b></div>
                 </div>
             </div>
-        </ContentWrap>
+        </div>
     )
 }
 
 function TimeLeft({hours_left, minutes_left, seconds_left}){
     return (
-        <ContentWrap>
+        <div>
             <div className="timeGrid">
                 <div className="grid-item_text">Hours</div>
                 <div className="grid-item_text">Minutes</div>
@@ -61,13 +61,13 @@ function TimeLeft({hours_left, minutes_left, seconds_left}){
                     <div className="second_text">{seconds_left}</div>
                 </div>
             </div>
-        </ContentWrap>
+        </div>
     );
 }
 
 function TicketDetails({title, purchased_date, passenger}){
     return (
-        <ContentWrap>
+        <div>
             {/* Ticket Title */}
             <div className="ticket">
                 {title}
@@ -81,7 +81,7 @@ function TicketDetails({title, purchased_date, passenger}){
                 <div className="grid-info-item-left">Passenger</div>
                 <div className="grid-info-item-right">{passenger}</div>
             </div>
-        </ContentWrap>
+        </div>
     )
 }
 
