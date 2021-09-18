@@ -60,12 +60,13 @@ function DeviceSetUp(){
                     This provides a clean and minimalist view which is required to be shown to the bus driver.
                     </div>
                     <br></br>
-                    Example of ticket with an Android phone:
+                    <b>Example of ticket with an Android phone:</b>
+                    <br></br>
                     <img src="assets/images/android_ticket.jpg" alt="Example of ticket with an Android phone"></img>
                 </div>
                 {/* Apple Instructions */}
                 <div className="infoItem">
-                    <div className="title-black">IOS/Apple</div>
+                    <div className="title-black">iOS/Apple</div>
                     <br></br>
                     <div className="instructions">
                     The instructions below are taken from this <a rel="noopener noreferrer" target="_blank" href="https://natomasunified.org/kb/add-website-to-mobile-device-home-screen/">tutorial</a> and 
@@ -84,8 +85,9 @@ function DeviceSetUp(){
                     This provides a clean and minimalist view which is required to be shown to the bus driver.
                     </div>
                     <br></br>
-                    Example of ticket with an IOS/Apple phone
-                    <img src="assets/images/ios_ticket.jpg" alt="Example of ticket with an IOS/Apple phone"></img>
+                    <b>Example of ticket with an iOS/Apple phone</b>
+                    <br></br>
+                    <img src="assets/images/ios_ticket.jpg" alt="Example of ticket with an iOS/Apple phone"></img>
                 </div>
             </div>
         </ContentWrap>

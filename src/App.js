@@ -391,22 +391,23 @@ function App(){
         return (
           <div>
             <div>
-            <Payment 
-              routes = {routes}
-              onClickRoute = {(i) => {handleOnClickRoute(i)}}
-              bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, 
-                accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, 
-                ref:"bus app", email:paymentDetails.email, BTCWalletAddress:paymentDetails.BTCWalletAddress,
-                cryptoType:paymentDetails.cryptoType}}
-              paymentInfo = {userPaymentPageInfo}
-              BTCAmount = {BTCAmount}
-            />
+              <Payment 
+                routes = {routes}
+                onClickRoute = {(i) => {handleOnClickRoute(i)}}
+                bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, 
+                  accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, 
+                  ref:"bus app", email:paymentDetails.email, BTCWalletAddress:paymentDetails.BTCWalletAddress,
+                  cryptoType:paymentDetails.cryptoType}}
+                paymentInfo = {userPaymentPageInfo}
+                BTCAmount = {BTCAmount}
+                userBTCWallet = {user.attributes["custom:btc_wallet_address"]}
+                onBTCWalletAddresClick = {(address) => {handleBTCWalletAddresClick(address)}}
+              />
+            </div>
+            <div className="message">
+              {message}
+            </div>
           </div>
-          <div className="message">
-            {message}
-          </div>
-          </div>
-          
         );
     
       case appStates.ERROR:
@@ -418,6 +419,23 @@ function App(){
           />
         );
       }
+  }
+
+  async function handleBTCWalletAddresClick(address){
+    console.info("Changing Users BTC wallet address to:", address);
+    try{
+      console.log("Auth.currentAuthenticatedUser(): ", user);
+      const response = await Auth.updateUserAttributes(user, {
+        'custom:btc_wallet_address': `${address}`
+      })
+      // get the new updated User data with the new BTC address
+      const new_user_data = await Auth.currentAuthenticatedUser();
+      console.log("User data after changing BTC address: ", new_user_data);
+      setUser(new_user_data);
+    }catch (error){
+      console.error("Error occured whilst try to update BTC wallet address to: ", address);
+      handleError(error);
+    }
   }
 
   /*
@@ -482,6 +500,7 @@ function App(){
     setTicket(undefined);
     console.groupEnd();
   }
+
   /*
   Sets the ticket chosen by the user and will reload the app to display the ticket
   */

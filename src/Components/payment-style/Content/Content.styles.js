@@ -46,7 +46,49 @@ export const ContentWrap = styled.div`
     padding-left:5px;
 }
 
+.update-btc-wallet-address-grid{
+    max-width: 100%;
+    margin-top:1%;
+    display: grid;
+    border: 2px solid green;
+    border-radius: 4px;
+    text-align: center;
+    grid-template-columns: 1fr;
+    background-color: white;
+}
 
+.new-btc-wallet-address-label{
+    margin-top:1%;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.new-btc-wallet-address-input{
+    margin-left: 5%;
+    margin-right: 5%;
+    background-color: white;
+    color: black;
+    padding: 14px 20px;
+    border: 2px solid black;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 10px;
+}
+
+.change-btc-wallet-address-btn{
+    background-color: black; /* Green */
+    border: 1px solid white;
+    margin: 10px;
+    color: white;
+    padding: 12px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    display: inline-block;
+}
 
 `;
 

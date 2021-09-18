@@ -4,7 +4,7 @@ import { ContentWrap } from "./Content.styles";
 Displays the Month and Amount the user needs to pay.
 Also displays the details for where they pay (Crypto or bank details)
 */
-function Content({bankInfo, paymentInfo, BTCAmount}) {
+function Content({bankInfo, paymentInfo, BTCAmount, userBTCWallet, onBTCWalletAddresClick}) {
     return (
         <ContentWrap>
             <AmountAndMonth
@@ -16,6 +16,14 @@ function Content({bankInfo, paymentInfo, BTCAmount}) {
             {bankInfo.type === "crypto" && < Crypto bankInfo={bankInfo} />
             }
             {bankInfo.type === "international" && < International bankInfo={bankInfo} />}
+            <br></br>
+            <UsersBTCWallet 
+                userBTCWallet = {userBTCWallet}
+                onBTCWalletAddresClick = {(address) => {onBTCWalletAddresClick(address)}}
+            />
+            {/* Extra info */}
+            <div className="info">Please send an email when you have sent the payment.</div>
+            <div className="info"><b>If you do not wish to use the app for the corresponding month, then no action is required.</b></div>
         </ContentWrap>
     );
 }
@@ -78,8 +86,6 @@ function International({bankInfo}){
                 <div className="infoItemLeft">Email</div>
                 <div className="infoItemRight">{bankInfo.email}</div>
             </div>
-            <div className="info">Please send an email when you have sent the payment.</div>
-            <div className="info"><b>If you do not wish to use the app for the corresponding month, then no action is required.</b></div>
         </ContentWrap>
     );
 }
@@ -90,7 +96,7 @@ Returns the crypto details for paying in Bitcoin
 function Crypto({bankInfo}){
     return (
         <ContentWrap>
-        <div className="title">Crypto Information</div>
+            <div className="title">Crypto Information</div>
             {/* All the left hand side info */}
             <div className="infoGrid">
                 {/* Account Type */}
@@ -103,9 +109,7 @@ function Crypto({bankInfo}){
                 <div className="infoItemLeft">Email</div>
                 <div className="infoItemRight">{bankInfo.email}</div>
             </div>
-            <div className="info">Please send an email when you have sent the payment.</div>
-            <div className="info"><b>If you do not wish to use the app for the corresponding month, then no action is required.</b></div>
-            </ContentWrap>
+        </ContentWrap>
     )
 }
 
@@ -138,8 +142,27 @@ function Local({bankInfo}){
                 <div className="infoItemLeft">Email</div>
                 <div className="infoItemRight">{bankInfo.email}</div>
             </div>
-            <div className="info">Please send an email when you have sent the payment.</div>
-            <div className="info"><b>If you do not wish to use the app for the corresponding month, then no action is required.</b></div>
+            </ContentWrap>
+    );
+}
+
+function UsersBTCWallet({userBTCWallet, onBTCWalletAddresClick}){
+    return (
+        <ContentWrap>
+            <div className="title">
+                Your Bitcoin Wallet Address
+            </div>
+            <div className="info">
+                Your Bitcoin wallet address is registered as "{userBTCWallet}".
+                If this is incorrect then please update it, otherwise you may not be registered as payed.
+            </div>
+            <div className="update-btc-wallet-address-grid">
+                <label htmlFor="new_btc_wallet_address" className="new-btc-wallet-address-label">New Bitcoin Wallet Address:</label>
+                <br></br>
+                <input type="text" id="new_btc_wallet_address" name="new_btc_wallet_address" className="new-btc-wallet-address-input"></input>
+                <br></br>
+                <button className="change-btc-wallet-address-btn" onClick= {() => {onBTCWalletAddresClick(document.getElementById('new_btc_wallet_address').value)}}>Submit</button>
+            </div>
         </ContentWrap>
     );
 }
