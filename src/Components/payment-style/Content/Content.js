@@ -1,8 +1,30 @@
 import { ContentWrap } from "./Content.styles";
 
+/*
+Displays the Month and Amount the user needs to pay.
+Also displays the details for where they pay (Crypto or bank details)
+*/
 function Content({bankInfo, paymentInfo, BTCAmount}) {
-    // check if account type is local
-    // console.log("BTC amount: ", BTCAmount);
+    return (
+        <ContentWrap>
+            <AmountAndMonth
+                paymentInfo = {paymentInfo}
+                BTCAmount = {BTCAmount}
+            />
+            {/* Check which payment info to show */}
+            {bankInfo.type === "local" && < Local bankInfo={bankInfo} />}
+            {bankInfo.type === "crypto" && < Crypto bankInfo={bankInfo} />
+            }
+            {bankInfo.type === "international" && < International bankInfo={bankInfo} />}
+        </ContentWrap>
+    );
+}
+
+/*
+Returns the section showing the user what month to pay for
+and for how much
+*/
+function AmountAndMonth({paymentInfo, BTCAmount}){
     return (
         <ContentWrap>
             {/* Payment info showing how much they owe for what month */}
@@ -23,15 +45,14 @@ function Content({bankInfo, paymentInfo, BTCAmount}) {
             <div className="info">The amount will be 0 if you have paid for the corresponding month</div>
             <div className="info">The next month will show a few days before the end of the month to give you time to send the payment and guarantee access to the app.</div>
             <br></br>
-        
-            {bankInfo.type === "local" && < Local bankInfo={bankInfo} />}
-            {bankInfo.type === "crypto" && < Crypto bankInfo={bankInfo} />
-            }
-            {bankInfo.type === "international" && < International bankInfo={bankInfo} />}
         </ContentWrap>
     );
 }
 
+/*
+Returns the bank details for paying an international 
+bank account
+*/
 function International({bankInfo}){
     return (
         <ContentWrap>
@@ -63,6 +84,9 @@ function International({bankInfo}){
     );
 }
 
+/*
+Returns the crypto details for paying in Bitcoin
+*/
 function Crypto({bankInfo}){
     return (
         <ContentWrap>
@@ -85,6 +109,10 @@ function Crypto({bankInfo}){
     )
 }
 
+/*
+Returns the bank details for paying a local 
+bank account
+*/
 function Local({bankInfo}){
     return (
         <ContentWrap>

@@ -3,12 +3,34 @@ import { ContentWrap } from "./Content.styles";
 function Content() {
     return (
         <ContentWrap>
+            <Overview />
+            <DeviceSetUp/>
+            <Payment/>
+        </ContentWrap>
+    );
+}
+
+/*
+Returns the section for the Overview
+*/
+function Overview(){
+    return (
+        <ContentWrap>
             {/* Requirements */}
             <div className="infoGrid">
                 <div className="title-black">Overview</div>
                 <div className="info-black">This page contains information about how to use the web abb properly, along with how to set up your crypto wallet for payment.</div>
             </div>
-            
+        </ContentWrap>
+    );
+}
+
+/*
+Returns the section for setting up the users device
+*/
+function DeviceSetUp(){
+    return (
+        <ContentWrap>
             {/* Setting up your device to use this web app */}
             <div className="infoGrid-no-border">
                 <div className="title-black">Setting up your device to use this web app</div>
@@ -66,21 +88,41 @@ function Content() {
                     <img src="assets/images/ios_ticket.jpg" alt="Example of ticket with an IOS/Apple phone"></img>
                 </div>
             </div>
-        
+        </ContentWrap>
+    );
+}
+
+/*
+Returns the section for payment in general
+*/
+function Payment(){
+    return (
+        <ContentWrap>
+            <CryptoPayment/>
+        </ContentWrap>
+    );
+}
+
+/*
+Returns the section for paying with crypto
+*/
+function CryptoPayment(){
+    return (
+        <ContentWrap>
             {/* Payment */}
             <div className="infoGrid">
                 <div className="title-black">Payment</div>
                 <div className="instructions">
-                    {/* Payment will be done with crypotcurrency (Bitcoin), this is to make you anonymous and the payment secure.
-                    Opera comes with a crypotcurrency wallet which you can easily set up. Below are instructions on how to do this (which follows this <a rel="noopener noreferrer" target="_blank" href="https://help.opera.com/en/touch/crypto-wallet/">tutorial</a>): */}
                     Payment will be done with crypotcurrency (Bitcoin), this is to make you anonymous and the payment secure.
                     There are two things needed in order to perfrom this payment:
                     <br></br>
+                    {/* Bitcoin Wallet Section */}
                     <h4>1. A Bitcoin Wallet</h4>
                         A Bitcoin wallet is a way to store the Bitcoin, like a bank account to store money. 
                         From this wallet you can recieve and send Bitcoin. 
                         Look that this <a rel="noopener noreferrer" target="_blank" href="https://www.investopedia.com/terms/b/bitcoin-wallet.asp">guide</a> for more info!. 
                         There are many wallets available, provided by apps you can download on your phone.
+                    {/* How to buy Bitcoin */}
                     <h4>2. A way to buy Bitcoin</h4>
                     It is very easy to buy Bitcoin nowadays. So easy in fact that you don't need to provide proof of identity. Note that if an app does NOT require proof of identity (e.g. passport photo), then the fees for buying are much higher.
                     The cheapest way to but Bitcoin is with a trading account like <a 
@@ -88,6 +130,7 @@ function Content() {
                     </a> or <a 
                     rel="noopener noreferrer" target="_blank" href="https://www.binance.com/">Binance
                     </a>, note these do require proof of identity.
+                    {/* Example of Apps */}
                     <h4>Examples of phone apps that provde you a wallet and the option to buy:</h4>
                     <ol>
                         <li><a rel="noopener noreferrer" target="_blank" href="https://play.google.com/store/apps/details?id=com.bitcoin.mwallet">Bitcoin Wallet: buy BTC, BCH & ETH</a>. Does not require proof of identity, though the fees are high.</li>
@@ -95,10 +138,14 @@ function Content() {
                         <li><a rel="noopener noreferrer" target="_blank" href="https://play.google.com/store/apps/details?id=com.binance.dev">Binance</a>. Very cheap fees and quick send time. A very good way to buy and store Bitcoin but requires proof of identity.</li>
                         <li><a rel="noopener noreferrer" target="_blank" href="https://play.google.com/store/apps/details?id=com.coinbase.android&hl=en_GB&gl=US">Coinbase</a>. Very cheap fees and quick send time. A very good way to buy and store Bitcoin but requires proof of identity.</li>
                     </ol>
+                    {/* Reminding users to know their BTC address */}
                     <h4>Knowing your Bitcoin Address</h4>
                     Make sure you note down your Bitcoin wallet address, as this is needed for creating an account for this web app which is used to check who has paid. 
                     You can often see your Bitcoin wallet addres by clicking on recieve payment.
                     <br></br>
+                    <h4>Fees</h4>
+                    Make sure that you account for the fees when both buying and sending Bitcoin. The payment page will automatically convert the amount due to Bitcoin but you will still need to take into account the fees. You can manually check how much pounds are in Bitcoin using this <a 
+                    rel="noopener noreferrer" target="_blank" href="https://www.coingecko.com/en/coins/bitcoin/gbp">website</a>.
                     <h4>Congratulations!</h4>
                     Congratulations! You have just set up a crypto wallet that you can use to buy and send Bitcoin. For information on paying go to the payment page.
                     If you do not wish to pay with crypto, then email your supplier. 

@@ -18,7 +18,7 @@ function Ticket(props) {
          expiry_date = {props.expiry_date}
          purchased_date = {props.purchased_date}
          expiredFunction = {() => props.expiredFunction()}
-         passanger = {props.passanger}
+         passanger = {props.passenger}
          current_time = {props.current_time}
         />
       </AppWrap>

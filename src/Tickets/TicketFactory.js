@@ -1,5 +1,4 @@
 import {Ticket, getStartEndDate} from "./Ticket";
-import { TicketTemporary } from "./TicketTemporary";
 
 export class TicketFactory{
     createTicket(ticket_json_object, date_now){

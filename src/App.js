@@ -83,7 +83,7 @@ function App(){
     console.debug("getting BTC amount: ", amount);
     const currency="GBP";
     if(amount === ""){
-      console.warn(`amount for getting BTC was \"\", setting to \"...\"`);
+      console.warn(`amount for getting BTC was "", setting to "..."`);
       setBTCAmount("...");
       return;
     }
@@ -376,7 +376,7 @@ function App(){
             expiry_date = {ticket.expiry_date_string}
             purchased_date = {randomPurchasedDate}
             expiredFunction = {() => this.handleExpired()}
-            passanger = {user.attributes.name + " " + user.attributes.family_name}
+            passenger = {user.attributes.name + " " + user.attributes.family_name}
             current_time = {switchTimeWithCode ? time : code}
             onClickBackButton = {() => handleOnClickBackButton()}
           />
@@ -707,10 +707,6 @@ function createRandomPurchasedDate(date_1, months_before){
     console.groupEnd();
     return date_as_string;
 }
-
-
-
-
 
 export default App;
 
