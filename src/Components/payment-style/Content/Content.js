@@ -13,8 +13,7 @@ function Content({bankInfo, paymentInfo, BTCAmount, userBTCWallet, onBTCWalletAd
             />
             {/* Check which payment info to show */}
             {bankInfo.type === "local" && < Local bankInfo={bankInfo} />}
-            {bankInfo.type === "crypto" && < Crypto bankInfo={bankInfo} />
-            }
+            {bankInfo.type === "crypto" && < Crypto bankInfo={bankInfo} />}
             {bankInfo.type === "international" && < International bankInfo={bankInfo} />}
             <br></br>
             <UsersBTCWallet 

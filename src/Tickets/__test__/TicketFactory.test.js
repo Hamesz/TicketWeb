@@ -1,15 +1,23 @@
-import { TicketFactory} from "../TicketFactory";
-import {canOpenTicket} from "./Ticket";
+import {TicketFactory} from "../TicketFactory";
 
-test("test opening ticket out of availability ", () => {
-    ticket_json_object = {
+test("test opening ticket regular ticket ", () => {
+    const ticket_json_object = {
         title:"test",
-        duration: "",
         availability_start: "05:30",
         availability_end: "04:30"
     }
+    const date_now = new Date("2000","01" - 1, "01"); // 2021-01-01
+    const ticket = TicketFactory.createTicket(ticket_json_object, date_now);
+    
 })
-const start_date = new Date("2000","01" - 1, "01"); // 2021-01-01
-const end_date = new Date("2000","01" - 1, "01");// 2021-01-01
-const title = "test";
-const ticket = new Ticket(title, start_date, end_date);
+
+test("test opening ticket duration ticket ", () => {
+    const ticket_json_object = {
+        title:"test",
+        duration : { minutes: "5" },
+        availability_start: "05:30",
+        availability_end: "04:30"
+    }
+    const date_now = new Date("2000","01" - 1, "01"); // 2021-01-01
+    const ticket = TicketFactory.createTicket(ticket_json_object, date_now);
+})

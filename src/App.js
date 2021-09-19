@@ -538,7 +538,7 @@ function App(){
       console.info(`availability: start time = ${start_time}, end time = ${end_time}\nfor the ticket is unavailable`)
       alert("Can't open this ticket due to availablity!");
     }else{
-      const ticket_object = new TicketFactory().createTicket(ticketInfo[ticket_chosen], new Date());
+      const ticket_object = TicketFactory.createTicket(ticketInfo[ticket_chosen], new Date());
       console.debug("Ticket created by factory:", ticket_object);
       setTicket(ticket_object); 
       setAppState(appStates.TICKET);
