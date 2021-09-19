@@ -162,6 +162,8 @@ export const ContentWrap = styled.div`
         .grid-info-item-right {
             color: white;
             margin-bottom: 5%;
+            word-wrap: break-word;
+            word-break: break-all;
         }
 
     }

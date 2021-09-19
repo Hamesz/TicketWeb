@@ -151,8 +151,12 @@ function UsersBTCWallet({userBTCWallet, onBTCWalletAddresClick}){
             <div className="title">
                 Your Bitcoin Wallet Address
             </div>
+            <div className="infoGrid">
+                {/* Account Type */}
+                <div className="infoItemLeft">Your Bitcoin Wallet Address</div>
+                <div className="infoItemRight">{userBTCWallet}</div>
+            </div>
             <div className="info">
-                Your Bitcoin wallet address is registered as "{userBTCWallet}".
                 If this is incorrect then please update it, otherwise you may not be registered as payed.
             </div>
             <div className="update-btc-wallet-address-grid">

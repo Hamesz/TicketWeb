@@ -33,6 +33,8 @@ export const ContentWrap = styled.div`
     color: black;
     font-size: 20px;
     display: inline-block;
+
+    
 }
 
 .infoItemRight {
@@ -44,6 +46,9 @@ export const ContentWrap = styled.div`
     font-size: 16px;
     display: inline-block;
     padding-left:5px;
+
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 .update-btc-wallet-address-grid{

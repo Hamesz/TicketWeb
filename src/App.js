@@ -157,6 +157,7 @@ function App(){
     return () => clearTimeout(timer);
   });
 
+  // Called whenever the user's auth state changes
   React.useEffect(() => {
     /*
     Gets the user payment info
@@ -215,9 +216,6 @@ function App(){
       console.debug("Current AuthState: ", authState);
       console.debug("next auth state: ", nextAuthState);
       console.debug("Auth data: ", authData);
-      setAuthState(nextAuthState);
-      setUser(authData)
-
       // fetch data after refreshing page when logged in
       if (nextAuthState === "signedin" && authData && authState === undefined){
         console.debug("fetching data...");
@@ -230,6 +228,8 @@ function App(){
           console.debug("no pending app state, setting state to: ", appStates.TICKET_MENU);
           setAppState(appStates.TICKET_MENU);
         }
+        setAuthState(nextAuthState);
+        setUser(authData)
         console.groupEnd();
         return;
       }
@@ -239,22 +239,31 @@ function App(){
         setAppState(appStates.TICKET_MENU);
         fetchUserPayment(authData);
         fetchPaymentDetails();
+        setAuthState(nextAuthState);
+        setUser(authData)
         console.groupEnd();
         return;
       }
       if (!authData){
         console.debug("In auth hook and setting app state to AUTH");
         setAppState(appStates.AUTH);
+        setAuthState(nextAuthState);
+        setUser(authData)
         console.groupEnd();
         return;
       }
 
       if (authState === "signedin" && nextAuthState === "signedin"){
+        console.debug(`User signed in, setting state to TICKET_MENU`);
         setAppState(appStates.TICKET_MENU);
+        setAuthState(nextAuthState);
+        setUser(authData)
         console.groupEnd();
         return;
 
       }
+      setAuthState(nextAuthState);
+      setUser(authData)
       console.groupEnd();
     })
   })
@@ -388,6 +397,20 @@ function App(){
           message = "Data still waiting to be retrieved...";
         }
         console.log(`BTC amount: ${BTCAmount}`);
+        // check if auth data is undefined (just logged out)
+        let user_BTC_Wallet;
+        if (!user){
+          console.debug(`User is undefined, setting wallet to ...`)
+          user_BTC_Wallet = "...";
+        }else{
+          if ("attributes" in user && "custom:btc_wallet_address" in user.attributes){
+            console.debug(`User has attribute: custom:btc_wallet_address, setting wallet to that value`);
+            user_BTC_Wallet = user.attributes["custom:btc_wallet_address"];
+          }else{
+            console.debug(`User does not have attribute: custom:btc_wallet_address, setting wallet to ...`);
+            user_BTC_Wallet = "...";
+          }
+        }
         return (
           <div>
             <div>
@@ -400,7 +423,7 @@ function App(){
                   cryptoType:paymentDetails.cryptoType}}
                 paymentInfo = {userPaymentPageInfo}
                 BTCAmount = {BTCAmount}
-                userBTCWallet = {user.attributes["custom:btc_wallet_address"]}
+                userBTCWallet = {user_BTC_Wallet}
                 onBTCWalletAddresClick = {(address) => {handleBTCWalletAddresClick(address)}}
               />
             </div>
