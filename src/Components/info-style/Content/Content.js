@@ -46,8 +46,8 @@ function DeviceSetUp(){
                 <div className="title-black">Android</div>
                     <br></br>
                     <div className="instructions">
-                    The instructions below are taken from this <a rel="noopener noreferrer" target="_blank" href="https://natomasunified.org/kb/add-website-to-mobile-device-home-screen/">tutorial</a> 
-                    and target the <a rel="noopener noreferrer" target="_blank" href="https://play.google.com/store/apps/details?id=com.android.chrome&hl=en_GB&gl=US">Google Chrome browser</a>:
+                    The instructions below are taken from this <a rel="noopener noreferrer" target="_blank" href="https://natomasunified.org/kb/add-website-to-mobile-device-home-screen/">tutorial</a> and 
+                    target the <a rel="noopener noreferrer" target="_blank" href="https://play.google.com/store/apps/details?id=com.android.chrome&hl=en_GB&gl=US">Google Chrome browser</a>:
                     <ol>
                         <li>Download the <a rel="noopener noreferrer" target="_blank" href="https://play.google.com/store/apps/details?id=com.android.chrome&hl=en_GB&gl=US">Google Chrome browser</a> from the Google Play Store, if you do not already have it.</li>
                         <li>Launch “Chrome” app.</li>
