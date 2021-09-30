@@ -123,7 +123,7 @@ function CryptoPayment(){
                     <h4>1. A Bitcoin Wallet</h4>
                         A Bitcoin wallet is a way to store the Bitcoin, like a bank account to store money. 
                         From this wallet you can recieve and send Bitcoin. 
-                        Look that this <a rel="noopener noreferrer" target="_blank" href="https://www.investopedia.com/terms/b/bitcoin-wallet.asp">guide</a> for more info!. 
+                        Look that this <a rel="noopener noreferrer" target="_blank" href="https://www.investopedia.com/terms/b/bitcoin-wallet.asp">guide</a> for more info! 
                         There are many wallets available, provided by apps you can download on your phone.
                     {/* How to buy Bitcoin */}
                     <h4>2. A way to buy Bitcoin</h4>
