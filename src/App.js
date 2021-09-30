@@ -1,36 +1,38 @@
 import React from 'react';
-// import fetch from 
-// for tickets look
-import Ticket from "./Components/ticket-style/ticket"
-import TicketMenu from "./Components/menu-style/menu"
-import Info from "./Components/info-style/info"
-import Payment from './Components/payment-style/payment';
-import Error from './Components/error-style/error';
+
+// states
+import { PaymentState } from './State/PaymentState';
+import { TicketState } from './State/TicketState';
+import { TicketMenuState } from './State/TicketMenuState';
+import { AuthState as StateAuth} from './State/AuthState';
+// Data fetching
+import { fetchUserPayment } from './DataFetching/UserPayment'
+import { fetchPaymentDetails } from './DataFetching/PaymentDetails';
+import {listPaymentDetails} from "./graphql/queries"
+import {listUserPayments, getUserPayment} from "./graphql/queries"
 // for actual ticket
 import {canOpenTicket, isEarlyMorning} from "./Tickets/Ticket"
 import {TicketFactory} from "./Tickets/TicketFactory"
 // Authentication
-import { AmplifyAuthenticator, AmplifySignUp, AmplifySignIn, AmplifySignOut, withAuthenticator } from '@aws-amplify/ui-react';
 import Amplify, { Auth, API, graphqlOperation } from "aws-amplify"
 import awsconfig from "./aws-exports"
-import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
+import { onAuthUIStateChange } from '@aws-amplify/ui-components';
 // Code API
 import {listCodes, getCode} from "./graphql/queries"
-import {listUserPayments, getUserPayment} from "./graphql/queries"
-import {listPaymentDetails} from "./graphql/queries"
+
 // constants from config
 import {USER_PAID, CODE_INITIAL, ROUTES, SWITCH_TIME_WITH_CODE, 
   DAYS_FOR_ALERT_PAYMENT_NEXT_MONTH, MONTHLY_FEE, 
   PAYMENT_DETAILS_PLACEHOLDER, USER_PAYMENT_PLACEHOLDER,
   USER_PAYMENT_PAGE_INFO, EARLY_MORNING_TIME_FOR_CODE} from "./config";
+import { InfoState } from './State/InfoState';
+import { ErrorState } from './State/ErrorState';
+import { DefaultState } from './State/DefaultState';
+
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
 
-
 const RANDOM_PURCHASE_DATE = createRandomPurchasedDate(new Date(), 6);
-
-
-
 
 function App(){
   // states
@@ -162,60 +164,67 @@ function App(){
     /*
     Gets the user payment info
     */
+
     const fetchUserPayment = async (user) => {
       console.group(`Fetching user payment for user: ${user.username}`);
       try {
-        const date = new Date();
-        const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
-        const user_payment = userPaymentData.data.getUserPayment;
-        const current_month = date.toLocaleString('default', { month: 'long' });
-        const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
-        console.debug("userPaidForMonth: ", current_month, userPaidForMonth);
-        console.info("Fetched User Payment: ", userPaymentData.data.getUserPayment);
-        setUserPaid(userPaidForMonth);
-        setUserPayment(user_payment);
-        if (userPaidForMonth === false){
-          console.info("User not paid, setting state to ", appStates.PAYMENT);
-          setAppState(appStates.PAYMENT);
-        }
-        const user_payment_page_info = generatePaymentInfo(user_payment);
-        setUserPaymentPageInfo(user_payment_page_info);
+          const userPaymentData =  await API.graphql(graphqlOperation(getUserPayment,{"id":user.attributes.sub}));//listCodes));//getCode,{"id":"2021-08-30"}));
+          console.group("Proccessing user payment", userPaymentData);
+          const user_payment = userPaymentData.data.getUserPayment;
+          const date = new Date();
+          const current_month = date.toLocaleString('default', { month: 'long' });
+          const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
+          console.debug("userPaidForMonth: ", current_month, userPaidForMonth);
+          console.info("Fetched User Payment: ", userPaymentData.data.getUserPayment);
+          setUserPaid(userPaidForMonth);
+          setUserPayment(user_payment);
+          if (userPaidForMonth === false){
+              console.info("User not paid, setting state to ", appStates.PAYMENT);
+              setAppState(appStates.PAYMENT);
+          }
+          const user_payment_page_info = generatePaymentInfo(user_payment);
+          setUserPaymentPageInfo(user_payment_page_info);
       }catch(error){
-        handleError(error, fetchUserPayment);
+          handleError(error, fetchUserPayment);
       }
       console.groupEnd();
-    }
+  }
+  
 
-    /*
-    Gets the user payment info
-    */
+  /*
+  Gets the user payment info
+  */
     const fetchPaymentDetails = async () => {
       console.group(`Fetching Payment details`)
       try {
-        const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
-        console.debug("listed paymentDetails: ", allPaymentDetails);
-        let payment_details;
-        for (const [key, value] of Object.entries(allPaymentDetails.data.listPaymentDetails.items)) {
-          if (value.type === "crypto"){
-            payment_details = value;
-            break;
+          const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
+          console.debug("listed paymentDetails: ", allPaymentDetails);
+          let payment_details;
+          for (const [key, value] of Object.entries(allPaymentDetails.data.listPaymentDetails.items)) {
+              if (value.type === "crypto"){
+                  payment_details = value;
+                  break;
+              }
           }
-        }
-        // const payment_details = allPaymentDetails.data.listPaymentDetails.items[2];
-        console.info("Payment Details for user:", payment_details);
-        setPaymentDetails(payment_details);
+          console.info("Payment Details for user:", payment_details);
+          setPaymentDetails(payment_details);
+          // const payment_details = allPaymentDetails.data.listPaymentDetails.items[2];
       }catch(error){
-        handleError(error, fetchPaymentDetails);
+          handleError(error, fetchPaymentDetails);
       }
       console.groupEnd();
-    }
-
+  }
+    
     return onAuthUIStateChange((nextAuthState, authData) => {
       console.group("onAuthUIStateChange");
       console.debug("\ncurrent app state: ", appState);
       console.debug("Current AuthState: ", authState);
       console.debug("next auth state: ", nextAuthState);
       console.debug("Auth data: ", authData);
+
+      // setAuthState(nextAuthState);
+      // setUser(authData)
+
       // fetch data after refreshing page when logged in
       if (nextAuthState === "signedin" && authData && authState === undefined){
         console.debug("fetching data...");
@@ -279,168 +288,29 @@ function App(){
     console.info("In state: ", appState);
     switch (appState){
       default:
-        return (
-          <div>
-            <h1>Something went wrong, please sign out and refresh.</h1>
-            <AmplifySignOut/>
-          </div>
-        );
+        return DefaultState();
 
       case appStates.AUTH:
-        // OAuth
-        // const federated = {
-        //   googleClientId: 'f34f4w4334w', // Enter your googleClientId here
-        //   facebookAppId: 'fqf4q3yt34y34', // Enter your facebookAppId here
-        //   amazonClientId: 'q4rtq3tq34tq34' // Enter your amazonClientId here
-        // };
-        // console.debug("Should be returning something now...");
-        return (
-          //<AmplifyAuthenticator >//federated={federated}>
-          <AmplifyAuthenticator >
-            <AmplifySignUp
-              slot="sign-up"
-              formFields={[
-                {
-                type: "username",
-                label: "Username *",
-                inputProps: { required: true, autocomplete: "username" },
-                },
-                // Email
-                {
-                type: "email",
-                label: "Email *",
-                inputProps: { required: true, autocomplete: "username" },
-                },
-                // Password
-                {
-                type: "password",
-                label: "Password *",
-                inputProps: { required: true, autocomplete: "new-password" },
-                },
-                // First Name
-                {
-                type: "name",
-                label: "First Name *",
-                placeholder: "Bob",
-                hint: "Used as the name on your ticket",
-                inputProps: { 
-                  required: true, 
-                  autocomplete: "Bob" 
-                  }
-                },
-                // last name
-                {
-                type: "family_name",
-                label: "Last Name *",
-                placeholder: "White",
-                hint: "Used as the name on your ticket",
-                inputProps: { required: true, autocomplete: "White" }
-                },
-                // btc wallet address
-                {
-                type: "custom:btc_wallet_address",
-                label: "Bitcoin Wallet Address *",
-                placeholder: "3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5",
-                hint: "Used to identify who has paid",
-                inputProps: { required: true}
-                },
-
-              ]}
-            />
-          </AmplifyAuthenticator>
-        );
+        return StateAuth();
   
       case appStates.INFO:
-        return (
-          <Info
-          routes = {routes}
-          onClickRoute = {(i) => {handleOnClickRoute(i)}}
-          />
-        );
+        return InfoState(routes, handleOnClickRoute, App);
   
       case appStates.TICKET_MENU:
-        return (
-          <div className="Menu Screen">
-            <TicketMenu 
-              routes = {routes}
-              onClickRoute = {(i) => {handleOnClickRoute(i)}}
-              tickets = {ticketOptions}
-              onClick = {(i) => handleTicketClick(i)}
-              ticket_information = {ticketInfo}
-            />
-          </div>
-        );
+        return TicketMenuState(routes, handleOnClickRoute, ticketOptions, ticketInfo, 
+          handleTicketClick);
   
       case appStates.TICKET:
-        const date = new Date();
-        const time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-        const time_left = ticket.getTimes();
-        return (
-          <Ticket 
-            ticket_current = {ticket}
-            title = {ticket.title}
-            hours_left = { time_left["hours"] !== 0 ? time_left["hours"] : undefined}
-            minutes_left = { time_left["minutes"] !== 0 ? time_left["minutes"] : undefined}
-            seconds_left = { time_left["seconds"]}
-            expiry_date = {ticket.expiry_date_string}
-            purchased_date = {randomPurchasedDate}
-            expiredFunction = {() => this.handleExpired()}
-            passenger = {user.attributes.name + " " + user.attributes.family_name}
-            current_time = {switchTimeWithCode ? time : code}
-            onClickBackButton = {() => handleOnClickBackButton()}
-          />
-        );
+        return TicketState(ticket, randomPurchasedDate, handleExpired, user, 
+          handleOnClickBackButton, switchTimeWithCode, code);
   
       case appStates.PAYMENT:
-        let message = "";
-        if (userPayment === USER_PAYMENT_PLACEHOLDER || paymentDetails === PAYMENT_DETAILS_PLACEHOLDER){
-          message = "Data still waiting to be retrieved...";
-        }
-        console.log(`BTC amount: ${BTCAmount}`);
-        // check if auth data is undefined (just logged out)
-        let user_BTC_Wallet;
-        if (!user){
-          console.debug(`User is undefined, setting wallet to ...`)
-          user_BTC_Wallet = "...";
-        }else{
-          if ("attributes" in user && "custom:btc_wallet_address" in user.attributes){
-            console.debug(`User has attribute: custom:btc_wallet_address, setting wallet to that value`);
-            user_BTC_Wallet = user.attributes["custom:btc_wallet_address"];
-          }else{
-            console.debug(`User does not have attribute: custom:btc_wallet_address, setting wallet to ...`);
-            user_BTC_Wallet = "...";
-          }
-        }
-        return (
-          <div>
-            <div>
-              <Payment 
-                routes = {routes}
-                onClickRoute = {(i) => {handleOnClickRoute(i)}}
-                bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, 
-                  accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, 
-                  ref:"bus app", email:paymentDetails.email, BTCWalletAddress:paymentDetails.BTCWalletAddress,
-                  cryptoType:paymentDetails.cryptoType}}
-                paymentInfo = {userPaymentPageInfo}
-                BTCAmount = {BTCAmount}
-                userBTCWallet = {user_BTC_Wallet}
-                onBTCWalletAddresClick = {(address) => {handleBTCWalletAddresClick(address)}}
-              />
-            </div>
-            <div className="message">
-              {message}
-            </div>
-          </div>
-        );
+          return PaymentState(USER_PAYMENT_PLACEHOLDER, PAYMENT_DETAILS_PLACEHOLDER, BTCAmount, user, 
+            routes, handleOnClickRoute, paymentDetails, userPaymentPageInfo, handleBTCWalletAddresClick, 
+            userPayment);
     
       case appStates.ERROR:
-        return (
-          < Error 
-            routes = {routes}
-            onClickRoute = {(i) => {handleOnClickRoute(i)}}
-            errorMsg = {errorMsg}
-          />
-        );
+        return ErrorState(routes, handleOnClickRoute, errorMsg);
       }
   }
 

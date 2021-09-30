@@ -45,7 +45,7 @@ function AmountAndMonth({paymentInfo, BTCAmount}){
                 <div className="infoItemRight">£{paymentInfo.amount}</div>
                 {/* Amount Due in crypto */}
                 <div className="infoItemLeft">
-                    <a rel="noopener noreferrer" target="_blank" href="https://blockchain.info/api/exchange_rates_api">Amount in Bitcoin</a>
+                    <a rel="noopener noreferrer" target="_blank" href="https://www.coingecko.com/en/coins/bitcoin/gbp">Amount in Bitcoin</a>
                 </div>
                 <div className="infoItemRight">{BTCAmount}</div>
             </div>
