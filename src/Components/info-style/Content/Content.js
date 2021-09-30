@@ -19,7 +19,7 @@ function Overview(){
             {/* Requirements */}
             <div className="infoGrid">
                 <div className="title-black">Overview</div>
-                <div className="info-black">This page contains information about how to use the web abb properly, along with how to set up your crypto wallet for payment.</div>
+                <div className="info-black">This page contains information about how to use the web app properly, along with how to set up your crypto wallet for payment.</div>
             </div>
         </div>
     );
