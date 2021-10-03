@@ -11,10 +11,12 @@ export function PaymentState(USER_PAYMENT_PLACEHOLDER, PAYMENT_DETAILS_PLACEHOLD
     console.log("Payment Details info within PaymentState: ", paymentDetails);
     // check if auth data is undefined (just logged out)
     let user_BTC_Wallet;
+    let reference = "";
     if (!user){
         console.debug(`User is undefined, setting wallet to ...`)
         user_BTC_Wallet = "";
     }else{
+        reference = user.username.substring(0,18);
         if ("attributes" in user && "custom:btc_wallet_address" in user.attributes){
             console.debug(`User has attribute: custom:btc_wallet_address, setting wallet to that value`);
             user_BTC_Wallet = user.attributes["custom:btc_wallet_address"];
@@ -23,6 +25,7 @@ export function PaymentState(USER_PAYMENT_PLACEHOLDER, PAYMENT_DETAILS_PLACEHOLD
             user_BTC_Wallet = "";
         }
     }
+    
     return (
     <div>
         <div>
@@ -31,7 +34,7 @@ export function PaymentState(USER_PAYMENT_PLACEHOLDER, PAYMENT_DETAILS_PLACEHOLD
             onClickRoute = {(i) => {handleOnClickRoute(i)}}
             bankInfo = {{type:paymentDetails.type, sortCode:paymentDetails.sortCode, 
             accountNumber:paymentDetails.accountNumber, beneficiary:paymentDetails.beneficiary, 
-            ref:"bus app", email:paymentDetails.email, BTCWalletAddress:paymentDetails.BTCWalletAddress,
+            ref:reference, email:paymentDetails.email, BTCWalletAddress:paymentDetails.BTCWalletAddress,
             cryptoType:paymentDetails.cryptoType}}
             paymentInfo = {userPaymentPageInfo}
             BTCAmount = {BTCAmount}
