@@ -68,7 +68,7 @@ function International({bankInfo}){
             {/* All the left hand side info */}
             <div className="infoGrid">
                 {/* Account Type */}
-                <div className="infoItemLeft">Account Type</div>
+                <div className="infoItemLeft">Transfer Type</div>
                 <div className="infoItemRight">{bankInfo.type}</div>
                 {/* Sort Code */}
                 <div className="infoItemLeft">IBAN</div>
@@ -124,7 +124,7 @@ function Local({bankInfo}){
             {/* All the left hand side info */}
             <div className="infoGrid">
                 {/* Account Type */}
-                <div className="infoItemLeft">Account Type</div>
+                <div className="infoItemLeft">Transfer Type</div>
                 <div className="infoItemRight">{bankInfo.type}</div>
                 {/* Sort Code */}
                 <div className="infoItemLeft">Sort Code</div>
