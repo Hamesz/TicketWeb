@@ -32,7 +32,7 @@ export const getUserPayment = /* GraphQL */ `
   query GetUserPayment($id: ID!) {
     getUserPayment(id: $id) {
       id
-      year
+      type
       subscriptionDate
       January
       JanuaryNextYear
@@ -61,7 +61,7 @@ export const listUserPayments = /* GraphQL */ `
     listUserPayments(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        year
+        type
         subscriptionDate
         January
         JanuaryNextYear

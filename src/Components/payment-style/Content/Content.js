@@ -5,6 +5,7 @@ Displays the Month and Amount the user needs to pay.
 Also displays the details for where they pay (Crypto or bank details)
 */
 function Content({bankInfo, paymentInfo, BTCAmount, userBTCWallet, onBTCWalletAddresClick}) {
+    console.log("Bank Info:", bankInfo);
     return (
         <ContentWrap>
             <AmountAndMonth
