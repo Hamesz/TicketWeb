@@ -36,6 +36,7 @@ export const onCreateUserPayment = /* GraphQL */ `
     onCreateUserPayment {
       id
       type
+      year
       subscriptionDate
       January
       JanuaryNextYear
@@ -60,6 +61,7 @@ export const onUpdateUserPayment = /* GraphQL */ `
     onUpdateUserPayment {
       id
       type
+      year
       subscriptionDate
       January
       JanuaryNextYear
@@ -84,6 +86,7 @@ export const onDeleteUserPayment = /* GraphQL */ `
     onDeleteUserPayment {
       id
       type
+      year
       subscriptionDate
       January
       JanuaryNextYear

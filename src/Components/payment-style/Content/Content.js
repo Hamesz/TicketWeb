@@ -22,7 +22,7 @@ function Content({bankInfo, paymentInfo, BTCAmount, userBTCWallet, onBTCWalletAd
                 onBTCWalletAddresClick = {(address) => {onBTCWalletAddresClick(address)}}
             />
             {/* Extra info */}
-            <div className="info">Please send an email when you have sent the payment.</div>
+            <div className="info">Please send an email when you have sent the payment and if using crypto then include your Bitcoin Wallet Address.</div>
             <div className="info"><b>If you do not wish to use the app for the corresponding month, then no action is required.</b></div>
         </ContentWrap>
     );

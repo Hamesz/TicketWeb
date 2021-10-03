@@ -200,6 +200,10 @@ function App(){
   */
     const fetchPaymentDetails = async (payment_details_type) => {
       console.group('Fetching Payment details of type', payment_details_type)
+      if (payment_details_type === null){
+        payment_details_type = "crypto";
+        console.log("Setting payment_details_type to crypto as it was null");
+      }
       try {
           // const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
           const payment_details = await API.graphql(graphqlOperation(getPaymentDetails,{"id":payment_details_type}))

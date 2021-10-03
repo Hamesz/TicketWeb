@@ -48,6 +48,7 @@ export const createUserPayment = /* GraphQL */ `
     createUserPayment(input: $input, condition: $condition) {
       id
       type
+      year
       subscriptionDate
       January
       JanuaryNextYear
@@ -75,6 +76,7 @@ export const updateUserPayment = /* GraphQL */ `
     updateUserPayment(input: $input, condition: $condition) {
       id
       type
+      year
       subscriptionDate
       January
       JanuaryNextYear
@@ -102,6 +104,7 @@ export const deleteUserPayment = /* GraphQL */ `
     deleteUserPayment(input: $input, condition: $condition) {
       id
       type
+      year
       subscriptionDate
       January
       JanuaryNextYear
