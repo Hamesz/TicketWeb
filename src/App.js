@@ -8,7 +8,7 @@ import { AuthState as StateAuth} from './State/AuthState';
 // Data fetching
 import { fetchUserPayment } from './DataFetching/UserPayment'
 import { fetchPaymentDetails } from './DataFetching/PaymentDetails';
-import {listPaymentDetails} from "./graphql/queries"
+import {getPaymentDetails} from "./graphql/queries"
 import {listUserPayments, getUserPayment} from "./graphql/queries"
 // for actual ticket
 import {canOpenTicket, isEarlyMorning} from "./Tickets/Ticket"
@@ -173,11 +173,15 @@ function App(){
           const user_payment = userPaymentData.data.getUserPayment;
           const date = new Date();
           const current_month = date.toLocaleString('default', { month: 'long' });
-          const userPaidForMonth = userPaymentData.data.getUserPayment[current_month];
+          const userPaidForMonth = user_payment[current_month];
           console.debug("userPaidForMonth: ", current_month, userPaidForMonth);
-          console.info("Fetched User Payment: ", userPaymentData.data.getUserPayment);
+          console.info("Fetched User Payment: ", user_payment);
           setUserPaid(userPaidForMonth);
           setUserPayment(user_payment);
+
+          // fetch payment details
+          const payment_details_type = user_payment.type;
+          fetchPaymentDetails(payment_details_type)
           if (userPaidForMonth === false){
               console.info("User not paid, setting state to ", appStates.PAYMENT);
               setAppState(appStates.PAYMENT);
@@ -188,32 +192,28 @@ function App(){
           handleError(error, fetchUserPayment);
       }
       console.groupEnd();
-  }
+    }
   
 
   /*
   Gets the user payment info
   */
-    const fetchPaymentDetails = async () => {
-      console.group(`Fetching Payment details`)
+    const fetchPaymentDetails = async (payment_details_type) => {
+      console.group('Fetching Payment details of type', payment_details_type)
+      if (payment_details_type === null){
+        payment_details_type = "crypto";
+        console.log("Setting payment_details_type to crypto as it was null");
+      }
       try {
-          const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
-          console.debug("listed paymentDetails: ", allPaymentDetails);
-          let payment_details;
-          for (const [key, value] of Object.entries(allPaymentDetails.data.listPaymentDetails.items)) {
-              if (value.type === "crypto"){
-                  payment_details = value;
-                  break;
-              }
-          }
-          console.info("Payment Details for user:", payment_details);
-          setPaymentDetails(payment_details);
-          // const payment_details = allPaymentDetails.data.listPaymentDetails.items[2];
+          // const allPaymentDetails = await API.graphql(graphqlOperation(listPaymentDetails));
+          const payment_details = await API.graphql(graphqlOperation(getPaymentDetails,{"id":payment_details_type}))
+          console.debug("Payment Details: ", payment_details);
+          setPaymentDetails(payment_details.data.getPaymentDetails);
       }catch(error){
           handleError(error, fetchPaymentDetails);
       }
       console.groupEnd();
-  }
+    }
     
     return onAuthUIStateChange((nextAuthState, authData) => {
       console.group("onAuthUIStateChange");
@@ -229,7 +229,6 @@ function App(){
       if (nextAuthState === "signedin" && authData && authState === undefined){
         console.debug("fetching data...");
         fetchUserPayment(authData);
-        fetchPaymentDetails();
         if (pendingAppState){
           console.debug("setting next state to pending app state: ", pendingAppState);
           setAppState(pendingAppState);
@@ -247,7 +246,6 @@ function App(){
         console.debug("fetching data...");
         setAppState(appStates.TICKET_MENU);
         fetchUserPayment(authData);
-        fetchPaymentDetails();
         setAuthState(nextAuthState);
         setUser(authData)
         console.groupEnd();

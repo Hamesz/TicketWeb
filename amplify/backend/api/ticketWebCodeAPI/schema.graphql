@@ -5,6 +5,7 @@ type Code @model{
 
 type UserPayment @model{
   id: ID!
+  type: String
   year: String!
   subscriptionDate: String!
   January: Boolean!

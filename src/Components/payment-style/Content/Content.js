@@ -5,6 +5,7 @@ Displays the Month and Amount the user needs to pay.
 Also displays the details for where they pay (Crypto or bank details)
 */
 function Content({bankInfo, paymentInfo, BTCAmount, userBTCWallet, onBTCWalletAddresClick}) {
+    console.log("Bank Info:", bankInfo);
     return (
         <ContentWrap>
             <AmountAndMonth
@@ -21,7 +22,7 @@ function Content({bankInfo, paymentInfo, BTCAmount, userBTCWallet, onBTCWalletAd
                 onBTCWalletAddresClick = {(address) => {onBTCWalletAddresClick(address)}}
             />
             {/* Extra info */}
-            <div className="info">Please send an email when you have sent the payment.</div>
+            <div className="info">Please send an email when you have sent the payment and if using crypto then include your Bitcoin Wallet Address.</div>
             <div className="info"><b>If you do not wish to use the app for the corresponding month, then no action is required.</b></div>
         </ContentWrap>
     );
@@ -67,7 +68,7 @@ function International({bankInfo}){
             {/* All the left hand side info */}
             <div className="infoGrid">
                 {/* Account Type */}
-                <div className="infoItemLeft">Account Type</div>
+                <div className="infoItemLeft">Transfer Type</div>
                 <div className="infoItemRight">{bankInfo.type}</div>
                 {/* Sort Code */}
                 <div className="infoItemLeft">IBAN</div>
@@ -123,7 +124,7 @@ function Local({bankInfo}){
             {/* All the left hand side info */}
             <div className="infoGrid">
                 {/* Account Type */}
-                <div className="infoItemLeft">Account Type</div>
+                <div className="infoItemLeft">Transfer Type</div>
                 <div className="infoItemRight">{bankInfo.type}</div>
                 {/* Sort Code */}
                 <div className="infoItemLeft">Sort Code</div>
