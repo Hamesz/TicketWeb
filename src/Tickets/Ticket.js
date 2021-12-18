@@ -15,7 +15,7 @@ export class Ticket {
         let day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date);
         let weekday = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date);
         let time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-        return `Expires on ${weekday} ${day} ${month} ${year} at ${time}`
+        return `Expires on ${weekday} ${day} ${month} ${year}`
     }
 
     /*
