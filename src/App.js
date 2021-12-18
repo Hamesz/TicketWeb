@@ -608,13 +608,13 @@ function createRandomPurchasedDate(date_1, months_before){
     console.debug(`Starting Date: ${date_1.toISOString()}`);
     console.debug(`End Date: ${new Date().toISOString()}`);
 
-    // let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+    let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date_random);
     let month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date_random);
     let day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date_random);
     let weekday = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date_random);
     let time = ("0" + date_random.getHours()).slice(-2) + ":" + ("0" + date_random.getMinutes()).slice(-2);
   
-    const date_as_string = `${weekday} ${day} ${month} at ${time}`
+    const date_as_string = `${weekday} ${day} ${month} ${year} at ${time}`
     console.debug(`Random Date as string: ${date_as_string}`);
     console.groupEnd();
     return date_as_string;

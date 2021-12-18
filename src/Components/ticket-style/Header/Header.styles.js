@@ -1,72 +1,42 @@
 import styled from "styled-components";
 
 export const HeaderWrap = styled.div`
+width: 100%;
+//padding: 5%;
+background-color: white;
+
+.grid {
     width: 100%;
-    height: 30%;
-    // border: 1px solid blue;
-    padding: 0%;
-    background-color: white;
+    display: flex;
+    display: flex;
+//    border: 1px solid #000;
+    align-items: center;
 
+    .grid-item-text {
+        font-size: 6vw;
+        color: #7a1a1f;
+        font-weight: bold;
 
-
-    h1 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 12;
         text-align: center;
-        color: #0;
     }
 
     img {
-        width: 50%;
-        margin: 10%;
-        // margin-left: 20%;
-        // margin-right:20%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        max-width:10%;
+        max-height:10%;
+        z-index:1;
+        flex: 1;
+        text-align: center;
     }
+}
 
-    .headerGrid {
-        width: 100%;
-        height: 100%;
-        display: inline-grid;
-        // background-color: green;
-        grid-template-columns: 1fr 5fr 1fr 1fr;
-        grid-gap: 3%;
-    }
-
-    .grid-item-text {
-        font-size: 8vw;
-        color: black;
-        // display: flex;
-        justify-content: center;
-        align-items: center;
-
-        white-space: nowrap; 
-        overflow: hidden;
-        text-overflow: ellipsis; 
-
-        // border: 2px solid black;
-    }
-
-    .grid-item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        // border: 2px solid black;
-    }
-
-    .back-button{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: Transparent;
-        border: none;
-    }
-
-    .grid-item-arrow {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+.grid:after {
+  content: " ";
+  display: block;
+  flex: 1;
+}
 
 `;

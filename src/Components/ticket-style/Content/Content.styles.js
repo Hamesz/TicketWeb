@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const ContentWrap = styled.div`
 width: 100%;
- border: 1px solid green;
 // center everything within
 display: flex;
 flex-flow: column nowrap;
@@ -11,8 +10,7 @@ align-items: center;
 
 .boxWrap {
     width: 90%;
-    margin-top: 8%;
-    margin-bottom: 8%;
+    margin-top: 5%;
 
     // center everything within
     display: flex;
@@ -28,8 +26,6 @@ h3 {
 // -- Icon Code ---
 .icon_code {
     width: 90%;
-    border: 1px solid blue;
-    // background-color: gray;
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
@@ -81,9 +77,9 @@ table.a {
   margin-top: 10%;
 
     .grid-item-text {
-        font-size: 4vw;
+        font-size: 3vw;
         color: white;
-        font-weight: bold;
+        font-weight: normal;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -92,19 +88,20 @@ table.a {
     }
 
     .grid-item-patch {
-        margin-top: 5%;
+        margin-top: 0%;
         margin-left: 10%;
         margin-right: 10%;
-        height: 40px;
-
+        height: 10vw;
         border-radius: 10%;
         color: white;
-        font-size: 4vw;
+        font-weight: normal;
+        font-size: 5vw;
         display: flex;
         justify-content: center;
         align-items: center;
         background-color: #6f7077;
         box-shadow: inset 2px 2px 5px #30323E;  //inset brings the shadow into the box
+//        border: 1px solid black;
     }
 
     .grid-item-seconds{
@@ -121,8 +118,9 @@ table.a {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 6vw;
+            font-size: 5vw;
             color: white;
+            font-weight: normal;
         }
 
         .img {
@@ -147,19 +145,19 @@ table.a {
 // --- Date
 .date {
     width: 100%;
-    margin-top: 3%;
+    margin-top: 0%;
     text-align: center;
     // background-color: green;
-    font-size: 4vw;;
+    font-size: 6vw;;
     color: white;
 }
 
 // --- Ticket
 .ticket{
     width: 100%;
-    background-color: #2F5E8A;
+    background-color: #255681;
     margin-top: 10%;
-    padding: 10%;
+    padding: 5%;
     text-align: center;
     font-size: 10vw;
     color: white;
@@ -169,8 +167,8 @@ table.a {
 .infoGrid {
     width: 100%;
     display: grid;
-    background-color: #2F5E8A;
-    grid-template-columns: 1fr 1fr;
+    background-color: #255681;
+    grid-template-columns: 2fr 3fr;
     margin-top: 5%;
     color: white;
     margin-bottom: 5%;
@@ -180,12 +178,12 @@ table.a {
 .grid-info-item-left {
     color: white;
     text-align: right;
-    margin-right: 10%;
+    margin-right: 2%;
 }
 
 .grid-info-item-right {
     color: white;
-    margin-bottom: 5%;
+    margin-bottom: 2%;
     word-wrap: break-word;
     word-break: break-all;
 }
