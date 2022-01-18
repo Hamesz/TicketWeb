@@ -16,7 +16,7 @@ export const PAYMENT_DETAILS_PLACEHOLDER = {
   BIC: "",
   email: "",
   accountNumber: "",
-  type: ""
+  type: "crypto"
 }
 export const USER_PAYMENT_PLACEHOLDER = {
   id: undefined,
@@ -36,7 +36,8 @@ export const USER_PAYMENT_PLACEHOLDER = {
   year: undefined,
   April: undefined,
   March: undefined,
-  December: undefined
+  December: undefined,
+  type: "crypto"
 }
 export const USER_PAYMENT_PAGE_INFO = {
   month:"", 

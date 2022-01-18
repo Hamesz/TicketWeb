@@ -1,21 +1,34 @@
+import React from 'react';
 import { ContentWrap } from "./Content.styles";
+
+import {determineBTCAmount} from "../Logic/determineBTCAmount";
+import {determineMonthAndAmount} from "../Logic/determineMonthAndAmount";
+import {fetchAndSetPaymentDetails} from "../Logic/determinePaymentDetails";
+
+import {PAYMENT_DETAILS_PLACEHOLDER} from "../../../config"
 
 /*
 Displays the Month and Amount the user needs to pay.
 Also displays the details for where they pay (Crypto or bank details)
 */
-function Content({bankInfo, paymentInfo, BTCAmount, userBTCWallet, onBTCWalletAddresClick}) {
-    console.log("Bank Info:", bankInfo);
+function Content({userPayment, reference, userBTCWallet, onBTCWalletAddresClick}) {
+    const [paymentDetails, setPaymentDetails] = React.useState(PAYMENT_DETAILS_PLACEHOLDER);
+
+    React.useEffect(() => {
+        fetchAndSetPaymentDetails(userPayment.type, setPaymentDetails);
+    }, [userPayment]);
+
+    const {month, amount} = determineMonthAndAmount(userPayment);
     return (
         <ContentWrap>
             <AmountAndMonth
-                paymentInfo = {paymentInfo}
-                BTCAmount = {BTCAmount}
+                month = {month}
+                amount = {amount}
             />
             {/* Check which payment info to show */}
-            {bankInfo.type === "local" && < Local bankInfo={bankInfo} />}
-            {bankInfo.type === "crypto" && < Crypto bankInfo={bankInfo} />}
-            {bankInfo.type === "international" && < International bankInfo={bankInfo} />}
+            {paymentDetails.type === "local" && < Local paymentDetails={paymentDetails} reference={reference}/>}
+            {paymentDetails.type === "crypto" && < Crypto paymentDetails={paymentDetails} />}
+            {paymentDetails.type === "international" && < International paymentDetails={paymentDetails} reference={reference}/>}
             <br></br>
             <UsersBTCWallet 
                 userBTCWallet = {userBTCWallet}
@@ -32,7 +45,13 @@ function Content({bankInfo, paymentInfo, BTCAmount, userBTCWallet, onBTCWalletAd
 Returns the section showing the user what month to pay for
 and for how much
 */
-function AmountAndMonth({paymentInfo, BTCAmount}){
+function AmountAndMonth({month, amount}){
+    const [BTCAmount, setBTCAmount] = React.useState("");
+
+    React.useEffect(() => {
+        determineBTCAmount(amount, setBTCAmount);
+    }, [amount]);
+
     return (
         <div>
             {/* Payment info showing how much they owe for what month */}
@@ -40,10 +59,10 @@ function AmountAndMonth({paymentInfo, BTCAmount}){
             <div className="infoGrid">
                 {/* Month Due */}
                 <div className="infoItemLeft">Month</div>
-                <div className="infoItemRight">{paymentInfo.month}</div>
+                <div className="infoItemRight">{month}</div>
                 {/* Amount Due in GDP */}
                 <div className="infoItemLeft">Amount</div>
-                <div className="infoItemRight">£{paymentInfo.amount}</div>
+                <div className="infoItemRight">£{amount}</div>
                 {/* Amount Due in crypto */}
                 <div className="infoItemLeft">
                     <a rel="noopener noreferrer" target="_blank" href="https://www.coingecko.com/en/coins/bitcoin/gbp">Amount in Bitcoin</a>
@@ -61,7 +80,7 @@ function AmountAndMonth({paymentInfo, BTCAmount}){
 Returns the bank details for paying an international 
 bank account
 */
-function International({bankInfo}){
+function International({paymentDetails, reference}){
     return (
         <div>
             <div className="title">Bank Information</div>
@@ -69,22 +88,22 @@ function International({bankInfo}){
             <div className="infoGrid">
                 {/* Account Type */}
                 <div className="infoItemLeft">Transfer Type</div>
-                <div className="infoItemRight">{bankInfo.type}</div>
+                <div className="infoItemRight">{paymentDetails.type}</div>
                 {/* Sort Code */}
                 <div className="infoItemLeft">IBAN</div>
-                <div className="infoItemRight">{bankInfo.IBAN}</div>
+                <div className="infoItemRight">{paymentDetails.IBAN}</div>
                 {/* Account Number */}
                 <div className="infoItemLeft">BAC</div>
-                <div className="infoItemRight">{bankInfo.BAC}</div>
+                <div className="infoItemRight">{paymentDetails.BAC}</div>
                 {/* Name */}
                 <div className="infoItemLeft">Name</div>
-                <div className="infoItemRight">{bankInfo.beneficiary}</div>
+                <div className="infoItemRight">{paymentDetails.beneficiary}</div>
                 {/* Reference */}
                 <div className="infoItemLeft">Reference</div>
-                <div className="infoItemRight">{bankInfo.ref}</div>
+                <div className="infoItemRight">{reference}</div>
                 {/* Email */}
                 <div className="infoItemLeft">Email</div>
-                <div className="infoItemRight">{bankInfo.email}</div>
+                <div className="infoItemRight">{paymentDetails.email}</div>
             </div>
         </div>
     );
@@ -93,7 +112,7 @@ function International({bankInfo}){
 /*
 Returns the crypto details for paying in Bitcoin
 */
-function Crypto({bankInfo}){
+function Crypto({paymentDetails}){
     return (
         <div>
             <div className="title">Crypto Information</div>
@@ -101,13 +120,13 @@ function Crypto({bankInfo}){
             <div className="infoGrid">
                 {/* Account Type */}
                 <div className="infoItemLeft">Crypto Type</div>
-                <div className="infoItemRight">{bankInfo.cryptoType}</div>
+                <div className="infoItemRight">{paymentDetails.cryptoType}</div>
                 {/* Sort Code */}
                 <div className="infoItemLeft">Bitcoin Wallet Address</div>
-                <div className="infoItemRight">{bankInfo.BTCWalletAddress}</div>
+                <div className="infoItemRight">{paymentDetails.BTCWalletAddress}</div>
                 {/* Email */}
                 <div className="infoItemLeft">Email</div>
-                <div className="infoItemRight">{bankInfo.email}</div>
+                <div className="infoItemRight">{paymentDetails.email}</div>
             </div>
         </div>
     )
@@ -117,7 +136,7 @@ function Crypto({bankInfo}){
 Returns the bank details for paying a local 
 bank account
 */
-function Local({bankInfo}){
+function Local({paymentDetails, reference}){
     return (
         <ContentWrap>
             <div className="title">Bank Information</div>
@@ -125,22 +144,22 @@ function Local({bankInfo}){
             <div className="infoGrid">
                 {/* Account Type */}
                 <div className="infoItemLeft">Transfer Type</div>
-                <div className="infoItemRight">{bankInfo.type}</div>
+                <div className="infoItemRight">{paymentDetails.type}</div>
                 {/* Sort Code */}
                 <div className="infoItemLeft">Sort Code</div>
-                <div className="infoItemRight">{bankInfo.sortCode}</div>
+                <div className="infoItemRight">{paymentDetails.sortCode}</div>
                 {/* Account Number */}
                 <div className="infoItemLeft">Account Number</div>
-                <div className="infoItemRight">{bankInfo.accountNumber}</div>
+                <div className="infoItemRight">{paymentDetails.accountNumber}</div>
                 {/* Name */}
                 <div className="infoItemLeft">Name</div>
-                <div className="infoItemRight">{bankInfo.beneficiary}</div>
+                <div className="infoItemRight">{paymentDetails.beneficiary}</div>
                 {/* Reference */}
                 <div className="infoItemLeft">Reference</div>
-                <div className="infoItemRight">{bankInfo.ref}</div>
+                <div className="infoItemRight">{reference}</div>
                 {/* Email */}
                 <div className="infoItemLeft">Email</div>
-                <div className="infoItemRight">{bankInfo.email}</div>
+                <div className="infoItemRight">{paymentDetails.email}</div>
             </div>
             </ContentWrap>
     );

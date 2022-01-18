@@ -1,15 +1,16 @@
 export class Ticket {
     constructor(title, start_date, end_date){
-        console.group(`Creating ticket ${title}`);
+        // console.group(`Creating ticket ${title}`);
         this.title = title;
         this.start_date = start_date;
         this.end_date = end_date;
         this.expiry_date_string = this.getExpiryString(this.end_date);
-        console.groupEnd();
+        this.purchase_date = createRandomPurchasedDate(start_date, 6)
+        // console.groupEnd();
     }
 
     getExpiryString(date){
-        console.log(`Getting ExpiryString for date: ${date}`);
+        // console.log(`Getting ExpiryString for date: ${date}`);
         let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
         let month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date);
         let day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date);
@@ -22,7 +23,7 @@ export class Ticket {
     Returns the [Hours, minutes, seconds] until the ticket expires
     */
     getTimes(){
-        console.log(`Getting times`);
+        // console.log(`Getting times`);
         // calculate the hours minutes and seconds until availability_end is reached
         const date_now = new Date();
         const date_future = this.end_date;
@@ -37,7 +38,7 @@ export class Ticket {
             minutes: Math.floor((difference / 1000 / 60) % 60),
             seconds: Math.floor((difference / 1000) % 60)
           };
-        console.log(`Time left: ${JSON.stringify(timeLeft)}`);
+        // console.log(`Time left: ${JSON.stringify(timeLeft)}`);
         return timeLeft;
     }
 
@@ -45,13 +46,13 @@ export class Ticket {
     Checks if the ticket is expired, if so then returns true
     */
     isExpired(date_now){
-        console.log(`Checking if ticket is expired with date: ${date_now}`);
+        // console.log(`Checking if ticket is expired with date: ${date_now}`);
         // const date_now = new Date();
         if (date_now > this.end_date){
-            console.log(`Ticket is expired`);
+            // console.log(`Ticket is expired`);
             return true;
         }else{
-            console.log(`Ticket is not expired`);
+            // console.log(`Ticket is not expired`);
             return false;
         }
     }
@@ -64,12 +65,12 @@ Checks if a ticket can be opened
 */
 export function getStartEndDate(date_now, availability_start, availability_end){
 
-    console.info("Getting start and end date with date note", date_now, [availability_start, availability_end]);
+    // console.info("Getting start and end date with date note", date_now, [availability_start, availability_end]);
 
     // const date_now = new Date();
     const is_early_morning = isEarlyMorning(date_now, availability_start);
 
-    console.log("Is early Morning?", is_early_morning);
+    // console.log("Is early Morning?", is_early_morning);
     
     let hours_mins_end = availability_end.split(':');
     let hours_mins_start = availability_start.split(':');
@@ -94,23 +95,23 @@ export function getStartEndDate(date_now, availability_start, availability_end){
     date_start.setMinutes(parseInt(hours_mins_start[1],10));
     date_start.setSeconds(0);
 
-    console.info("Date end: ", date_end);
-    console.info("Date start: ", date_start);
+    // console.info("Date end: ", date_end);
+    // console.info("Date start: ", date_start);
     // need to check if date_end is greater than date_now
     return [date_start, date_end]
 }
 
 export function canOpenTicket(date_now, availability_start, availability_end){
-    console.log(`Checking if ticket can be opened based on start availability: ${availability_start} & end availability: ${availability_end} for date: ${date_now.toISOString()}`)
+    // console.log(`Checking if ticket can be opened based on start availability: ${availability_start} & end availability: ${availability_end} for date: ${date_now.toISOString()}`)
     // const date_now = new Date();
     const [start_date, end_date] = getStartEndDate(date_now, availability_start, availability_end);
     const can_open =  date_now < end_date && date_now >= start_date;
-    console.log(`Can open: ${can_open}`);
+    // console.log(`Can open: ${can_open}`);
     return can_open;
 }
 
 export function isEarlyMorning(today, morning_time){
-    console.log(`Checking if early morning with todays date: ${today} and morning_time: ${morning_time}`);
+    // console.log(`Checking if early morning with todays date: ${today} and morning_time: ${morning_time}`);
     // const today = new Date();
     const hour = today.getHours().toString();
     const minute = ((today.getMinutes() < 10 ? '0' : '') + today.getMinutes()).toString();
@@ -125,16 +126,40 @@ export function isEarlyMorning(today, morning_time){
     try{
         time_morning = parseInt(time_morning, 10);
     }catch(error){
-        console.error("Error: ", error);
-        console.error("Setting time morning to 530 manually");
+        // console.error("Error: ", error);
+        // console.error("Setting time morning to 530 manually");
         time_morning = 530;
     }
     // check whether the ticket expires today or tomorrow
     if (time >= 0 && time < time_morning){
-        console.log(`It is early morning`);
+        // console.log(`It is early morning`);
         return true;
     }else{
-        console.log(`It is not early morning`);
+        // console.log(`It is not early morning`);
         return false;
     }
+}
+
+/*
+Gets a random date between todays and 6 months before
+*/
+function createRandomPurchasedDate(date_1, months_before){
+  // console.group(`Creating random date from Date: ${date_1} until ${months_before} months before`);
+  date_1.setMonth(date_1.getMonth() - months_before);
+  const fromTime = date_1.getTime(); //original date
+
+  const toTime = new Date().getTime(); // date x months ahead
+  const date_random = new Date(fromTime + Math.random() * (toTime - fromTime));
+  
+  // console.debug(`Starting Date: ${date_1.toISOString()}`);
+  // console.debug(`End Date: ${new Date().toISOString()}`);
+
+  let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date_random);
+  let month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date_random);
+  let day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date_random);
+  let weekday = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date_random);
+  let time = ("0" + date_random.getHours()).slice(-2) + ":" + ("0" + date_random.getMinutes()).slice(-2);
+
+  const date_as_string = `${weekday} ${day} ${month} ${year} at ${time}`
+  return date_as_string;
 }
