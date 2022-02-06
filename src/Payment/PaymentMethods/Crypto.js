@@ -5,8 +5,8 @@ Returns the crypto details for paying in Bitcoin
 */
 export default function Crypto({paymentMethod}){
 
-  const dataReady = !(paymentMethod && 
-    paymentMethod.hasOwnProperty('cryptoType') && 
+  const dataReady = (paymentMethod &&
+    paymentMethod.hasOwnProperty('cryptoType') &&
     paymentMethod.hasOwnProperty('BTCWalletAddress') &&
     paymentMethod.hasOwnProperty('email'));
     
