@@ -26,7 +26,7 @@
         "title" : "Adult AIRLINK Single",
         "description" : "Valid for one journey in all zones going to the Airport. ",
         "duration" : {
-            "minutes": "5"
+            "minutes": "1"
         }
 
     }  

@@ -14,14 +14,14 @@ export default function AppRoutes({user, userLoggedIn, paid, code}) {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    navigate('/ticket')
+      navigate('/ticket');
   }, [ticket])
 
   return (
     <Routes>
       <Route element={<WithNavbar userLoggedIn={userLoggedIn} />} >
-        <Route path="/home" element = {<Info />} />
-        <Route path="/payment" element = { getPayment() } />
+        <Route path="/home" element={<Info/>}/>
+        <Route path="/payment" element={getPayment()}/>
         <Route path="/tickets" element = { getTickets() } />
         <Route path="/sign-in" element = { getSignIn() } />
       </Route>
