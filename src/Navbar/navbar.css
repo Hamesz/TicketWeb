@@ -1,0 +1,8 @@
+.bg-myRed{
+  background-color: crimson;
+}
+
+.navbar-default .navbar-nav > li > a:hover{
+  background-color: #e9b846;
+  color: #FFFFFF;
+}

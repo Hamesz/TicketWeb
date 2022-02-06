@@ -5,10 +5,10 @@ import Content from "./Content/Content";
 export default function Info(props){
     return (
         <AppWrap>
-           <Navigation
+           {/* <Navigation
                 routes = {props.routes}
                 onClickRoute = {(idx) => {props.onClickRoute(idx)}}
-           />
+           /> */}
           <Content />
         </AppWrap>
     );
