@@ -41,12 +41,14 @@ export default function App() {
         const date = new Date().toISOString();
         const response = await axios.get((url),
           {
-            params: {userId: userId, date: date}
+            params: {userId: userId, date: date},
+            headers: {'Authorization': user.signInUserSession.idToken.jwtToken}
           })
-        setPaid(response.data.body.paid);
-        setCode(response.data.body.code);
+        const data = response.data;
+        setPaid(data.body.paid);
+        setCode(data.body.code);
       } catch (error) {
-        console.error(error.response);
+        console.error('Error: ', error.response);
       }
     }
 

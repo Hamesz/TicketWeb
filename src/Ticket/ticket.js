@@ -1,5 +1,5 @@
 import React from 'react';
-import {Navigate, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {ContentWrap, HeaderWrap} from './ticket.styles';
 
 export default function Ticket({ticket, date, user, code}) {
@@ -13,12 +13,12 @@ export default function Ticket({ticket, date, user, code}) {
   // ticket props
   const time = ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
   const time_left = ticket.getTimes();
-  const hours_left = time_left["hours"] !== 0 ? time_left["hours"] : undefined
-  const minutes_left = time_left["minutes"] !== 0 ? time_left["minutes"] : undefined
-  const seconds_left = time_left["seconds"]
-  const expiry_date = ticket.expiry_date_string
-  const current_time = switchTimeWithCode ? time : code
-  const passanger = user.attributes.name + " " + user.attributes.family_name
+  const hours_left = time_left["hours"] !== 0 ? time_left["hours"] : undefined;
+  const minutes_left = time_left["minutes"] !== 0 ? time_left["minutes"] : undefined;
+  const seconds_left = time_left["seconds"];
+  const expiry_date = ticket.expiry_date_string;
+  const current_time = switchTimeWithCode ? time : code;
+  const passenger = `${user.attributes.name} ${user.attributes.family_name}`;
 
   // timer
   React.useEffect(() => {
@@ -52,7 +52,7 @@ export default function Ticket({ticket, date, user, code}) {
         />
         <PassengerDetails
           purchased_date={ticket.purchase_date}
-          passenger={passanger}
+          passenger={passenger}
         />
       </div>
     </ContentWrap>
@@ -64,10 +64,8 @@ export default function Ticket({ticket, date, user, code}) {
   */
   function onTimerTick() {
     if (ticket !== undefined) {
-      // console.debug(`ticket: ${JSON.stringify(ticket)} is not undefined`);
       if (ticket.isExpired(new Date())) {
         handleExpired();
-        console.groupEnd();
         return;
       }
       const num_states = 1000 / timerRefreshTimeMilli;
@@ -79,7 +77,7 @@ export default function Ticket({ticket, date, user, code}) {
   }
 
   function handleExpired() {
-    Navigate("/tickets");
+    navigate("/tickets");
   }
 
 }
