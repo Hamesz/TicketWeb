@@ -50,7 +50,7 @@ flex-flow: column nowrap;
 justify-content: center;
 align-items: center;
 background-color: #30323E;
-border: 1px solid green;
+// border: 1px solid green;
 // padding-bottom: 100%;
 
 .boxWrap {
@@ -151,14 +151,27 @@ table.a {
 //        border: 1px solid black;
     }
 
-    .grid-item-seconds{
-        // margin-left: 10%;
-        // margin-right: 50%;
+    .grid-item-seconds {
         text-align: center;
         position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
+        
+        margin-top: 0%;
+        margin-left: 10%;
+        margin-right: 10%;
+        height: 10vw;
+        border-radius: 10%;
+        color: white;
+        font-weight: normal;
+        font-size: 5vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #30323E;
+        box-shadow: inset 2px 2px 5px #30323E;  //inset brings the shadow into the box
+       // border: 1px solid black;
 
         .second-text {
             position: absolute;

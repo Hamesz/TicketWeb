@@ -1,9 +1,9 @@
 import React from 'react';
-import { Auth } from "aws-amplify"
+import {Auth} from "aws-amplify"
 import {AmplifyAuthenticator} from '@aws-amplify/ui-react';
-import { useNavigate } from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 
-export default function SignOut({setAuthState, setUser}){
+export default function SignOut() {
 
   const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ export default function SignOut({setAuthState, setUser}){
     return () => {
       navigate("/home");
     }
-  })   
+  })
 
   return (
     <AmplifyAuthenticator>
@@ -25,10 +25,7 @@ export default function SignOut({setAuthState, setUser}){
 
   function signout() {
     Auth.signOut()
-      .then(data => {
-        // setAuthState(undefined)
-        // setUser(undefined)
-      })
+      .then()
       .catch(err => console.error(err));
   }
 

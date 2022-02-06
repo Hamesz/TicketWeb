@@ -1,13 +1,11 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-
-import { ContentWrap, HeaderWrap } from './ticket.styles';
+import {Navigate, useNavigate} from 'react-router-dom';
+import {ContentWrap, HeaderWrap} from './ticket.styles';
 
 export default function Ticket({ticket, date, user, code}) {
   const [switchTimeWithCode, setSwitchTimeWithCode] = React.useState(true);
   const [timeState, setTimeState] = React.useState(0);
-  
+
   const timerRefreshTimeMilli = 200;  // time for timer in milliseconds
 
   const navigate = useNavigate();
@@ -24,7 +22,7 @@ export default function Ticket({ticket, date, user, code}) {
 
   // timer
   React.useEffect(() => {
-    const timer=setTimeout(() => {
+    const timer = setTimeout(() => {
       onTimerTick();
     }, timerRefreshTimeMilli);
     // Clear timeout if the component is unmounted
@@ -33,28 +31,28 @@ export default function Ticket({ticket, date, user, code}) {
 
   return (
     <ContentWrap>
-      <Header 
+      <Header
         title={ticket.title}
         onBackButtonClick={() => navigate('/tickets')}
       />
       <div className="boxWrap">
         <LogoAndTime
-            current_time = {current_time}
+          current_time={current_time}
         />
         <TimeLeft
-          hours_left = {hours_left}
-          minutes_left = {minutes_left}
-          seconds_left = {seconds_left}
+          hours_left={hours_left}
+          minutes_left={minutes_left}
+          seconds_left={seconds_left}
         />
         <div className="date">
           {expiry_date}
         </div>
         <TicketDetails
-          title = {ticket.title}
+          title={ticket.title}
         />
         <PassengerDetails
-          purchased_date = {ticket.purchase_date}
-          passenger = {passanger}
+          purchased_date={ticket.purchase_date}
+          passenger={passanger}
         />
       </div>
     </ContentWrap>
@@ -64,22 +62,22 @@ export default function Ticket({ticket, date, user, code}) {
   Handles everything to do on the timer tick. This includes checking if the ticket has expired
   and setting switch time with code
   */
-  function onTimerTick(){
-    if (ticket !== undefined){
+  function onTimerTick() {
+    if (ticket !== undefined) {
       // console.debug(`ticket: ${JSON.stringify(ticket)} is not undefined`);
-      if (ticket.isExpired(new Date())){
-          handleExpired();
-          console.groupEnd();
-          return;
+      if (ticket.isExpired(new Date())) {
+        handleExpired();
+        console.groupEnd();
+        return;
       }
-      const num_states = 1000/timerRefreshTimeMilli;
-      setTimeState((timeState + 1)%num_states);
-      if (timeState === (num_states - 1)){
+      const num_states = 1000 / timerRefreshTimeMilli;
+      setTimeState((timeState + 1) % num_states);
+      if (timeState === (num_states - 1)) {
         setSwitchTimeWithCode(!switchTimeWithCode);
       }
     }
   }
-  
+
   function handleExpired() {
     Navigate("/tickets");
   }
@@ -90,45 +88,58 @@ function Header({title, onBackButtonClick}) {
   return (
     <HeaderWrap>
       <div className="grid">
-        <img src="assets/images/back-button.png" alt="back button" onClick = {()=> onBackButtonClick()}></img>
+        <img src="assets/images/back-button.png" alt="back button" onClick={() => onBackButtonClick()}/>
         <div className="grid-item-text">{title}</div>
       </div>
     </HeaderWrap>
   )
 }
 
-function LogoAndTime({current_time}){
+function LogoAndTime({current_time}) {
   /* contains all the containers for the icon and the code */
   return (
-      <div className="icon_code">
-          <div className="icon">
-              <img src= "assets/images/mticketicon.jpg" alt="ticket Icon"></img>
-          </div>
-          <div className="code_gif">
-              <img src= "assets/images/red_grey_start.gif" alt="red grey gif"></img>
-              <div className="code_text"><b>{current_time}</b></div>
-          </div>
+    <div className="icon_code">
+      <div className="icon">
+        <img src="assets/images/mticketicon.jpg" alt="ticket Icon"/>
       </div>
+      <div className="code_gif">
+        <img src="assets/images/red_grey_start.gif" alt="red grey gif"/>
+        <div className="code_text"><b>{current_time}</b></div>
+      </div>
+    </div>
   )
 }
 
-function TimeLeft({hours_left, minutes_left, seconds_left}){
+function TimeLeft({hours_left, minutes_left, seconds_left}) {
   return (
     <table className="a">
       <tbody>
-        <tr>
-          <th><div className="grid-item-text">Hours</div></th>
-          <th><div className="grid-item-text">Minutes</div></th>
-          <th><div className="grid-item-text">Seconds</div></th>
-        </tr>
-        <tr>
-          <th><div className="grid-item-patch">{hours_left}</div></th>
-          <th><div className="grid-item-patch">{minutes_left}</div></th>
-          <th><div className="grid-item-seconds">
-              <img src="assets/images/spinner_second_countdown.png" className="rotate" alt="seconds animation"></img>
-              <div className="second-text">{seconds_left}</div>
-          </div></th>
-        </tr>
+      <tr>
+        <th>
+          <div className="grid-item-text">Hours</div>
+        </th>
+        <th>
+          <div className="grid-item-text">Minutes</div>
+        </th>
+        <th>
+          <div className="grid-item-text">Seconds</div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div className="grid-item-patch">{hours_left}</div>
+        </th>
+        <th>
+          <div className="grid-item-patch">{minutes_left}</div>
+        </th>
+        <th>
+          <div className="grid-item-seconds">
+            <img src="assets/images/spinner_second_countdown.png" className="rotate" alt="seconds animation"
+                 height={"120%"}/>
+            <div className="second-text">{seconds_left}</div>
+          </div>
+        </th>
+      </tr>
       </tbody>
     </table>
   );
@@ -142,7 +153,7 @@ function TicketDetails({title}) {
   );
 }
 
-function PassengerDetails({purchased_date, passenger}){
+function PassengerDetails({purchased_date, passenger}) {
   return (
     <div className="infoGrid">
       <div className="grid-info-item-left">Provider</div>
