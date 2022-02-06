@@ -1,10 +1,10 @@
 import React from 'react';
-import { Navigate, Route, Routes, useNavigate, Outlet } from "react-router-dom";
+import {Navigate, Outlet, Route, Routes, useNavigate} from "react-router-dom";
 
 import Navbar from "../Navbar/navbar"
-import Info from "../Components/info-style/info"
+import Info from "../Info/info"
 import Payment from "../Payment/payment";
-import SignIn from "../Components/authenticator-style/signIn";
+import SignIn from "../Authentication/signIn";
 import Tickets from "../Tickets/tickets"
 import Ticket from "../Ticket/ticket"
 

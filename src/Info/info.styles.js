@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ContentWrap = styled.div`
+export const InfoWrap = styled.div`
 .title{
     color: white;
     text-align: center;
@@ -62,7 +62,7 @@ export const ContentWrap = styled.div`
 }
 
 .infoGridDevices {
-    width: 100vw;
+    // width: 100vw;
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
@@ -72,15 +72,12 @@ export const ContentWrap = styled.div`
         padding-left: 10px;
     }
     border: 1px solid black;
-    border-top: 0px solid black;
-    background-color: white;
+    // border-top: 0px solid black;
     
-    // margin-left:1%;
-    // margin-right:1%;
+    background-color: white;
+
     padding:10%;
-    // font-weight: bold;
     color: black;
-    // padding: 14px 28px;
     font-size: 12px;
     cursor: pointer;
     display: inline-block;
@@ -94,4 +91,3 @@ export const ContentWrap = styled.div`
 
 
 `;
-
