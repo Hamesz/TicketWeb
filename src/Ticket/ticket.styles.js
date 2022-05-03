@@ -81,9 +81,46 @@ h3 {
     .icon {
         width: 30%;
     }
-    .icon img {
+    .icon .static {
         width: 100%;
         height: 100%;
+        transition: transform 0.5s linear;
+    }
+    
+    .icon_code:hover .icon .static {
+      transform: translateX(100%) translateY(100%) scale(150%);
+    }
+    
+    .overlap-container {
+      width: 30%;
+      position: relative;
+      top: 0;
+      left: 0;
+      border: 3px purple solid;
+    }
+    
+    .image1 {
+        position: relative;
+        top: 0;
+        left: 0;
+        border: 1px red solid;
+        z-index: 1;
+        transition: transform 0.5s linear;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .image2 {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        border: 1px green solid;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .overlap-container:hover .image1 {
+        transform: translateX(120%) translateY(200%) scale(150%);
     }
 
     // Code
