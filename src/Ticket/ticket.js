@@ -1,6 +1,7 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import {ContentWrap, HeaderWrap} from './ticket.styles';
+// import {ContentWrap, HeaderWrap} from './ticket.styles';
+import './ticket.css';
 
 export default function Ticket({ticket, date, user, code}) {
   const [switchTimeWithCode, setSwitchTimeWithCode] = React.useState(true);
@@ -30,12 +31,12 @@ export default function Ticket({ticket, date, user, code}) {
   });
 
   return (
-    <ContentWrap>
+    <div className={"content-wrap-2"}>
       <Header
         title={ticket.title}
         onBackButtonClick={() => navigate('/tickets')}
       />
-      <div className="boxWrap">
+      <div className="body-2">
         <LogoAndTime
           current_time={current_time}
         />
@@ -55,7 +56,7 @@ export default function Ticket({ticket, date, user, code}) {
           passenger={passenger}
         />
       </div>
-    </ContentWrap>
+    </div>
   );
 
   /*
@@ -84,12 +85,12 @@ export default function Ticket({ticket, date, user, code}) {
 
 function Header({title, onBackButtonClick}) {
   return (
-    <HeaderWrap>
-      <div className="grid">
+    <>
+      <div className="header">
         <img src="assets/images/back-button.png" alt="back button" onClick={() => onBackButtonClick()}/>
-        <div className="grid-item-text">{title}</div>
+        <div className="ticket-type">{title}</div>
       </div>
-    </HeaderWrap>
+    </>
   )
 }
 
@@ -97,12 +98,13 @@ function LogoAndTime({current_time}) {
   /* contains all the containers for the icon and the code */
   return (
     <div className="icon_code">
-      <div className="icon">
-        <img src="assets/images/mticketicon.jpg" alt="ticket Icon"/>
+      <div className="overlap-container">
+        <img className={"image1"} src="assets/images/mticketicon.jpg" alt="ticket Icon"/>
+        <img className={"image2"} src="assets/images/mticketicon.jpg" alt="ticket Icon"/>
       </div>
       <div className="code_gif">
         <img src="assets/images/red_grey_start.gif" alt="red grey gif"/>
-        <div className="code_text"><b>{current_time}</b></div>
+        <div className="code_text" id={"changeText"}><b>{current_time}</b></div>
       </div>
     </div>
   )
@@ -153,7 +155,7 @@ function TicketDetails({title}) {
 
 function PassengerDetails({purchased_date, passenger}) {
   return (
-    <div className="infoGrid">
+    <div className="infoGrid-1">
       <div className="grid-info-item-left">Provider</div>
       <div className="grid-info-item-right">Transport for Edinburgh</div>
       <div className="grid-info-item-left">Purchased</div>

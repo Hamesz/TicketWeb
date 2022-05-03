@@ -1,0 +1,261 @@
+/*Header*/
+.header {
+    background: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.header .ticket-type {
+    font-size: 6vw;
+    color: #7a1a1f;
+    font-weight: bold;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 12;
+    text-align: center;
+}
+
+.header img {
+    max-width:10%;
+    max-height:10%;
+    z-index:1;
+    flex: 1;
+    text-align: center;
+}
+
+.header:after {
+    content: " ";
+    display: block;
+    flex: 1;
+}
+
+.content-wrap-2 {
+    width: 100%;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #30323E;
+}
+
+.body-2 {
+    width: 100%;
+    margin-top: 5%;
+    /*center everything within*/
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #30323E;
+    user-select: none;
+}
+
+.icon_code {
+    width: 80%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    /*border: #e9b846 1px solid;*/
+}
+
+.overlap-container {
+    width: 30%;
+    position: relative;
+    top: 0;
+    left: 0;
+    /*border: 3px purple solid;*/
+}
+
+.image1 {
+    position: relative;
+    top: 0;
+    left: 0;
+    /*border: 1px red solid;*/
+    z-index: 1;
+    transition: transform 0.5s linear;
+    width: 100%;
+    height: 100%;
+}
+
+.image2 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    /*border: 1px green solid;*/
+    width: 100%;
+    height: 100%;
+}
+
+.icon_code:hover .image1 {
+    transform: translateX(120%) translateY(200%) scale(150%);
+}
+
+.code_gif {
+    width: 70%;
+    text-align: center;
+    position: relative;
+    /*border: 3px purple solid;*/
+}
+.code_gif img {
+    width: 100%;
+    height: 100%;
+}
+
+/* Centered Code */
+.code_text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+/*// font-size: 90px;*/
+    font-size: 20vw;
+    color: #FFFFFFFF ;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th,td {
+}
+
+.a {
+    table-layout: fixed;
+    width: 70%;
+    margin-top: 5%;
+}
+
+.a .grid-item-text {
+    font-size: 3vw;
+    color: white;
+    font-weight: normal;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.a .grid-item-patch {
+    margin-top: 0%;
+    margin-left: 10%;
+    margin-right: 10%;
+    height: 10vw;
+    border-radius: 10%;
+    color: white;
+    font-weight: normal;
+    font-size: 5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #6f7077;
+/*//inset brings the shadow into the box*/
+    box-shadow: inset 2px 2px 5px #30323E;
+/*//        border: 1px solid black;*/
+}
+
+.a .grid-item-seconds {
+    text-align: center;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 0%;
+    margin-left: 10%;
+    margin-right: 10%;
+    height: 10vw;
+    border-radius: 10%;
+    color: white;
+    font-weight: normal;
+    font-size: 5vw;
+    background-color: #30323E;
+    /*//inset brings the shadow into the box*/
+    box-shadow: inset 2px 2px 5px #30323E;
+    /*// border: 1px solid black;*/
+}
+
+.a .second-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5vw;
+    color: white;
+    font-weight: normal;
+}
+
+.a .img {
+    animation: rotation 8s infinite linear;
+}
+
+.rotate {
+    animation: rotation 2s infinite linear;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+/*// --- Date*/
+.date {
+   width: 100%;
+   margin-top: 0%;
+   text-align: center;
+/*// background-color: green;*/
+   font-size: 6vw;
+   color: white;
+}
+
+/*// --- Ticket*/
+.ticket{
+   width: 90%;
+   background-color: #255681;
+   margin-top: 7%;
+   padding: 5%;
+   text-align: center;
+   font-size: 10vw;
+   color: white;
+}
+
+/*// --- Passenger Info*/
+.infoGrid-1 {
+   width: 90%;
+   display: grid;
+   background-color: #255681;
+   grid-template-columns: 2fr 3fr;
+   margin-top: 2%;
+   color: white;
+   margin-bottom: 5%;
+   font-size: 4vw;
+   /*border: red;*/
+}
+
+.infoGrid-1 .grid-info-item-left {
+    color: white;
+    text-align: right;
+    margin-right: 2%;
+}
+
+.infoGrid-1 .grid-info-item-right {
+    color: white;
+    margin-bottom: 2%;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+#changeText {
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+.hide {
+    opacity: 0 !important;
+}
