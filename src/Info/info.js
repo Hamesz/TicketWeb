@@ -5,6 +5,12 @@ import {InfoWrap} from "./info.styles";
 export default function Info() {
   return (
     <InfoWrap>
+     <div class="alert alert-warning" role="alert">
+      Unfortunately support for this application will end the beginning of February 2024, with no predecessor. 
+      Please do not make <b>any</b> payments for the month of February or after.
+      Thank you all for your support :)
+      <iframe src="https://giphy.com/embed/EQIDJxDloq1zO" width="100%" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+      </div>
       <Overview/>
       <DeviceSetUp/>
       <Payment/>
